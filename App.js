@@ -1,43 +1,22 @@
-// App.js
-import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { StatusBar } from 'expo-status-bar';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from './screens/Login';
+import CadastroScreen from './screens/Cadastro';
+import MainApp from './MainApp';
 
+const Stack = createNativeStackNavigator();
 
-// Pré Login
-import LoginScreen from './screens/Login'
-import CadastroScreen from './screens/Cadastro'
-
-// Usuário Comum (Pós-Login)
-import InicioScreen from './screens/Inicio';
-
-const Stack = createStackNavigator();
-
-
-export default function App() {
+const App = () => {
   return (
     <NavigationContainer>
-      <StatusBar style="auto" />
       <Stack.Navigator initialRouteName="Login">
-        {/* Make sure there are no characters or spaces here */}
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Cadastro"
-          component={CadastroScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Inicio"
-          component={InicioScreen}
-          options={{ headerShown: false }}
-        />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Cadastro" component={CadastroScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MainApp" component={MainApp} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
-}
+};
+
+export default App;

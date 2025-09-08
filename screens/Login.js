@@ -1,148 +1,165 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Dimensions, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 
-const { width } = Dimensions.get('window');
-
-const LoginScreen = ({ navigation }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
-    const handleLogin = () => {
-        // Lógica de autenticação
-        console.log('Entrar com:', email, password);
-        navigation.navigate('Inicio');
-    };
-
-    const handleRegister = () => {
+const LoginScreen = ({navigation}) => {
+    const onRegister = () => {
         navigation.navigate('Cadastro');
-    };
-
+    }
+    const onLogin = () => {
+        navigation.navigate('MainApp', { screen: 'Inicio' });
+    }
     return (
-        <LinearGradient
-            colors={['#080A6C', '#3E4095']}
-            style={styles.container}
-        >
+        <View style={styles.container}>
             <StatusBar style="light" />
-            <KeyboardAvoidingView
-                style={{ flex: 1, width: '100%' }}
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            <LinearGradient
+                colors={['#080A6C', '#080A6C']}
+                style={styles.gradient}
             >
-                <ScrollView contentContainerStyle={styles.scrollContent}>
-                    {/* Logo da Câmara Municipal */}
+                <View style={styles.topContainer}>
                     <Image
                         source={require('../assets/logo-pacatuba.png')}
                         style={styles.logo}
                         resizeMode="contain"
                     />
+                </View>
 
-                    {/* Campos de Input */}
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.inputLabel}>Email</Text>
+                {/* O KeyboardAvoidingView é usado para evitar que o teclado cubra os inputs */}
+                <KeyboardAvoidingView
+                    style={styles.bottomContainer}
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                >
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Email</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="email@dominio.com"
-                            value={email}
-                            onChangeText={setEmail}
+                            placeholderTextColor="#ccc"
                             keyboardType="email-address"
-                            autoCapitalize="none"
-                            placeholderTextColor="#999"
                         />
                     </View>
-
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.inputLabel}>Senha</Text>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Senha</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="*****"
-                            value={password}
-                            onChangeText={setPassword}
+                            placeholderTextColor="#ccc"
                             secureTextEntry
-                            placeholderTextColor="#999"
                         />
                     </View>
 
-                    {/* Botões de Ação */}
-                    <View style={styles.buttonRow}>
-                        <TouchableOpacity style={[styles.button, styles.registerButton]} onPress={handleRegister}>
-                            <Text style={styles.buttonText}>Cadastrar</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.button, styles.loginButton]} onPress={handleLogin}>
-                            <Text style={styles.buttonText}>Entrar</Text>
-                        </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Text style={styles.forgotPassword}>Esqueceu a senha?</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.button} onPress={onLogin}>
+                        <Text style={styles.buttonText}>Entrar</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.registerBtn} onPress={onRegister}>
+                        <Text style={styles.registerText}>Não possui uma conta? <Text style={styles.registerLink}>Cadastre-se</Text></Text>
+                    </TouchableOpacity>
+                    <View style={styles.spaceBottom} >
+                        <Text style={styles.spaceBottomTxt}>Desenvolvido por Blu Tecnologias</Text>
                     </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
-        </LinearGradient>
+                </KeyboardAvoidingView>
+            </LinearGradient>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 20,
+        backgroundColor: '#080A6C',
     },
-    scrollContent: {
-        flexGrow: 1,
+    gradient: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+    },
+    topContainer: {
+        flex: 1,
+        width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 20,
+        paddingTop: 50,
     },
     logo: {
-        width: width * 0.7,
-        height: width * 0.7 * (250 / 600),
-        marginBottom: 50,
+        width: 150,
+        height: 150,
     },
-    inputContainer: {
+    bottomContainer: {
         width: '100%',
         backgroundColor: '#fff',
-        borderRadius: 8,
-        flexDirection: 'row',
+        borderTopLeftRadius: 50,
+        borderTopRightRadius: 50,
+        paddingHorizontal: 30,
+        paddingTop: 40,
+        paddingBottom: 50,
         alignItems: 'center',
-        marginBottom: 15,
-        paddingHorizontal: 15,
-        height: 50,
     },
-    inputLabel: {
+    inputGroup: {
+        width: '100%',
+        marginBottom: 20,
+    },
+    label: {
         fontSize: 16,
         color: '#333',
-        marginRight: 10,
-        fontWeight: 'bold',
+        marginBottom: 5,
     },
     input: {
-        flex: 1,
-        height: '100%',
+        width: '100%',
+        height: 50,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 10,
+        paddingHorizontal: 15,
         fontSize: 16,
         color: '#333',
+        borderWidth: 1,
+        borderColor: '#ccc',
     },
-    buttonRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-        marginTop: 20,
+    forgotPassword: {
+        color: '#080A6C',
+        textDecorationLine: 'underline',
+        marginBottom: 30,
+        marginTop: -10,
     },
     button: {
-        flex: 1,
+        width: '100%',
         height: 50,
+        backgroundColor: '#FFB800',
+        borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 8,
-        marginHorizontal: 5,
-    },
-    registerButton: {
-        backgroundColor: '#00BFFF',
-    },
-    loginButton: {
-        backgroundColor: '#FFA500',
+        marginBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 5,
     },
     buttonText: {
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
     },
+    registerText: {
+        color: '#666',
+    },
+    registerLink: {
+        color: '#080A6C',
+        fontWeight: 'bold',
+    },
+    spaceBottom: {
+        width: 'auto',
+        paddingTop: 100,
+        height: 100,
+    },
+    spaceBottomTxt: {
+        color: '#ccccccff',
+    }
 });
 
 export default LoginScreen;

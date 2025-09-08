@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Image, Dimensions, ScrollView, TextInput, Touch
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
-import BottomNav from '../components/BottomBar';
 
 const { width } = Dimensions.get('window');
 
@@ -12,7 +11,6 @@ const HomeScreen = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const [isSearching, setIsSearching] = useState(false);
     const searchAnimation = useRef(new Animated.Value(0)).current;
-    const [activePage, setActivePage] = useState('Inicio');
     const [imageErrorIndices, setImageErrorIndices] = useState(new Set());
 
     useEffect(() => {
@@ -167,9 +165,6 @@ const HomeScreen = ({ navigation }) => {
                     )}
                 </ScrollView>
             </LinearGradient>
-
-            {/* Barra de Navegação Inferior */}
-            <BottomNav activePage={activePage} setActivePage={setActivePage} />
 
             {/* Tela de Pesquisa Animada */}
             {isSearching && (
