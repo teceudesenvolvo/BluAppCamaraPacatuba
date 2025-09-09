@@ -69,127 +69,135 @@ const HomeScreen = ({ navigation }) => {
         setImageErrorIndices(prev => new Set(prev).add(index));
     };
 
+
+    // Funções Mudanças de Páginas
+    const onVereadores = () => {
+        navigation.navigate('Vereadores')
+    }
+    const onTvCamara = () => {
+        navigation.navigate('TvCamara')
+    }
+    const onProcon = () => {
+        navigation.navigate('Procon')
+    }
+
     return (
         <View style={styles.container}>
             <StatusBar style="dark" />
-            <LinearGradient
-                colors={['#fff', '#fff']}
-                style={styles.gradient}
-            >
-
-
-                <ScrollView style={styles.content}>
-                    {/* Cabeçalho */}
-                    <View style={styles.header}>
-                        <View style={styles.headerLeft}>
-                            <Image
-                                source={require('../assets/logo-pacatuba-azul.png')}
-                                style={styles.logoHeader}
-                                resizeMode="contain"
-                            />
-                        </View>
-                        <View style={styles.headerRight}>
-                            <TouchableOpacity style={styles.iconButton}>
+            <ScrollView style={styles.content}>
+                {/* Cabeçalho */}
+                <View style={styles.header}>
+                    <View style={styles.headerLeft}>
+                        <Image
+                            source={require('../assets/logo-pacatuba-azul.png')}
+                            style={styles.logoHeader}
+                            resizeMode="contain"
+                        />
+                    </View>
+                    <View style={styles.headerRight}>
+                        {/* <TouchableOpacity style={styles.iconButton}>
                                 <Ionicons name="notifications" size={25} color="#080A6C" />
-                            </TouchableOpacity>
-                            <Ionicons name="person-circle" size={35} color="#080A6C" style={styles.profileIcon} />
-                        </View>
+                            </TouchableOpacity> */}
+                        <Ionicons name="person-circle" size={35} color="#080A6C" style={styles.profileIcon} />
                     </View>
-                    {/* Boas-vindas e Título */}
-                    <Text style={styles.welcomeText}>Bem-vindo, Nome!</Text>
-                    <Text style={styles.pageTitle}>Câmara Municipal de Pacatuba - CE</Text>
+                </View>
+                {/* Boas-vindas e Título */}
+                <Text style={styles.welcomeText}>Bem-vindo, Nome!</Text>
+                <Text style={styles.pageTitle}>Câmara Municipal de Pacatuba - CE</Text>
 
-                    {/* Barra de Pesquisa */}
-                    <TouchableOpacity style={styles.searchBar} activeOpacity={1} onPress={handleSearchClick}>
-                        <Ionicons name="search" size={20} color="#999" />
-                        <TextInput
-                            style={styles.searchInput}
-                            placeholder="Pesquise o que você precisa."
-                            placeholderTextColor="#999"
-                            editable={false}
-                        />
+                {/* Barra de Pesquisa */}
+                <TouchableOpacity style={styles.searchBar} activeOpacity={1} onPress={handleSearchClick}>
+                    <Ionicons name="search" size={20} color="#999" />
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Pesquise o que você precisa."
+                        placeholderTextColor="#999"
+                        editable={false}
+                    />
+                </TouchableOpacity>
+
+                {/* Menu de Ícones */}
+                <View style={styles.iconMenu}>
+                    <TouchableOpacity style={styles.menuItem} onPress={onVereadores}>
+                        <View style={styles.menuIconContainer}>
+                            <Ionicons name="people" size={35} color="white" />
+                        </View>
+                        <Text style={styles.menuText}>Vereadores</Text>
                     </TouchableOpacity>
-
-                    {/* Menu de Ícones */}
-                    <View style={styles.iconMenu}>
-                        <TouchableOpacity style={styles.menuItem}>
-                            <View style={styles.menuIconContainer}>
-                                <Ionicons name="people" size={35} color="white" />
-                            </View>
-                            <Text style={styles.menuText}>Vereadores</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.menuItem}>
-                            <View style={styles.menuIconContainer}>
-                                <Ionicons name="play-circle" size={35} color="white" />
-                            </View>
-                            <Text style={styles.menuText}>TV Câmara</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.menuItem}>
-                            <View style={styles.menuIconContainer}>
-                                <Ionicons name="book" size={35} color="white" />
-                            </View>
-                            <Text style={styles.menuText}>Procon</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.menuItem}>
-                            <View style={styles.menuIconContainer}>
-                                <FontAwesome name="gavel" size={35} color="white" />
-                            </View>
-                            <Text style={styles.menuText}>Licitações</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    {/* Seção de Notícias */}
-                    <Text style={styles.sectionTitle}>Notícias</Text>
-                    {loading ? (
-                        <ActivityIndicator size="large" color="#080A6C" />
-                    ) : (
-                        <View style={styles.newsContainer}>
-                            {news && news.length > 0 ? (
-                                news.filter((item, index) => item.Capa && !imageErrorIndices.has(index)).map((item, index) => (
-                                    <View style={styles.newsCard} key={index}>
-                                        <Image
-                                            source={{ uri: item.Capa }}
-                                            style={styles.newsImage}
-                                            onError={() => handleImageError(index)}
-                                        />
-                                        <View style={styles.newsTextContainer}>
-                                            <Text style={styles.newsTitle}>{item.Titulo}</Text>
-                                            <Text style={styles.newsDescription}>{item.Categoria}</Text>
-                                        </View>
-                                    </View>
-                                ))
-                            ) : (
-                                <Text style={styles.noNewsText}>Nenhuma notícia encontrada.</Text>
-                            )}
+                    <TouchableOpacity style={styles.menuItem} onPress={onTvCamara}>
+                        <View style={styles.menuIconContainer}>
+                            <Ionicons name="play-circle" size={35} color="white" />
                         </View>
-                    )}
-                </ScrollView>
-            </LinearGradient>
+                        <Text style={styles.menuText}>TV Câmara</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.menuItem} onPress={onProcon}>
+                        <View style={styles.menuIconContainer}>
+                            <Ionicons name="book" size={35} color="white" />
+                        </View>
+                        <Text style={styles.menuText}>Procon</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.menuItem}>
+                        <View style={styles.menuIconContainer}>
+                            <FontAwesome name="gavel" size={35} color="white" />
+                        </View>
+                        <Text style={styles.menuText}>Licitações</Text>
+                    </TouchableOpacity>
+                </View>
 
-            {/* Tela de Pesquisa Animada */}
-            {isSearching && (
-                <Animated.View style={[styles.searchOverlay, { opacity: searchScreenOpacity, transform: [{ translateY: searchScreenTranslateY }] }]}>
-                    <View style={styles.searchHeader}>
-                        <TextInput
-                            style={styles.searchOverlayInput}
-                            placeholder="Pesquise o que você precisa."
-                            placeholderTextColor="#999"
-                            autoFocus={true}
-                        />
-                        <TouchableOpacity onPress={handleCancelSearch}>
-                            <Text style={styles.cancelButton}>Cancelar</Text>
-                        </TouchableOpacity>
+                {/* Seção de Notícias */}
+                <Text style={styles.sectionTitle}>Notícias</Text>
+                {loading ? (
+                    <ActivityIndicator size="large" color="#080A6C" />
+                ) : (
+                    <View style={styles.newsContainer}>
+                        {news && news.length > 0 ? (
+                            news.filter((item, index) => item.Capa && !imageErrorIndices.has(index)).map((item, index) => (
+                                <View style={styles.newsCard} key={index}>
+                                    <Image
+                                        source={{ uri: item.Capa }}
+                                        style={styles.newsImage}
+                                        onError={() => handleImageError(index)}
+                                    />
+                                    <View style={styles.newsTextContainer}>
+                                        <Text style={styles.newsTitle}>{item.Titulo}</Text>
+                                        <Text style={styles.newsDescription}>{item.Categoria}</Text>
+                                    </View>
+                                </View>
+                            ))
+                        ) : (
+                            <Text style={styles.noNewsText}>Nenhuma notícia encontrada.</Text>
+                        )}
                     </View>
-                    <ScrollView style={styles.searchResultsContainer}>
-                        {/* Conteúdo de resultados de pesquisa aqui */}
-                        <Text style={styles.recentSearchTitle}>Pesquisas Recentes</Text>
-                        <Text style={styles.recentSearchItem}>Sessões</Text>
-                        <Text style={styles.recentSearchItem}>Notícias</Text>
-                        <Text style={styles.recentSearchItem}>Vereadores</Text>
-                    </ScrollView>
-                </Animated.View>
-            )}
-        </View>
+                )}
+            </ScrollView>
+
+
+            {/* Tela de Pesquisa Animada */ }
+    {
+        isSearching && (
+            <Animated.View style={[styles.searchOverlay, { opacity: searchScreenOpacity, transform: [{ translateY: searchScreenTranslateY }] }]}>
+                <View style={styles.searchHeader}>
+                    <TextInput
+                        style={styles.searchOverlayInput}
+                        placeholder="Pesquise o que você precisa."
+                        placeholderTextColor="#999"
+                        autoFocus={true}
+                    />
+                    <TouchableOpacity onPress={handleCancelSearch}>
+                        <Text style={styles.cancelButton}>Cancelar</Text>
+                    </TouchableOpacity>
+                </View>
+                <ScrollView style={styles.searchResultsContainer}>
+                    {/* Conteúdo de resultados de pesquisa aqui */}
+                    <Text style={styles.recentSearchTitle}>Pesquisas Recentes</Text>
+                    <Text style={styles.recentSearchItem}>Sessões</Text>
+                    <Text style={styles.recentSearchItem}>Notícias</Text>
+                    <Text style={styles.recentSearchItem}>Vereadores</Text>
+                </ScrollView>
+            </Animated.View>
+        )
+    }
+        </View >
     );
 };
 
