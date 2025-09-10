@@ -4,39 +4,25 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // Dados de exemplo (mock) para simular as reclamações
 const mockReclamacoes = [
-    {
-        id: '1',
-        protocolo: '7423558892',
-        servico: 'Serviços Financeiros',
-        descricao: 'O banco está alegando que meu cheque especial foi usado mais não consta no meu extrato nem uma compra com esse valor,mais mesmo assim o bando do Brasil debito da minha conta o valor e não querem resolver o meu problema.',
-    },
-    {
-        id: '2',
-        protocolo: '8956231470',
-        servico: 'Telefonia',
-        descricao: 'Contratei um plano de internet de 500MB e a velocidade nunca ultrapassa os 50MB. Já entrei em contato várias vezes e o problema não é resolvido.',
-    },
-    {
-        id: '3',
-        protocolo: '1234567890',
-        servico: 'Eletricidade',
-        descricao: 'Minha conta de energia veio com um valor muito acima do normal sem justificativa. Tentei contato com a empresa mas não obtive resposta.',
-    },
+    
 ];
 
-const ProconScreen = () => {
+const ProconScreen = ({navigation}) => {
     const [reclamacoes, setReclamacoes] = useState(mockReclamacoes);
 
     const handleCreateComplaint = () => {
         // Lógica para criar uma nova reclamação
-        alert('Criar Reclamação');
+        console.log('Criar Reclamação');
     };
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.headerText}>PROCON - Câmara Municipal de Pacatuba</Text>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={24} color="#000" />
+                </TouchableOpacity>
                 <Text style={styles.headerTitle}>Minhas Reclamações</Text>
+                <Text style={styles.headerText}>PROCON - Câmara Municipal de Pacatuba</Text>
             </View>
 
             <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -69,11 +55,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
     },
     header: {
-        paddingHorizontal: 20,
-        paddingTop: '20%',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 60,
         paddingBottom: 20,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -84,11 +70,15 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#888',
     },
+    backButton: {
+        position: 'absolute',
+        left: 20,
+        top: 60,
+    },
     headerTitle: {
-        fontSize: 22,
+        fontSize: 18,
         fontWeight: 'bold',
         color: '#333',
-        marginTop: 5,
     },
     scrollContent: {
         padding: 20,

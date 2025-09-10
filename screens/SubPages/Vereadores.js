@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const VereadoresScreen = () => {
+
+const VereadoresScreen = ({navigation}) => {
     const [vereadores, setVereadores] = useState([]);
     const [selectedVereador, setSelectedVereador] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -56,7 +58,12 @@ const VereadoresScreen = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.headerTitle}>Vereadores</Text>
+            <View style={styles.header}>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={24} color="#000" />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Vereadores</Text>
+            </View>
             {vereadores.length > 0 && (
                 <FlatList
                     data={vereadores}
@@ -67,7 +74,7 @@ const VereadoresScreen = () => {
                     contentContainerStyle={styles.vereadoresList}
                 />
             )}
-            
+
             {selectedVereador && (
                 <View style={styles.detailsContainer}>
                     <Image
@@ -96,18 +103,32 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
-        paddingTop: '20%',
     },
     center: {
         justifyContent: 'center',
         alignItems: 'center',
     },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 60,
+        paddingBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 5,
+    },
+    backButton: {
+        position: 'absolute',
+        left: 20,
+        top: 60,
+    },
     headerTitle: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#333',
-        marginLeft: 20,
-        marginBottom: 20,
     },
     vereadoresList: {
         paddingHorizontal: 10,
@@ -138,7 +159,7 @@ const styles = StyleSheet.create({
         color: '#5f5f5fff',
     },
     detailsContainer: {
-        height: 500,
+        height: 450,
         flex: 1,
         backgroundColor: '#fff',
         marginHorizontal: 20,

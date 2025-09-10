@@ -80,6 +80,9 @@ const HomeScreen = ({ navigation }) => {
     const onProcon = () => {
         navigation.navigate('Procon')
     }
+    const onLicitacoes = () => {
+        navigation.navigate('Licitacoes')
+    }
 
     return (
         <View style={styles.container}>
@@ -136,7 +139,7 @@ const HomeScreen = ({ navigation }) => {
                         </View>
                         <Text style={styles.menuText}>Procon</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem}>
+                    <TouchableOpacity style={styles.menuItem} onPress={onLicitacoes}>
                         <View style={styles.menuIconContainer}>
                             <FontAwesome name="gavel" size={35} color="white" />
                         </View>
@@ -156,7 +159,7 @@ const HomeScreen = ({ navigation }) => {
                                     <Image
                                         source={{ uri: item.Capa }}
                                         style={styles.newsImage}
-                                        onError={() => handleImageError(index)}
+                                        onError={() => handleImageError(index) }
                                     />
                                     <View style={styles.newsTextContainer}>
                                         <Text style={styles.newsTitle}>{item.Titulo}</Text>
@@ -214,9 +217,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: 10,
+        paddingTop: '15%',
         paddingBottom: 35,
-        backgroundColor: '#fff',
     },
     headerLeft: {
         flexDirection: 'row',
@@ -317,6 +319,7 @@ const styles = StyleSheet.create({
         height: 120,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
+        backgroundColor: '#c2bfbfff',
     },
     newsTextContainer: {
         padding: 10,

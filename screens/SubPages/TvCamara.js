@@ -1,8 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ActivityIndicator, Linking } from 'react-native';
 import WebView from 'react-native-webview';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const TVWebScreen = () => {
+// Função para formatar a data e hora do formato ISO 8601 (2025-01-28T12:28:35) para DD/MM/YYYY às HH:MM
+const formatDateAndTime = (isoString) => {
+    if (!isoString) return 'Não informada';
+    const date = new Date(isoString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} às ${hours}:${minutes}`;
+};
+
+
+const TVWebScreen = ({ navigation }) => {
     const [videos, setVideos] = useState([]);
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -19,7 +33,7 @@ const TVWebScreen = () => {
             try {
                 const response = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId=${PLAYLIST_ID}&key=${YOUTUBE_API_KEY}`);
                 const data = await response.json();
-                
+
                 if (data.error) {
                     setError('Falha ao carregar os vídeos do YouTube. Verifique se a sua chave de API está correta e se a API do YouTube está habilitada para o seu projeto no Google Cloud.');
                     return;
@@ -30,7 +44,8 @@ const TVWebScreen = () => {
                     title: item.snippet.title,
                     description: item.snippet.description,
                     thumbnail: item.snippet.thumbnails.high.url,
-                    videoId: item.contentDetails.videoId
+                    videoId: item.contentDetails.videoId,
+                    dateVideo: item.snippet.publishedAt,
                 }));
 
                 setVideos(fetchedVideos);
@@ -80,14 +95,20 @@ const TVWebScreen = () => {
             />
             <View style={styles.videoInfo}>
                 <Text style={styles.videoTitle}>{item.title}</Text>
-                <Text style={styles.videoDescription}>{item.description}</Text>
+                <Text style={styles.videoDescription}>{formatDateAndTime(item.dateVideo)}</Text>
             </View>
         </TouchableOpacity>
     );
 
     const ListHeader = () => (
         <View>
-            <Text style={styles.headerTitle}>Assista Agora</Text>
+            <View style={styles.header}>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={24} color="#000" />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Tv Câmara Pacatuba</Text>
+            </View>
+            <Text style={styles.subHeaderTitle}>Assista Agora</Text>
             {selectedVideo && (
                 <View style={styles.playerContainer}>
                     <WebView
@@ -97,12 +118,7 @@ const TVWebScreen = () => {
                         allowsFullscreenVideo={true}
                         source={{ uri: `https://www.youtube.com/embed/${selectedVideo.videoId}?modestbranding=1&rel=0` }}
                     />
-                    <TouchableOpacity
-                        style={styles.youtubeButton}
-                        onPress={() => Linking.openURL(`https://www.youtube.com/watch?v=${selectedVideo.videoId}`)}
-                    >
-                        <Text style={styles.youtubeButtonText}>Assista no YouTube</Text>
-                    </TouchableOpacity>
+                    
                 </View>
             )}
             <Text style={styles.subHeaderTitle}>Últimas Sessões</Text>
@@ -127,18 +143,32 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
-        paddingTop: '20%',
     },
     center: {
         justifyContent: 'center',
         alignItems: 'center',
     },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 60,
+        paddingBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 5,
+    },
+    backButton: {
+        position: 'absolute',
+        left: 20,
+        top: 60,
+    },
     headerTitle: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#333',
-        marginLeft: 20,
-        marginBottom: 10,
     },
     subHeaderTitle: {
         fontSize: 16,

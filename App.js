@@ -19,8 +19,10 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
+        
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
+        
         {/* CRUD */}
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Cadastro" component={CadastroScreen} options={{ headerShown: false }} />

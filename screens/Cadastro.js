@@ -18,7 +18,7 @@ const CadastroScreen = ({ navigation }) => {
     const handleRegister = () => {
         // Lógica de cadastro final aqui
         console.log("Cadastro concluído!");
-        navigation.navigate('Inicio');
+        navigation.navigate('MainApp');
 
     };
 

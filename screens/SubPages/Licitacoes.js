@@ -4,7 +4,25 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const { width } = Dimensions.get('window');
 
-const LicitacoesScreen = () => {
+// Função para formatar a data e hora do formato ISO 8601 (2025-01-28T12:28:35) para DD/MM/YYYY às HH:MM
+const formatDateAndTime = (isoString) => {
+    if (!isoString) return 'Não informada';
+    const date = new Date(isoString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} às ${hours}:${minutes}`;
+};
+
+// Função para formatar um valor como moeda brasileira
+const formatCurrency = (value) => {
+    if (value === null || typeof value === 'undefined') return 'Não informado';
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+};
+
+const LicitacoesScreen = ({navigation}) => {
     const [licitacoes, setLicitacoes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -14,32 +32,37 @@ const LicitacoesScreen = () => {
         const fetchLicitacoes = async () => {
             try {
                 // Parâmetros para a Câmara Municipal de Pacatuba, Ceará.
-                const uf = 'CE';
-                const codigoMunicipioIbge = '2309706';
-                const cnpj = '06578447000129';
+                const uf = 'DF';
+                const codigoMunicipioIbge = '5300108';
+                const cnpj = '00059311000126';
+                const codigoModalidadeContratacao = '8';
+                const dataInicial = '20250101';
+                const dataFinal = '20251201';
+                const codigoUnidadeAdministrativa = '194035';
                 const idUsuario = '3';
                 
-                // Use a data atual e 2 anos para um intervalo de busca
-                const dataAtual = new Date();
-                const anoAtual = dataAtual.getFullYear();
-                const dataInicial = `${anoAtual}0101`;
-                const dataFinal = `${anoAtual + 2}1231`;
+                const response = await fetch(`https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao?dataInicial=${dataInicial}&dataFinal=${dataFinal}&codigoModalidadeContratacao=${codigoModalidadeContratacao}&uf=${uf}&codigoMunicipioIbge=${codigoMunicipioIbge}&cnpj=${cnpj}&codigoUnidadeAdministrativa=${codigoUnidadeAdministrativa}&idUsuario=${idUsuario}&pagina=1`);
 
-                const response = await fetch(`https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao?dataInicial=${dataInicial}&dataFinal=${dataFinal}&uf=${uf}&codigoMunicipioIbge=${codigoMunicipioIbge}&cnpj=${cnpj}&idUsuario=${idUsuario}&pagina=1`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 const data = await response.json();
 
-                if (data.status === 'INVALID_ARGUMENT') {
-                    setError('Falha na requisição. Verifique os parâmetros da API.');
+                if (!data || data.status === 'INVALID_ARGUMENT' || !data.data) {
+                    setError('Não foi possível carregar os dados. Nenhum resultado encontrado ou falha na requisição.');
                     return;
                 }
 
-                // Simular o status para corresponder à imagem
+                // Simular o status para corresponder à imagem e garantir que todos os itens tenham um status.
                 const licitacoesComStatus = data.data.map((item, index) => {
-                    let status = 'Fechada'; // Padrão
-                    if (index % 3 === 0) {
+                    let status = 'Fechada';
+                    // Lógica para definir o status, ajustada para a simulação
+                    const dataAtual = new Date();
+                    if (dataAtual <= item.dataEncerramentoProposta) {
                         status = 'Aberta';
-                    } else if (index % 3 === 1) {
-                        status = 'Em Negociação';
+                    } else {
+                        status = 'Fechada';
                     }
                     return { ...item, status };
                 });
@@ -67,9 +90,6 @@ const LicitacoesScreen = () => {
             case 'Aberta':
                 backgroundColor = '#4CAF50';
                 break;
-            case 'Em Negociação':
-                backgroundColor = '#FFC107';
-                break;
             case 'Fechada':
                 backgroundColor = '#D32F2F';
                 break;
@@ -87,14 +107,14 @@ const LicitacoesScreen = () => {
         <View style={styles.licitacaoCard}>
             <View style={styles.cardHeader}>
                 <View>
-                    <Text style={styles.cardText}>Abertura: {item.dataHoraAberturaProposta.substring(0, 10)} às {item.dataHoraAberturaProposta.substring(11, 16)}</Text>
-                    <Text style={styles.cardText}>Propostas até: {item.dataHoraFimProposta.substring(0, 10)} às {item.dataHoraFimProposta.substring(11, 16)}</Text>
-                    <Text style={styles.cardText}>Modo de Disputa: {item.modoDisputa}</Text>
+                    <Text style={styles.cardText}>Abertura: {formatDateAndTime(item.dataAberturaProposta)}</Text>
+                    <Text style={styles.cardText}>Propostas até: {formatDateAndTime(item.dataEncerramentoProposta)}</Text>
+                    <Text style={styles.cardText}>Modo de Disputa: {item.modoDisputaNome || 'Não informado'}</Text>
                 </View>
                 {renderStatusBadge(item.status)}
             </View>
-            <Text style={styles.cardObject}>Objeto: {item.objeto}</Text>
-            <Text style={styles.cardValue}>Valor Estimado: R$ {item.valorEstimado ? item.valorEstimado.toFixed(2) : 'Não informado'}</Text>
+            <Text style={styles.cardObject}>Objeto: {item.objetoCompra || 'Não informado'}</Text>
+            <Text style={styles.cardValue}>Valor Estimado: {formatCurrency(item.valorEstimado)}</Text>
         </View>
     );
 
@@ -117,7 +137,7 @@ const LicitacoesScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton}>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack() }>
                     <Icon name="arrow-back" size={24} color="#000" />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Licitações</Text>
@@ -131,9 +151,6 @@ const LicitacoesScreen = () => {
                         placeholder="Pesquisar"
                         placeholderTextColor="#999"
                     />
-                    <TouchableOpacity>
-                        <Icon name="mic" size={20} color="#999" />
-                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -153,17 +170,12 @@ const LicitacoesScreen = () => {
                     onPress={() => setFilter('Fechadas')}>
                     <Text style={[styles.filterText, filter === 'Fechadas' && styles.filterTextActive]}>Fechadas</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.filterButton, filter === 'Em Negociação' && styles.filterButtonActive]}
-                    onPress={() => setFilter('Em Negociação')}>
-                    <Text style={[styles.filterText, filter === 'Em Negociação' && styles.filterTextActive]}>Em Negociação</Text>
-                </TouchableOpacity>
             </View>
 
             <FlatList
                 data={getFilteredLicitacoes()}
                 renderItem={renderLicitacaoItem}
-                keyExtractor={item => item.id}
+                keyExtractor={(item, index) => item.id || String(index)}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.listContainer}
             />
