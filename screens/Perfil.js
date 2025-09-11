@@ -1,37 +1,120 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const PerfilScreen = () => {
+const ProfileScreen = ({ navigation }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [profileData, setProfileData] = useState({
+        name: 'Nome',
+        lastName: 'Sobrenome',
+        address: 'Rua: Tal',
+        number: '100',
+        neighborhood: 'Centro',
+        city: 'Pacatuba',
+        state: 'Ceará',
+    });
+
+    const handleEditPress = () => {
+        setIsEditing(!isEditing);
+    };
+
+    const handleInputChange = (field, value) => {
+        setProfileData({ ...profileData, [field]: value });
+    };
+
     return (
         <View style={styles.container}>
-            <View style={styles.profileHeader}>
-                <Image
-                    source={{ uri: 'https://img.freepik.com/fotos-gratis/retrato-de-homem-branco-isolado_53876-40306.jpg?semt=ais_hybrid&w=740&q=80' }} // Substitua pela imagem de perfil real
-                    style={styles.profileImage}
-                />
-                <Text style={styles.profileName}>Nome do Usuário</Text>
-                <Text style={styles.profileEmail}>email@exemplo.com</Text>
+            {/* Cabeçalho */}
+            <View style={styles.header}>
+                <TouchableOpacity onPress={handleEditPress}>
+                    <Text style={styles.editButtonText}>{isEditing ? 'Salvar' : 'Editar'}</Text>
+                </TouchableOpacity>
             </View>
 
-            <View style={styles.profileActions}>
-                <TouchableOpacity style={styles.actionButton}>
-                    <Ionicons name="person-outline" size={24} color="#080A6C" />
-                    <Text style={styles.actionText}>Editar Perfil</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.actionButton}>
-                    <Ionicons name="lock-closed-outline" size={24} color="#080A6C" />
-                    <Text style={styles.actionText}>Mudar Senha</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.actionButton}>
-                    <Ionicons name="settings-outline" size={24} color="#080A6C" />
-                    <Text style={styles.actionText}>Configurações</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.actionButton, styles.logoutButton]}>
-                    <Ionicons name="log-out-outline" size={24} color="#fff" />
-                    <Text style={[styles.actionText, styles.logoutText]}>Sair</Text>
-                </TouchableOpacity>
-            </View>
+            <ScrollView contentContainerStyle={styles.scrollContent}>
+                {/* Seção do Perfil */}
+                <View style={styles.profileSection}>
+                    <View style={styles.avatarContainer}>
+                        <Image
+                            source={{ uri: 'https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cGVyZmlsfGVufDB8fDB8fHww' }}
+                            style={styles.avatarImage}
+                        />
+                        <View style={styles.editIconContainer}>
+                            <Ionicons name="pencil" size={18} color="#fff" />
+                        </View>
+                    </View>
+                    <Text style={styles.userStatus}>Visitante</Text>
+                    <Text style={styles.userName}>Nome Sobrenome</Text>
+                </View>
+
+                {/* Seção de Informações do Perfil */}
+                <View style={styles.infoSection}>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Nome</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={profileData.name}
+                            onChangeText={(text) => handleInputChange('name', text)}
+                            editable={isEditing}
+                        />
+                    </View>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Sobrenome</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={profileData.lastName}
+                            onChangeText={(text) => handleInputChange('lastName', text)}
+                            editable={isEditing}
+                        />
+                    </View>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Endereço</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={profileData.address}
+                            onChangeText={(text) => handleInputChange('address', text)}
+                            editable={isEditing}
+                        />
+                    </View>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Número</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={profileData.number}
+                            onChangeText={(text) => handleInputChange('number', text)}
+                            editable={isEditing}
+                        />
+                    </View>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Bairro</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={profileData.neighborhood}
+                            onChangeText={(text) => handleInputChange('neighborhood', text)}
+                            editable={isEditing}
+                        />
+                    </View>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Cidade</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={profileData.city}
+                            onChangeText={(text) => handleInputChange('city', text)}
+                            editable={isEditing}
+                        />
+                    </View>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Estado</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={profileData.state}
+                            onChangeText={(text) => handleInputChange('state', text)}
+                            editable={isEditing}
+                        />
+                    </View>
+                </View>
+                <View style={{ height: 50 }} />
+            </ScrollView>
         </View>
     );
 };
@@ -40,63 +123,91 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
-        alignItems: 'center',
-        padding: 20,
-        marginTop: '10%',
     },
-    profileHeader: {
+    header: {
+        paddingTop: 50,
+        paddingHorizontal: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 40,
-        marginTop: 50,
     },
-    profileImage: {
+    editButtonText: {
+        color: '#080A6C',
+        fontSize: 16,
+        fontWeight: 'bold',
+        paddingVertical: 15,
+        paddingLeft: 10,
+    },
+    scrollContent: {
+        alignItems: 'center',
+        paddingBottom: '15%',
+    },
+    profileSection: {
+        alignItems: 'center',
+        paddingTop: 0,
+        paddingBottom: 20,
+        width: '100%',
+    },
+    avatarContainer: {
+        position: 'relative',
+        marginBottom: 10,
+    },
+    avatarImage: {
         width: 120,
         height: 120,
         borderRadius: 60,
-        borderWidth: 1,
-        borderColor: '#080A6C',
-        marginBottom: 10,
     },
-    profileName: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#333',
+    editIconContainer: {
+        position: 'absolute',
+        bottom: 5,
+        right: 5,
+        backgroundColor: '#080A6C',
+        borderRadius: 15,
+        width: 30,
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#fff',
     },
-    profileEmail: {
-        fontSize: 16,
+    userStatus: {
+        fontSize: 14,
         color: '#666',
     },
-    profileActions: {
-        width: '100%',
-        paddingHorizontal: 20,
+    userName: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#333',
+        marginTop: 5,
     },
-    actionButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        paddingVertical: 15,
+    infoSection: {
+        width: '100%',
+        marginTop: 5,
         paddingHorizontal: 20,
+        paddingTop: 10,
         borderRadius: 10,
-        marginBottom: 15,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 3,
-        elevation: 3,
+        elevation: 2,
     },
-    actionText: {
-        marginLeft: 15,
-        fontSize: 18,
-        color: '#080A6C',
+    inputGroup: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+        paddingVertical: 12,
     },
-    logoutButton: {
-        marginTop: 20,
-        backgroundColor: '#FFB800',
+    label: {
+        fontSize: 13,
+        color: '#333',
     },
-    logoutText: {
-        color: '#fff',
-        fontWeight: 'bold',
+    input: {
+        fontSize: 16,
+        color: '#999',
+        marginTop: 5,
     },
 });
 
-export default PerfilScreen;
+export default ProfileScreen;
