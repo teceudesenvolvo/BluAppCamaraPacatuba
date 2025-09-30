@@ -44,7 +44,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* BluAppCamaraPacatuba */ = {
+		13B07FAE1A68108700A75B9A /* CM Pacatuba */ = {
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
@@ -55,7 +55,7 @@
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				5B25F517CAA2E10979A1D943 /* PrivacyInfo.xcprivacy */,
 			);
-			name = BluAppCamaraPacatuba;
+			name = "CM Pacatuba";
 			sourceTree = "<group>";
 		};
 		17E2707C3C0D9A08F18C0ECF /* BluAppCamaraPacatuba */ = {
@@ -102,7 +102,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* BluAppCamaraPacatuba */,
+				13B07FAE1A68108700A75B9A /* CM Pacatuba */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
@@ -328,6 +328,7 @@
 			baseConfigurationReference = F52C9A3116934AD36027DB8F /* Pods-BluAppCamaraPacatuba.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BluAppCamaraPacatuba/BluAppCamaraPacatuba.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
@@ -339,6 +340,7 @@
 				);
 				INFOPLIST_FILE = BluAppCamaraPacatuba/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CM Pacatuba";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -366,12 +368,14 @@
 			baseConfigurationReference = 744D727E34A7A958536FFBDF /* Pods-BluAppCamaraPacatuba.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BluAppCamaraPacatuba/BluAppCamaraPacatuba.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5SWBJP44JN;
 				INFOPLIST_FILE = BluAppCamaraPacatuba/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CM Pacatuba";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
