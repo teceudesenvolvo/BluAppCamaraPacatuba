@@ -18,6 +18,12 @@ const ProfileScreen = ({ navigation }) => {
         setIsEditing(!isEditing);
     };
 
+    const handleLogout = () => {
+        // Lógica para deslogar o usuário (se houver)
+        // Navega de volta para a tela de login
+        navigation.navigate('Login');
+    };
+
     const handleInputChange = (field, value) => {
         setProfileData({ ...profileData, [field]: value });
     };
@@ -28,6 +34,9 @@ const ProfileScreen = ({ navigation }) => {
             <View style={styles.header}>
                 <TouchableOpacity onPress={handleEditPress}>
                     <Text style={styles.editButtonText}>{isEditing ? 'Salvar' : 'Editar'}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+                    <Text style={styles.logoutButtonText}>Sair</Text>
                 </TouchableOpacity>
             </View>
 
@@ -113,7 +122,9 @@ const ProfileScreen = ({ navigation }) => {
                         />
                     </View>
                 </View>
-                <View style={{ height: 50 }} />
+                <View style={{ height: 100, textAlign: 'center', alignItems: 'center', justifyContent: 'center' }} >
+                    <Text>Desenvolvido por Blu Tecnologias</Text>
+                </View>
             </ScrollView>
         </View>
     );
@@ -139,6 +150,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingVertical: 15,
         paddingLeft: 10,
+    },
+    logoutButton: {
+        paddingVertical: 15,
+        paddingRight: 10,
+    },
+    logoutButtonText: {
+        color: '#ff4d4d',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
     scrollContent: {
         alignItems: 'center',
