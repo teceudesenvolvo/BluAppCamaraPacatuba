@@ -8,7 +8,7 @@ const LoginScreen = ({navigation}) => {
         navigation.navigate('Cadastro');
     }
     const onLogin = () => {
-        navigation.navigate('MainApp', { screen: 'Inicio' });
+        navigation.replace('MainApp', { screen: 'Inicio' });
     }
     return (
         <View style={styles.container}>

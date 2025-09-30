@@ -16,19 +16,23 @@ const HomeScreen = ({ navigation }) => {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const response = await fetch('https://cmpacatuba.ce.gov.br/dadosabertosexportar?d=noticias&a=&f=json');
-                const data = await response.json();
-                // A API retorna um array diretamente, sem a propriedade 'dados'.
-                // Verifica se a resposta é um array antes de setar o estado.
-                if (Array.isArray(data)) {
-                    setNews(data);
+                const response = await fetch('https://www.cmpacatuba.ce.gov.br/dadosabertosexportar?d=noticias&a=&f=json');
+                console.log(response);
+                const dados = await response.json();
+                
+                // --- CORREÇÃO AQUI ---
+                // Removido a linha "const data = dados.length === 6;"
+                // A verificação deve ser feita diretamente no array 'dados'
+                
+                if (Array.isArray(dados)) {
+                    setNews(dados);
                 } else {
-                    console.error("Dados da API não são um array:", data);
+                    console.error("Dados da API não são um array:", dados);
                     setNews([]);
                 }
             } catch (error) {
                 console.error("Falha ao buscar notícias:", error);
-                setNews([]); // Garante que news seja um array vazio em caso de erro
+                setNews([]);
             } finally {
                 setLoading(false);
             }
@@ -109,7 +113,7 @@ const HomeScreen = ({ navigation }) => {
                 <Text style={styles.pageTitle}>Câmara Municipal de Pacatuba - CE</Text>
 
                 {/* Barra de Pesquisa */}
-                <TouchableOpacity style={styles.searchBar} activeOpacity={1} onPress={handleSearchClick}>
+                {/* <TouchableOpacity style={styles.searchBar} activeOpacity={1} onPress={handleSearchClick}>
                     <Ionicons name="search" size={20} color="#999" />
                     <TextInput
                         style={styles.searchInput}
@@ -117,7 +121,7 @@ const HomeScreen = ({ navigation }) => {
                         placeholderTextColor="#999"
                         editable={false}
                     />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 {/* Menu de Ícones */}
                 <View style={styles.iconMenu}>
@@ -172,6 +176,9 @@ const HomeScreen = ({ navigation }) => {
                         )}
                     </View>
                 )}
+            <View style={{ height: 100, textAlign: 'center', alignItems: 'center', marginTop: 20 }} >
+                <Text>Desenvolvido por Blu Tecnologias</Text>
+            </View>
             </ScrollView>
 
 
@@ -316,10 +323,10 @@ const styles = StyleSheet.create({
     },
     newsImage: {
         width: '100%',
-        height: 120,
+        height: 150,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
-        backgroundColor: '#c2bfbfff',
+        backgroundColor: '#ddddddff',
     },
     newsTextContainer: {
         padding: 10,
