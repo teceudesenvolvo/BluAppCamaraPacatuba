@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
-const DenunciasScreen = () => {
+const DenunciasScreen = ({navigation}) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -29,7 +29,7 @@ const DenunciasScreen = () => {
                 <View style={styles.criarButton}>
                     <Text style={styles.criarButtonText}>Criar Denuncia</Text>
                 </View>
-                <TouchableOpacity style={styles.addButton}>
+                <TouchableOpacity style={styles.addButton} onPress={() => {navigation.navigate('RealizarDenuncia')}} >
                     <Ionicons name="add" size={30} color="#fff" />
                 </TouchableOpacity>
             </View>
