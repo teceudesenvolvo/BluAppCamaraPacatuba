@@ -44,7 +44,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* BluAppCamaraPacatuba */ = {
+		13B07FAE1A68108700A75B9A /* CM Pacatuba */ = {
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
@@ -55,7 +55,7 @@
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				4C49321BCBA001703AC5504C /* PrivacyInfo.xcprivacy */,
 			);
-			name = BluAppCamaraPacatuba;
+			name = "CM Pacatuba";
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -86,7 +86,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* BluAppCamaraPacatuba */,
+				13B07FAE1A68108700A75B9A /* CM Pacatuba */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
@@ -134,9 +134,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* BluAppCamaraPacatuba */ = {
+		13B07F861A680F5B00A75B9A /* CM Pacatuba */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BluAppCamaraPacatuba" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CM Pacatuba" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
 				D2422071E113572369F87FB4 /* [Expo] Configure project */,
@@ -151,7 +151,7 @@
 			);
 			dependencies = (
 			);
-			name = BluAppCamaraPacatuba;
+			name = "CM Pacatuba";
 			productName = BluAppCamaraPacatuba;
 			productReference = 13B07F961A680F5B00A75B9A /* CM Pacatuba.app */;
 			productType = "com.apple.product-type.application";
@@ -169,7 +169,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BluAppCamaraPacatuba" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CM Pacatuba" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -182,7 +182,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* BluAppCamaraPacatuba */,
+				13B07F861A680F5B00A75B9A /* CM Pacatuba */,
 			);
 		};
 /* End PBXProject section */
@@ -346,6 +346,7 @@
 				);
 				INFOPLIST_FILE = BluAppCamaraPacatuba/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CM Pacatuba";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -379,6 +380,7 @@
 				DEVELOPMENT_TEAM = 5SWBJP44JN;
 				INFOPLIST_FILE = BluAppCamaraPacatuba/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CM Pacatuba";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -521,7 +523,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BluAppCamaraPacatuba" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CM Pacatuba" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -530,7 +532,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BluAppCamaraPacatuba" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CM Pacatuba" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

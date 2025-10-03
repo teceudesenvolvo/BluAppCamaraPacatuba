@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 // MUDANÇA CRÍTICA: Importa os servi\u00e7os J\u00c1 INICIALIZADOS e est\u00e1veis
 // Certifique-se de que AUTH e DB s\u00e3o exportados com "export { AUTH, DB }" em firebaseService.js
