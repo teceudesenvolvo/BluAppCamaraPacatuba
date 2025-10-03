@@ -7,29 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		035A451165C95558AD091986 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9FF8C70A164BFB7009D1DA /* ExpoModulesProvider.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		2BAB5FAA5378639960E6FAF2 /* libPods-BluAppCamaraPacatuba.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A3BBD5DC8A8A7DE66CCC9 /* libPods-BluAppCamaraPacatuba.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		B0F581BDC307E8A84F579A8C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 5B25F517CAA2E10979A1D943 /* PrivacyInfo.xcprivacy */; };
+		AC574F9CC420B378D256564A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4C49321BCBA001703AC5504C /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		D647DA6919EC9E0DBEA36E09 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBB8AB8597187585692009F /* ExpoModulesProvider.swift */; };
+		C5057E2C346269602A087410 /* libPods-BluAppCamaraPacatuba.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADD7585A240D4CD90EFCA5CF /* libPods-BluAppCamaraPacatuba.a */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		13B07F961A680F5B00A75B9A /* BluAppCamaraPacatuba.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluAppCamaraPacatuba.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* CM Pacatuba.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CM Pacatuba.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = BluAppCamaraPacatuba/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = BluAppCamaraPacatuba/Info.plist; sourceTree = "<group>"; };
-		539A3BBD5DC8A8A7DE66CCC9 /* libPods-BluAppCamaraPacatuba.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BluAppCamaraPacatuba.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5B25F517CAA2E10979A1D943 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = BluAppCamaraPacatuba/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		744D727E34A7A958536FFBDF /* Pods-BluAppCamaraPacatuba.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BluAppCamaraPacatuba.release.xcconfig"; path = "Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba.release.xcconfig"; sourceTree = "<group>"; };
+		4C49321BCBA001703AC5504C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = BluAppCamaraPacatuba/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		6C9FF8C70A164BFB7009D1DA /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-BluAppCamaraPacatuba/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		A90EA4672656D5556656441D /* Pods-BluAppCamaraPacatuba.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BluAppCamaraPacatuba.debug.xcconfig"; path = "Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba.debug.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = BluAppCamaraPacatuba/SplashScreen.storyboard; sourceTree = "<group>"; };
+		ADD7585A240D4CD90EFCA5CF /* libPods-BluAppCamaraPacatuba.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BluAppCamaraPacatuba.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4DC622BBA1F7C1BCED32258 /* Pods-BluAppCamaraPacatuba.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BluAppCamaraPacatuba.release.xcconfig"; path = "Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba.release.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		DCBB8AB8597187585692009F /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-BluAppCamaraPacatuba/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = BluAppCamaraPacatuba/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* BluAppCamaraPacatuba-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "BluAppCamaraPacatuba-Bridging-Header.h"; path = "BluAppCamaraPacatuba/BluAppCamaraPacatuba-Bridging-Header.h"; sourceTree = "<group>"; };
-		F52C9A3116934AD36027DB8F /* Pods-BluAppCamaraPacatuba.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BluAppCamaraPacatuba.debug.xcconfig"; path = "Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,14 +37,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2BAB5FAA5378639960E6FAF2 /* libPods-BluAppCamaraPacatuba.a in Frameworks */,
+				C5057E2C346269602A087410 /* libPods-BluAppCamaraPacatuba.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* CM Pacatuba */ = {
+		13B07FAE1A68108700A75B9A /* BluAppCamaraPacatuba */ = {
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
@@ -53,15 +53,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				5B25F517CAA2E10979A1D943 /* PrivacyInfo.xcprivacy */,
-			);
-			name = "CM Pacatuba";
-			sourceTree = "<group>";
-		};
-		17E2707C3C0D9A08F18C0ECF /* BluAppCamaraPacatuba */ = {
-			isa = PBXGroup;
-			children = (
-				DCBB8AB8597187585692009F /* ExpoModulesProvider.swift */,
+				4C49321BCBA001703AC5504C /* PrivacyInfo.xcprivacy */,
 			);
 			name = BluAppCamaraPacatuba;
 			sourceTree = "<group>";
@@ -70,24 +62,16 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				539A3BBD5DC8A8A7DE66CCC9 /* libPods-BluAppCamaraPacatuba.a */,
+				ADD7585A240D4CD90EFCA5CF /* libPods-BluAppCamaraPacatuba.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		46A13961C8A6DFB42D3C8693 /* ExpoModulesProviders */ = {
+		46EC2AC89B7B72D320A2434D /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				17E2707C3C0D9A08F18C0ECF /* BluAppCamaraPacatuba */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		7A8797289A70316142F1B2EA /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				F52C9A3116934AD36027DB8F /* Pods-BluAppCamaraPacatuba.debug.xcconfig */,
-				744D727E34A7A958536FFBDF /* Pods-BluAppCamaraPacatuba.release.xcconfig */,
+				A90EA4672656D5556656441D /* Pods-BluAppCamaraPacatuba.debug.xcconfig */,
+				B4DC622BBA1F7C1BCED32258 /* Pods-BluAppCamaraPacatuba.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -102,12 +86,12 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* CM Pacatuba */,
+				13B07FAE1A68108700A75B9A /* BluAppCamaraPacatuba */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				7A8797289A70316142F1B2EA /* Pods */,
-				46A13961C8A6DFB42D3C8693 /* ExpoModulesProviders */,
+				46EC2AC89B7B72D320A2434D /* Pods */,
+				A78D06DD433E9ADEF07A95D9 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -117,9 +101,17 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* BluAppCamaraPacatuba.app */,
+				13B07F961A680F5B00A75B9A /* CM Pacatuba.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A78D06DD433E9ADEF07A95D9 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				D13C22F075993F86F10E3B54 /* BluAppCamaraPacatuba */,
+			);
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -131,6 +123,14 @@
 			path = BluAppCamaraPacatuba/Supporting;
 			sourceTree = "<group>";
 		};
+		D13C22F075993F86F10E3B54 /* BluAppCamaraPacatuba */ = {
+			isa = PBXGroup;
+			children = (
+				6C9FF8C70A164BFB7009D1DA /* ExpoModulesProvider.swift */,
+			);
+			name = BluAppCamaraPacatuba;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -139,13 +139,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BluAppCamaraPacatuba" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				60681065BB54F4B3AEBAF56A /* [Expo] Configure project */,
+				D2422071E113572369F87FB4 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				9C1341A228D1C28C79257CE8 /* [CP] Embed Pods Frameworks */,
+				B3496CB9295A24CF905F53B1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -153,7 +153,7 @@
 			);
 			name = BluAppCamaraPacatuba;
 			productName = BluAppCamaraPacatuba;
-			productReference = 13B07F961A680F5B00A75B9A /* BluAppCamaraPacatuba.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* CM Pacatuba.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -169,7 +169,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CM Pacatuba" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BluAppCamaraPacatuba" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -195,7 +195,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				B0F581BDC307E8A84F579A8C /* PrivacyInfo.xcprivacy in Resources */,
+				AC574F9CC420B378D256564A /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +209,8 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/.xcode.env",
+				"$(SRCROOT)/.xcode.env.local",
 			);
 			name = "Bundle React Native code and images";
 			outputPaths = (
@@ -239,7 +241,57 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		60681065BB54F4B3AEBAF56A /* [Expo] Configure project */ = {
+		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoFileSystem/ExpoFileSystem_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/RNCAsyncStorage/RNCAsyncStorage_resources.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/React-Core_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact/React-cxxreact_privacy.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXConstants.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoConstants_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoFileSystem_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RNCAsyncStorage_resources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-Core_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-cxxreact_privacy.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B3496CB9295A24CF905F53B1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D2422071E113572369F87FB4 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -263,56 +315,6 @@
 			shellPath = /bin/sh;
 			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-BluAppCamaraPacatuba/expo-configure-project.sh\"\n";
 		};
-		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoFileSystem/ExpoFileSystem_privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/RCT-Folly/RCT-Folly_privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/React-Core_privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact/React-cxxreact_privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/boost/boost_privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/glog/glog_privacy.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXConstants.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoConstants_privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoFileSystem_privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCT-Folly_privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-Core_privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-cxxreact_privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/boost_privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/glog_privacy.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9C1341A228D1C28C79257CE8 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -321,7 +323,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				D647DA6919EC9E0DBEA36E09 /* ExpoModulesProvider.swift in Sources */,
+				035A451165C95558AD091986 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,10 +332,9 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F52C9A3116934AD36027DB8F /* Pods-BluAppCamaraPacatuba.debug.xcconfig */;
+			baseConfigurationReference = A90EA4672656D5556656441D /* Pods-BluAppCamaraPacatuba.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BluAppCamaraPacatuba/BluAppCamaraPacatuba.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
@@ -345,7 +346,6 @@
 				);
 				INFOPLIST_FILE = BluAppCamaraPacatuba/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CM Pacatuba";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -359,7 +359,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.leonarrdoribeiro.BluAppCamaraPacatuba;
-				PRODUCT_NAME = BluAppCamaraPacatuba;
+				PRODUCT_NAME = "CM Pacatuba";
 				SWIFT_OBJC_BRIDGING_HEADER = "BluAppCamaraPacatuba/BluAppCamaraPacatuba-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -370,17 +370,15 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 744D727E34A7A958536FFBDF /* Pods-BluAppCamaraPacatuba.release.xcconfig */;
+			baseConfigurationReference = B4DC622BBA1F7C1BCED32258 /* Pods-BluAppCamaraPacatuba.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BluAppCamaraPacatuba/BluAppCamaraPacatuba.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5SWBJP44JN;
 				INFOPLIST_FILE = BluAppCamaraPacatuba/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CM Pacatuba";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -394,7 +392,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.leonarrdoribeiro.BluAppCamaraPacatuba;
-				PRODUCT_NAME = BluAppCamaraPacatuba;
+				PRODUCT_NAME = "CM Pacatuba";
 				SWIFT_OBJC_BRIDGING_HEADER = "BluAppCamaraPacatuba/BluAppCamaraPacatuba-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -457,13 +455,10 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
 				USE_HERMES = true;
 			};
 			name = Debug;
@@ -515,12 +510,9 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
 				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -538,7 +530,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CM Pacatuba" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BluAppCamaraPacatuba" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
