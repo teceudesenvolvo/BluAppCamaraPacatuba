@@ -58,7 +58,6 @@ const ContratacoesScreen = ({ navigation }) => {
         try {
             const modalidadeParam = codModalidade ? `&codigoModalidadeContratacao=${codModalidade}` : '';
             const url = `https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao?dataInicial=${dataInicial}&dataFinal=${dataFinal}&uf=ce&cnpj=${cnpj}${modalidadeParam}&pagina=${pageNumber}&tamanhoPagina=50`;
-            console.log(`Buscando na URL: ${url}`);
             
             const response = await fetch(url);
             

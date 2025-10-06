@@ -2,9 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 
 const notificationsData = [
-    { id: '1', title: 'Nova Denúncia Criada', body: 'Sua denúncia #1234 foi enviada com sucesso.', date: '10 de Set, 2023' },
-    { id: '2', title: 'Atualização da Denúncia', body: 'A denúncia #5678 foi atualizada. Verifique o status.', date: '09 de Set, 2023' },
-    { id: '3', title: 'Mensagem do Administrador', body: 'Olá! Sua denúncia está em análise. Obrigado pela sua contribuição.', date: '08 de Set, 2023' },
+    // { id: '1', title: '', body: '', date: '' },
 ];
 
 const NotificationItem = ({ title, body, date }) => (
@@ -30,6 +28,9 @@ const NotificacoesScreen = () => {
                 )}
                 keyExtractor={item => item.id}
                 contentContainerStyle={styles.listContainer}
+                ListEmptyComponent={
+                    <Text style={styles.emptyText}>Nenhuma notificação a carregar.</Text>
+                }
             />
         </View>
     );
@@ -77,6 +78,12 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#999',
         textAlign: 'right',
+    },
+    emptyText: {
+        textAlign: 'center',
+        color: '#999',
+        fontSize: 14,
+        marginTop: 40,
     },
 });
 

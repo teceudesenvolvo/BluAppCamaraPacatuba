@@ -58,8 +58,7 @@ if (initialAuthToken) {
     // Se n\u00e3o houver token, tentamos o login an\u00f4nimo como backup (Regra de seguran\u00e7a exige um uid)
      const initializeUserAnon = async () => {
         try {
-             await signInAnonymously(AUTH);
-             console.log("Login inicial via an\u00f4nimo OK.");
+             console.log("Não faça login anonimo se o token customizado estiver ausente.");
         } catch (e) {
             console.warn("N\u00e3o foi poss\u00edvel fazer o login an\u00f4nimo. As fun\u00e7\u00f5es do app podem falhar se as regras do Firebase exigirem login.", e);
         }

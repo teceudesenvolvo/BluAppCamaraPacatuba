@@ -17,7 +17,6 @@ const HomeScreen = ({ navigation }) => {
         const fetchNews = async () => {
             try {
                 const response = await fetch('https://www.cmpacatuba.ce.gov.br/dadosabertosexportar?d=noticias&a=&f=json');
-                console.log(response);
                 const dados = await response.json();
                 
                 // --- CORREÇÃO AQUI ---

@@ -61,12 +61,10 @@ const ProfileScreen = ({ navigation }) => {
     // 1. Efeito para buscar dados do perfil em tempo real
     useEffect(() => {
         if (!user || !userRef) {
-            console.log("Usu\u00e1rio n\u00e3o autenticado ou userRef nulo. N\u00e3o \u00e9 poss\u00edvel carregar dados.");
             setIsLoading(false);
             return;
         }
 
-        console.log(`Buscando dados para UID: ${user.uid} no caminho: users/${user.uid}`);
 
         // Listener de dados em tempo real
         const unsubscribe = onValue(userRef, (snapshot) => {

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-// Removendo ScrollView (j\u00e1 removido na vers\u00e3o anterior)
+// Imports React Native
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native'; 
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+// Nota: O caminho da imagem deve ser ajustado para o ambiente de execução
 import Logo from '../assets/logo-pacatuba.png'; 
 
-// Importando AUTH
+// Importando AUTH e o m\u00e9todo de login por email/senha
 import { AUTH } from '../firebaseConfig'; 
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
@@ -16,9 +17,12 @@ const LoginScreen = ({navigation}) => {
     const [error, setError] = useState('');
 
     const onRegister = () => {
-        navigation.navigate('Cadastro');
+        // Simula a navega\u00e7\u00e3o para a tela de Cadastro
+        // navigation.navigate('Cadastro');
+        console.log('Navegar para Cadastro');
     }
 
+    // Apenas login com Email e Senha (signInWithEmailAndPassword)
     const onLogin = async () => {
         if (!email || !password) {
             setError('Por favor, preencha todos os campos.');
@@ -30,16 +34,18 @@ const LoginScreen = ({navigation}) => {
 
         try {
             if (!AUTH) { 
-                console.error("Inst\u00e2ncia de Auth n\u00e3o dispon\u00edvel.");
+                console.error("Inst\u00e2ncia de Auth n\u00e3o dispon\u00edvel. Verifique firebaseConfig.");
                 setError('Erro de inicializa\u00e7\u00e3o. Tente novamente.');
                 setLoading(false);
                 return;
             }
             
+            // Este m\u00e9todo \u00e9 o \u00fanico usado para autentica\u00e7\u00e3o, excluindo o login an\u00f4nimo.
             await signInWithEmailAndPassword(AUTH, email, password);
             
             // Sucesso
             navigation.replace('MainApp') 
+            console.log('Login bem-sucedido! Redirecionando...');
 
         } catch (e) {
             console.error("Erro durante o login:", e.code, e.message);
@@ -84,14 +90,13 @@ const LoginScreen = ({navigation}) => {
                 <KeyboardAvoidingView
                     style={styles.kavContainer}
                     // O keyboardVerticalOffset pode ser usado para ajuste fino, se necess\u00e1rio
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 50} 
                 >
                     {/* Wrapper para o conte\u00fado do formul\u00e1rio (Inputs e Bot\u00f5es) */}
                     <View style={styles.inputContentWrapper}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.label}>Email</Text>
-                            {/* Otimiza\u00e7\u00e3o: Adicionar useNativeDriver={true} aos TextInputs n\u00e3o \u00e9 necess\u00e1rio, 
-                                mas a estrutura \u00e9 o CR\u00cdTICO. */}
                             <TextInput
                                 style={styles.input}
                                 placeholder="email@dominio.com"
@@ -111,6 +116,7 @@ const LoginScreen = ({navigation}) => {
                                 secureTextEntry
                                 value={password}
                                 onChangeText={setPassword}
+                                autoCapitalize="none"
                             />
                         </View>
 
@@ -133,7 +139,7 @@ const LoginScreen = ({navigation}) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.registerBtn} onPress={onRegister}>
-                            <Text style={styles.registerText}>Não possui uma conta? <Text style={styles.registerLink}>Cadastre-se</Text></Text>
+                            <Text style={styles.registerText}>N\u00e3o possui uma conta? <Text style={styles.registerLink}>Cadastre-se</Text></Text>
                         </TouchableOpacity>
                     </View>
                     

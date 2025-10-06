@@ -4,7 +4,7 @@ import { View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import HomeScreen from './screens/Inicio';
-import DenunciasScreen from './screens/Denuncias';
+import AgendamentoScreen from './screens/Agendamento';
 import PerfilScreen from './screens/Perfil';
 import NotificationsScreen from './screens/Notificacoes';
 
@@ -42,7 +42,7 @@ const MainApp = () => {
                         iconName = focused ? 'home' : 'home-outline';
                     } else if (route.name === 'Notificacoes') {
                         iconName = focused ? 'notifications' : 'notifications-outline';
-                    } else if (route.name === 'Denuncias') {
+                    } else if (route.name === 'Agendamento') {
                         iconName = focused ? 'add-circle' : 'add-circle-outline';
                     } else if (route.name === 'Perfil') {
                         iconName = focused ? 'person' : 'person-outline';
@@ -53,7 +53,7 @@ const MainApp = () => {
             })}
         >
             <Tab.Screen name="Inicio" component={HomeScreen} />
-            <Tab.Screen name="Denuncias" component={DenunciasScreen} />
+            <Tab.Screen name="Agendamento" component={AgendamentoScreen} />
             <Tab.Screen name="Notificacoes" component={NotificationsScreen} />
             <Tab.Screen name="Perfil" component={PerfilScreen} />
         </Tab.Navigator>
