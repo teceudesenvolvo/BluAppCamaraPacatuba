@@ -1810,6 +1810,28 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
+  - RNCPicker (2.11.2):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - RNGestureHandler (2.28.0):
     - hermes-engine
     - RCTRequired
@@ -1871,6 +1893,28 @@ PODS:
     - React-NativeModulesApple
     - React-RCTFabric
     - React-RCTImage
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
+  - RNVectorIcons (10.3.0):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
     - React-renderercss
     - React-rendererdebug
     - React-utils
@@ -1962,8 +2006,10 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeDependencies (from `../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 EXTERNAL SOURCES:
@@ -2126,10 +2172,14 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNCPicker:
+    :path: "../node_modules/@react-native-picker/picker"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -2213,10 +2263,12 @@ SPEC CHECKSUMS:
   ReactCommon: 149b6c05126f2e99f2ed0d3c63539369546f8cae
   ReactNativeDependencies: ed6d1e64802b150399f04f1d5728ec16b437251e
   RNCAsyncStorage: 7a5a6094f9f6b9158e72f1855cd86e769413d851
+  RNCPicker: ddce382c4b42ea2ee36dd588066f0c6d5a240707
   RNGestureHandler: 2914750df066d89bf9d8f48a10ad5f0051108ac3
   RNScreens: d8d6f1792f6e7ac12b0190d33d8d390efc0c1845
+  RNVectorIcons: 4351544f100d4f12cac156a7c13399e60bab3e26
   Yoga: 051f086b5ccf465ff2ed38a2cf5a558ae01aaaa1
 
-PODFILE CHECKSUM: 8b9abd33de2bf9769c3a0dea71e447da4e4d5579
+PODFILE CHECKSUM: 65b45012a13d8b69f1962868e592fd4d6b9c55b6
 
 COCOAPODS: 1.16.2

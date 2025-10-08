@@ -4,42 +4,42 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
-// MUDANÇA CRÍTICA: Importa os servi\u00e7os J\u00c1 INICIALIZADOS e est\u00e1veis
-// Certifique-se de que AUTH e DB s\u00e3o exportados com "export { AUTH, DB }" em firebaseService.js
+// MUDANÇA CRÍTICA: Importa os serviços JÁ INICIALIZADOS e estáveis
+// Certifique-se de que AUTH e DB são exportados com "export { AUTH, DB }" em firebaseService.js
 import { AUTH } from './firebaseConfig'; 
 import { onAuthStateChanged } from 'firebase/auth';
 
-// Importa\u00e7\u00e3o dos Componentes de Tela
+// Importação dos Componentes de Tela
 import LoginScreen from './screens/Login';
 import CadastroScreen from './screens/Cadastro';
 import MainApp from './MainApp';
 
-// Telas de Sub-Paginas
+// Telas de Subpáginas
 import VereadoresScreen from './screens/SubPages/Vereadores';
 import ProconScreen from './screens/SubPages/Procon';
 import TvCamaraScreen from './screens/SubPages/TvCamara';
 import LicitacoesScreen from './screens/SubPages/Licitacoes';
 
-// Componente RealizarDenuncia (O nome da vari\u00e1vel de import deve corresponder ao export default)
-import RealizarDenunciaScreen from './screens/RealizarDenuncia'; 
+// Componente RealizarDenuncia (O nome da variável de import deve corresponder ao export default)
+import RealizarDenunciaScreen from './screens/SubPages/RealizarDenuncia'; 
 
 const Stack = createNativeStackNavigator();
 
-// O AppWrapper agora s\u00f3 lida com o estado de autentica\u00e7\u00e3o, n\u00e3o mais com a inicializa\u00e7\u00e3o do Firebase
+// O AppWrapper agora só lida com o estado de autenticação, não mais com a inicialização do Firebase
 const AppWrapper = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null); 
 
   useEffect(() => {
-    // 1. O Listener usa a inst\u00e2ncia AUTH est\u00e1vel importada
+    // 1. O Listener usa a instância AUTH estável importada
     const unsubscribe = onAuthStateChanged(AUTH, (currentUser) => {
-        // Se houver um usu\u00e1rio (e n\u00e3o for an\u00f4nimo, se essa for a regra)
+        // Se houver um usuário (e não for anônimo, se essa for a regra)
         if (currentUser && currentUser.isAnonymous === false) { 
             setUser(currentUser);
-            console.log(`Usu\u00e1rio autenticado: ${currentUser.uid}`);
+            console.log(`Usuário autenticado: ${currentUser.uid}`);
         } else {
              setUser(null); 
-             console.log("Nenhum usu\u00e1rio autenticado via email/senha. Redirecionando para Login.");
+             console.log("Nenhum usuário autenticado via e-mail/senha. Redirecionando para Login.");
         }
         
         setIsLoading(false);
@@ -47,13 +47,13 @@ const AppWrapper = () => {
 
     // Cleanup do listener
     return () => unsubscribe();
-  }, []); // Depend\u00eancia vazia: roda apenas na montagem
+  }, []); // Dependência vazia: roda apenas na montagem
 
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#080A6C" />
-        <Text style={styles.loadingText}>Verificando status de autentica\u00e7\u00e3o...</Text>
+        <Text style={styles.loadingText}>Verificando status de autenticação...</Text>
       </View>
     );
   }
@@ -62,20 +62,20 @@ const AppWrapper = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName={user ? "MainApp" : "Login"}> 
         
-        {/* Telas de Autenticacao */}
+        {/* Telas de Autenticação */}
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Cadastro" component={CadastroScreen} options={{ headerShown: false }} />
         
-        {/* Pagina Principal (com Tabs) */}
+        {/* Página Principal (com Tabs) */}
         <Stack.Screen name="MainApp" component={MainApp} options={{ headerShown: false }} />
 
-        {/* Sub Paginas - Navegacao Secundaria */}
+        {/* Subpáginas - Navegação Secundária */}
         <Stack.Screen name='Vereadores' component={VereadoresScreen} options={{headerShown: false}}/>
-        <Stack.Screen name='TvCamara' component={TvCamaraScreen} options={{headerShown: false}}/>
         <Stack.Screen name='Procon' component={ProconScreen} options={{headerShown: false}}/>
+        <Stack.Screen name='TvCamara' component={TvCamaraScreen} options={{headerShown: false}}/>
         <Stack.Screen name='Licitacoes' component={LicitacoesScreen} options={{headerShown: false}}/>
 
-        {/* TELA DE DEN\u00daNCIA */}
+        {/* TELA DE DENÚNCIA */}
         <Stack.Screen name='RealizarDenuncia' component={RealizarDenunciaScreen} options={{headerShown: false}}/>
 
       </Stack.Navigator>

@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 // Nota: O caminho da imagem deve ser ajustado para o ambiente de execução
 import Logo from '../assets/logo-pacatuba.png'; 
 
-// Importando AUTH e o m\u00e9todo de login por email/senha
+// Importando AUTH e o método de login por email/senha
 import { AUTH } from '../firebaseConfig'; 
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
@@ -17,7 +17,7 @@ const LoginScreen = ({navigation}) => {
     const [error, setError] = useState('');
 
     const onRegister = () => {
-        // Simula a navega\u00e7\u00e3o para a tela de Cadastro
+        // Simula a navegação para a tela de Cadastro
         // navigation.navigate('Cadastro');
         console.log('Navegar para Cadastro');
     }
@@ -34,13 +34,13 @@ const LoginScreen = ({navigation}) => {
 
         try {
             if (!AUTH) { 
-                console.error("Inst\u00e2ncia de Auth n\u00e3o dispon\u00edvel. Verifique firebaseConfig.");
-                setError('Erro de inicializa\u00e7\u00e3o. Tente novamente.');
+                console.error("Instância de Auth não disponível. Verifique firebaseConfig.");
+                setError('Erro de inicialização. Tente novamente.');
                 setLoading(false);
                 return;
             }
             
-            // Este m\u00e9todo \u00e9 o \u00fanico usado para autentica\u00e7\u00e3o, excluindo o login an\u00f4nimo.
+            // Este método é o único usado para autenticação, excluindo o login anônimo.
             await signInWithEmailAndPassword(AUTH, email, password);
             
             // Sucesso
@@ -52,15 +52,15 @@ const LoginScreen = ({navigation}) => {
             
             switch (e.code) {
                 case 'auth/invalid-email':
-                    setError('O formato do email \u00e9 inv\u00e1lido.');
+                    setError('O formato do e-mail é inválido.');
                     break;
                 case 'auth/user-disabled':
-                    setError('Este usu\u00e1rio foi desabilitado.');
+                    setError('Este usuário foi desabilitado.');
                     break;
                 case 'auth/user-not-found':
                 case 'auth/wrong-password':
                 case 'auth/invalid-credential': 
-                    setError('Email ou senha incorretos.');
+                    setError('E-mail ou senha incorretos.');
                     break;
                 default:
                     setError('Ocorreu um erro no login. Verifique suas credenciais.');
@@ -89,14 +89,14 @@ const LoginScreen = ({navigation}) => {
                 {/* 2. KEYBOARD AVOIDING VIEW (BRANCO) - Com flex: 1 para redimensionamento suave */}
                 <KeyboardAvoidingView
                     style={styles.kavContainer}
-                    // O keyboardVerticalOffset pode ser usado para ajuste fino, se necess\u00e1rio
+                    // O keyboardVerticalOffset pode ser usado para ajuste fino, se necessário
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 50} 
                 >
-                    {/* Wrapper para o conte\u00fado do formul\u00e1rio (Inputs e Bot\u00f5es) */}
+                    {/* Wrapper para o conteúdo do formulário (Inputs e Botões) */}
                     <View style={styles.inputContentWrapper}>
                         <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Email</Text>
+                            <Text style={styles.label}>E-mail</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder="email@dominio.com"
@@ -111,7 +111,7 @@ const LoginScreen = ({navigation}) => {
                             <Text style={styles.label}>Senha</Text>
                             <TextInput
                                 style={styles.input}
-                                placeholder="*****"
+                                placeholder="Senha"
                                 placeholderTextColor="#ccc"
                                 secureTextEntry
                                 value={password}
@@ -139,11 +139,11 @@ const LoginScreen = ({navigation}) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.registerBtn} onPress={onRegister}>
-                            <Text style={styles.registerText}>N\u00e3o possui uma conta? <Text style={styles.registerLink}>Cadastre-se</Text></Text>
+                            <Text style={styles.registerText}>Não possui uma conta? <Text style={styles.registerLink}>Cadastre-se</Text></Text>
                         </TouchableOpacity>
                     </View>
                     
-                    {/* Rodap\u00e9 fixo no final do KAV */}
+                    {/* Rodapé fixo no final do KAV */}
                     <View style={styles.footer}>
                         <Text style={styles.footerTxt}>Desenvolvido por Blu Tecnologias</Text>
                     </View>
@@ -163,9 +163,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
     },
-    // *** OTIMIZA\u00c7\u00c3O CR\u00cdTICA: TOP CONTAINER COM ALTURA FIXA ***
+    // *** OTIMIZAÇÃO CRÍTICA: TOP CONTAINER COM ALTURA FIXA ***
     topContainer: {
-        height: 220, // Altura fixa para evitar rec\u00e1lculo de flex
+        height: 220, // Altura fixa para evitar recálculo de flex
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
         height: 150,
         marginTop: 40,
     },
-    // *** OTIMIZA\u00c7\u00c3O CR\u00cdTICA: KAV CONTAINER COM FLEX: 1 E BG BRANCO ***
+    // *** OTIMIZAÇÃO CRÍTICA: KAV CONTAINER COM FLEX: 1 E BG BRANCO ***
     kavContainer: {
         flex: 1, // Permite que o KAV se redimensione rapidamente
         width: '100%',
@@ -184,14 +184,14 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 50,
         borderTopRightRadius: 50,
         marginTop: 60, 
-        // Alinhamento do conte\u00fado centralizado
+        // Alinhamento do conteúdo centralizado
         alignItems: 'center', 
     },
     inputContentWrapper: {
         width: '100%',
         paddingHorizontal: 30,
         paddingTop: 40,
-        // Usamos marginBottom para empurrar o footer para baixo caso haja espa\u00e7o
+        // Usamos marginBottom para empurrar o footer para baixo caso haja espaço
         marginBottom: 40, 
     },
     inputGroup: {

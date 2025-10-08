@@ -12,7 +12,7 @@ const ProconScreen = ({navigation}) => {
 
     const handleCreateComplaint = () => {
         // Lógica para criar uma nova reclamação
-        console.log('Criar Reclamação');
+        navigation.navigate('RealizarDenuncia');
     };
 
     return (

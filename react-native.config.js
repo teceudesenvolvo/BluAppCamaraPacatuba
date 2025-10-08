@@ -1,10 +1,17 @@
+/**
+ * Arquivo de configuração para o React Native CLI.
+ * Corrigido para remover a chave 'project' dentro de 'project.ios', que causa o erro de validação.
+ * A CLI agora descobrirá o caminho do projeto iOS automaticamente.
+ */
 module.exports = {
+  // Define os assets do projeto para o empacotador
+  assets: ['./assets/fonts/'],
+
   // Define a raiz dos projetos nativos
   project: {
     ios: {
-      // O diretório padrão do projeto iOS é 'ios'
-      project: './ios/bluAppCamaraPacatuba.xcodeproj',
-      // Define explicitamente para evitar o erro de 'null'
+      // A chave 'project' foi removida para corrigir o erro de validação.
+      // A CLI usará automaticamente 'ios/bluAppCamaraPacatuba.xcodeproj'.
       automaticPodsInstallation: false,
     },
     android: {
@@ -12,6 +19,4 @@ module.exports = {
       sourceDir: './android'
     },
   },
-  // Define os assets do projeto para o empacotador
-  assets: ['./assets/fonts/'],
 };

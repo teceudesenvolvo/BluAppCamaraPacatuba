@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		035A451165C95558AD091986 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9FF8C70A164BFB7009D1DA /* ExpoModulesProvider.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
+		6ADC8F4B3CBD21CE4FFED52E /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145A98AC408A80D01E58312A /* ExpoModulesProvider.swift */; };
+		A1E22AE003E3A31E497D9C5B /* libPods-CM Pacatuba.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B2CFF8F396BC68A26F48FF15 /* libPods-CM Pacatuba.a */; };
 		AC574F9CC420B378D256564A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4C49321BCBA001703AC5504C /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		C5057E2C346269602A087410 /* libPods-BluAppCamaraPacatuba.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADD7585A240D4CD90EFCA5CF /* libPods-BluAppCamaraPacatuba.a */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -20,11 +20,13 @@
 		13B07F961A680F5B00A75B9A /* CM Pacatuba.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CM Pacatuba.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = BluAppCamaraPacatuba/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = BluAppCamaraPacatuba/Info.plist; sourceTree = "<group>"; };
+		145A98AC408A80D01E58312A /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-CM Pacatuba/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		36C4F254A3FB2E88FC86387D /* Pods-CM Pacatuba.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CM Pacatuba.debug.xcconfig"; path = "Target Support Files/Pods-CM Pacatuba/Pods-CM Pacatuba.debug.xcconfig"; sourceTree = "<group>"; };
 		4C49321BCBA001703AC5504C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = BluAppCamaraPacatuba/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		6C9FF8C70A164BFB7009D1DA /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-BluAppCamaraPacatuba/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		6C3C366D286503AF33E15F8C /* Pods-CM Pacatuba.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CM Pacatuba.release.xcconfig"; path = "Target Support Files/Pods-CM Pacatuba/Pods-CM Pacatuba.release.xcconfig"; sourceTree = "<group>"; };
 		A90EA4672656D5556656441D /* Pods-BluAppCamaraPacatuba.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BluAppCamaraPacatuba.debug.xcconfig"; path = "Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba.debug.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = BluAppCamaraPacatuba/SplashScreen.storyboard; sourceTree = "<group>"; };
-		ADD7585A240D4CD90EFCA5CF /* libPods-BluAppCamaraPacatuba.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BluAppCamaraPacatuba.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2CFF8F396BC68A26F48FF15 /* libPods-CM Pacatuba.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CM Pacatuba.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4DC622BBA1F7C1BCED32258 /* Pods-BluAppCamaraPacatuba.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BluAppCamaraPacatuba.release.xcconfig"; path = "Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba.release.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -37,7 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C5057E2C346269602A087410 /* libPods-BluAppCamaraPacatuba.a in Frameworks */,
+				A1E22AE003E3A31E497D9C5B /* libPods-CM Pacatuba.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,7 +64,7 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				ADD7585A240D4CD90EFCA5CF /* libPods-BluAppCamaraPacatuba.a */,
+				B2CFF8F396BC68A26F48FF15 /* libPods-CM Pacatuba.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -72,6 +74,8 @@
 			children = (
 				A90EA4672656D5556656441D /* Pods-BluAppCamaraPacatuba.debug.xcconfig */,
 				B4DC622BBA1F7C1BCED32258 /* Pods-BluAppCamaraPacatuba.release.xcconfig */,
+				36C4F254A3FB2E88FC86387D /* Pods-CM Pacatuba.debug.xcconfig */,
+				6C3C366D286503AF33E15F8C /* Pods-CM Pacatuba.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -109,7 +113,7 @@
 		A78D06DD433E9ADEF07A95D9 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				D13C22F075993F86F10E3B54 /* BluAppCamaraPacatuba */,
+				F3033F849F490A8614BA73B0 /* CM Pacatuba */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -123,12 +127,12 @@
 			path = BluAppCamaraPacatuba/Supporting;
 			sourceTree = "<group>";
 		};
-		D13C22F075993F86F10E3B54 /* BluAppCamaraPacatuba */ = {
+		F3033F849F490A8614BA73B0 /* CM Pacatuba */ = {
 			isa = PBXGroup;
 			children = (
-				6C9FF8C70A164BFB7009D1DA /* ExpoModulesProvider.swift */,
+				145A98AC408A80D01E58312A /* ExpoModulesProvider.swift */,
 			);
-			name = BluAppCamaraPacatuba;
+			name = "CM Pacatuba";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -234,7 +238,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BluAppCamaraPacatuba-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-CM Pacatuba-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -247,11 +251,30 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-CM Pacatuba/Pods-CM Pacatuba-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoFileSystem/ExpoFileSystem_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNCAsyncStorage/RNCAsyncStorage_resources.bundle",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome6_Brands.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome6_Regular.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome6_Solid.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/React-Core_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact/React-cxxreact_privacy.bundle",
 			);
@@ -261,12 +284,31 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoConstants_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoFileSystem_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RNCAsyncStorage_resources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome6_Brands.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome6_Regular.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome6_Solid.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-Core_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-cxxreact_privacy.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CM Pacatuba/Pods-CM Pacatuba-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B3496CB9295A24CF905F53B1 /* [CP] Embed Pods Frameworks */ = {
@@ -275,7 +317,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-CM Pacatuba/Pods-CM Pacatuba-frameworks.sh",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
@@ -288,7 +330,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BluAppCamaraPacatuba/Pods-BluAppCamaraPacatuba-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CM Pacatuba/Pods-CM Pacatuba-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D2422071E113572369F87FB4 /* [Expo] Configure project */ = {
@@ -303,17 +345,17 @@
 				"$(SRCROOT)/.xcode.env",
 				"$(SRCROOT)/.xcode.env.local",
 				"$(SRCROOT)/BluAppCamaraPacatuba/BluAppCamaraPacatuba.entitlements",
-				"$(SRCROOT)/Pods/Target Support Files/Pods-BluAppCamaraPacatuba/expo-configure-project.sh",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-CM Pacatuba/expo-configure-project.sh",
 			);
 			name = "[Expo] Configure project";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(SRCROOT)/Pods/Target Support Files/Pods-BluAppCamaraPacatuba/ExpoModulesProvider.swift",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-CM Pacatuba/ExpoModulesProvider.swift",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-BluAppCamaraPacatuba/expo-configure-project.sh\"\n";
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-CM\\ Pacatuba/expo-configure-project.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -323,7 +365,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				035A451165C95558AD091986 /* ExpoModulesProvider.swift in Sources */,
+				6ADC8F4B3CBD21CE4FFED52E /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,7 +374,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A90EA4672656D5556656441D /* Pods-BluAppCamaraPacatuba.debug.xcconfig */;
+			baseConfigurationReference = 36C4F254A3FB2E88FC86387D /* Pods-CM Pacatuba.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -371,7 +413,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B4DC622BBA1F7C1BCED32258 /* Pods-BluAppCamaraPacatuba.release.xcconfig */;
+			baseConfigurationReference = 6C3C366D286503AF33E15F8C /* Pods-CM Pacatuba.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
