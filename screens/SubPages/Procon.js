@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { DB, AUTH } from '../../firebaseConfig';
+import { ref, onValue } from 'firebase/database';
 
 // Dados de exemplo (mock) para simular as reclamações
 const mockReclamacoes = [
@@ -8,7 +10,26 @@ const mockReclamacoes = [
 ];
 
 const ProconScreen = ({navigation}) => {
-    const [reclamacoes, setReclamacoes] = useState(mockReclamacoes);
+    const [reclamacoes, setReclamacoes] = useState([]);
+
+    useEffect(() => {
+        const user = AUTH.currentUser;
+        if (!user) return;
+        const denunciasRef = ref(DB, 'denuncias-procon');
+        const unsubscribe = onValue(denunciasRef, (snapshot) => {
+            const data = snapshot.val();
+            if (!data) {
+                setReclamacoes([]);
+                return;
+            }
+            // Filtra apenas as denúncias do usuário logado
+            const userDenuncias = Object.entries(data)
+                .map(([id, value]) => ({ id, ...value }))
+                .filter(d => d.userId === user.uid && d.userEmail === user.email);
+            setReclamacoes(userDenuncias);
+        });
+        return () => unsubscribe();
+    }, []);
 
     const handleCreateComplaint = () => {
         // Lógica para criar uma nova reclamação
@@ -29,10 +50,12 @@ const ProconScreen = ({navigation}) => {
                 {reclamacoes.map(reclamacao => (
                     <View key={reclamacao.id} style={styles.reclamacaoCard}>
                         <View style={styles.cardHeader}>
+                        <Text style={styles.cardDescricao}>{reclamacao.assuntoDenuncia || '-'}</Text>
                             <Text style={styles.cardProtocolo}>Protocolo: {reclamacao.protocolo}</Text>
-                            <Text style={styles.cardServico}>{reclamacao.servico}</Text>
+                            <Text style={styles.cardServico}>{reclamacao.companyName || '-'}</Text>
+                            <Text style={styles.cardServico}>{reclamacao.detalhesServico || '-'}</Text>
+
                         </View>
-                        <Text style={styles.cardDescricao}>{reclamacao.descricao}</Text>
                     </View>
                 ))}
             </ScrollView>

@@ -6,9 +6,10 @@ import {
   Dimensions, Platform
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import * as ImagePicker from 'expo-image-picker';
 import { addDoc, collection } from 'firebase/firestore';
 import { DB, AUTH } from '../../firebaseConfig';
+import { ref, set } from 'firebase/database';
+import * as ImagePicker from 'expo-image-picker';
 
 
 // --- MÁSCARA DE DATA (DD/MM/AAAA) ---
@@ -195,9 +196,6 @@ const FormField = React.memo(({ label, id, placeholder, multiline = false, type 
 const App = ({ navigation }) => {
   console.log("App: Componente App iniciando renderização.");
 
-  // --- ESTADO PARA CONTROLAR A ETAPA DO FORMULÁRIO ---
-  const [step, setStep] = useState(1);
-
   // --- HANDLER ESTÁVEL PARA MUDANÇAS NO FORMULÁRIO (CHAVE PARA A ESTABILIDADE) ---
   const handleFormChange = useCallback((key, value) => {
     setFormData(prev => ({ ...prev, [key]: value }));
@@ -222,14 +220,7 @@ const App = ({ navigation }) => {
   const [areaAtuacaoOptions, setAreaAtuacaoOptions] = useState([]);
 
   const [openDropdown, setOpenDropdown] = useState(null); // Estado para controlar qual dropdown está aberto
-
-  // --- ESTADO PARA ARMAZENAR OS ARQUIVOS ---
-  const [files, setFiles] = useState({
-    comprovantePagamento: null,
-    notaFiscal: null,
-    contrato: null,
-    reciboPagamento: null,
-  });
+  const [step, setStep] = useState(1);
 
   // Estados do Formulário
   const [formData, setFormData] = useState({
@@ -250,6 +241,14 @@ const App = ({ navigation }) => {
     valorCompra: '',
     descricao: '',
     pedidoConsumidor: '',
+  });
+
+  // Estados para arquivos base64
+  const [files, setFiles] = useState({
+    comprovante: null,
+    notaFiscal: null,
+    contrato: null,
+    recibo: null,
   });
 
   // ---------------------------------------------------
@@ -370,86 +369,66 @@ const App = ({ navigation }) => {
     setIsSearching(false);
   }, [cnpj, isSearching, handleFormChange]);
 
-  // --- FUNÇÃO PARA SELECIONAR ARQUIVOS ---
-  const handleFilePick = async (fileType) => {
-    // 1. Pedir permissão
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permissão necessária', 'Precisamos de acesso à sua galeria para anexar arquivos.');
-      return;
-    }
-
-    // 2. Abrir o seletor de imagens
+  const pickFile = async (field) => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.5, // Reduz a qualidade para diminuir o tamanho do base64
-      base64: true, // Pede para o picker já converter para base64
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      base64: true,
+      quality: 0.7,
     });
-
-    if (!result.canceled) {
-      const fileInfo = {
-        uri: result.assets[0].uri,
-        name: result.assets[0].uri.split('/').pop(), // Pega o nome do arquivo da URI
-        base64: result.assets[0].base64,
-      };
-      setFiles(prev => ({ ...prev, [fileType]: fileInfo }));
+    if (!result.canceled && result.assets && result.assets[0].base64) {
+      setFiles(prev => ({ ...prev, [field]: result.assets[0].base64 }));
     }
   };
 
   const handleFormSubmit = async () => {
+    if (step === 1) {
+      if (!isCNPJValid || !companyName) {
+        Alert.alert('Erro de Preenchimento', 'Preencha e valide o CNPJ e o Nome da Empresa Reclamada.');
+        return;
+      }
+      setStep(2); // Avança para a etapa 2 sem alert
+      return;
+    }
+    // Etapa 2: envio para o Realtime Database
     const user = AUTH.currentUser;
     if (!user) {
       Alert.alert('Erro de Autenticação', 'Você precisa estar logado para enviar uma denúncia.');
       return;
     }
-
     setIsSubmitting(true);
-
     try {
-      // Prepara os arquivos para envio (apenas o base64)
-      const filesBase64 = {
-        comprovantePagamento: files.comprovantePagamento?.base64 || null,
-        notaFiscal: files.notaFiscal?.base64 || null,
-        contrato: files.contrato?.base64 || null,
-        reciboPagamento: files.reciboPagamento?.base64 || null,
-      };
-
+      // Gera um número de protocolo aleatório de 8 dígitos
+      const protocolo = Math.floor(10000000 + Math.random() * 90000000).toString();
       const denunciaData = {
         ...formData,
         cnpj,
         companyName,
         userId: user.uid,
         userEmail: user.email,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         status: 'aberta',
-        anexos: filesBase64, // Salva os anexos em base64
+        protocolo,
+        arquivos: {
+          comprovante: files.comprovante || '',
+          notaFiscal: files.notaFiscal || '',
+          contrato: files.contrato || '',
+          recibo: files.recibo || '',
+        },
       };
-
-      const docRef = await addDoc(collection(DB, "denuncias-procon"), denunciaData);
-
+      // Salva no Realtime Database
+      const denunciaRef = ref(DB, `denuncias-procon/${user.uid}_${Date.now()}`);
+      await set(denunciaRef, denunciaData);
       Alert.alert(
         'Denúncia Enviada',
-        'Sua denúncia foi registrada com sucesso!',
-        [{ text: 'OK', onPress: () => navigation.goBack() }]
+        `Sua denúncia foi registrada com sucesso!\nProtocolo: ${protocolo}`,
+        [{ text: 'OK', onPress: () => navigation.replace('Procon') }]
       );
-      console.log("Document written with ID: ", docRef.id);
-
     } catch (e) {
-      console.error("Error adding document: ", e);
+      console.error("Erro ao enviar denúncia:", e);
       Alert.alert('Erro ao Enviar', 'Ocorreu um erro ao registrar sua denúncia. Tente novamente.');
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const goToNextStep = () => {
-    if (!isCNPJValid || !companyName) {
-      Alert.alert('Erro de Preenchimento', 'Preencha e valide o CNPJ e o Nome da Empresa Reclamada antes de prosseguir.');
-      return;
-    }
-    setStep(2);
   };
 
 
@@ -481,35 +460,10 @@ const App = ({ navigation }) => {
 
   const messageStyle = calculateMessageStyle(cnpjMessage);
 
-  // --- COMPONENTE PARA CADA ITEM DE UPLOAD ---
-  const FileUploadItem = ({ label, fileType }) => (
-    <View style={styles.uploadItemContainer}>
-      <Text style={styles.uploadLabel}>{label}</Text>
-      <TouchableOpacity
-        style={styles.uploadButton}
-        onPress={() => handleFilePick(fileType)}
-      >
-        <Icon name="attach-file" size={20} color="#080A6C" />
-        <Text style={styles.uploadButtonText}>
-          {files[fileType] ? 'Alterar' : 'Selecionar'}
-        </Text>
-      </TouchableOpacity>
-      {files[fileType] && (
-        <View style={styles.filePreview}>
-          <Icon name="check-circle" size={16} color="#10B981" />
-          <Text style={styles.fileName} numberOfLines={1}>
-            {files[fileType].name}
-          </Text>
-        </View>
-      )}
-    </View>
-  );
-
-
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
-      {/* BOTÃO DE VOLTAR (Volta uma etapa ou sai da tela) */}
-      <TouchableOpacity style={styles.backButton} onPress={step === 2 ? () => setStep(1) : goBack}>
+      {/* BOTÃO DE VOLTAR */}
+      <TouchableOpacity style={styles.backButton} onPress={goBack}>
         <Icon name="arrow-back" size={24} color="#000" />
       </TouchableOpacity>
       {/* HEADER: Título e Steps */}
@@ -519,12 +473,12 @@ const App = ({ navigation }) => {
           {/* Steps Indicator */}
           <View style={styles.stepsContainer}>
             <View style={styles.stepItem}>
-              <Text style={step === 1 ? styles.stepTextActive : styles.stepTextInactive}>1. Detalhes</Text>
+              <Text style={step === 1 ? styles.stepTextActive : styles.stepTextInactive}>1. Detalhes da Reclamação</Text>
               <View style={step === 1 ? styles.stepLineActive : styles.stepLineInactive} />
             </View>
             <View style={styles.stepSeparator} />
             <View style={styles.stepItem}>
-              <Text style={step === 2 ? styles.stepTextActive : styles.stepTextInactive}>2. Anexos</Text>
+              <Text style={step === 2 ? styles.stepTextActive : styles.stepTextInactive}>2. Anexos e Envio</Text>
               <View style={step === 2 ? styles.stepLineActive : styles.stepLineInactive} />
             </View>
           </View>
@@ -533,7 +487,7 @@ const App = ({ navigation }) => {
 
       {/* CONTEÚDO PRINCIPAL - CARD */}
       <View style={styles.card}>
-        {step === 1 && (
+        {step === 1 ? (
           <>
             <Text style={styles.sectionTitle}>Informações da Empresa Reclamada</Text>
 
@@ -553,6 +507,7 @@ const App = ({ navigation }) => {
                 <TouchableOpacity
                   style={[
                     styles.searchButton,
+                    // Cor do botão de busca (ACCENT_YELLOW) substituída por '#FCD34D'
                     (!isCNPJValid || isSearching) && styles.searchButtonDisabled
                   ]}
                   onPress={searchCNPJ}
@@ -560,6 +515,7 @@ const App = ({ navigation }) => {
                   activeOpacity={0.7}
                 >
                   {isSearching ? (
+                    // Cor do ActivityIndicator (PRIMARY_BLUE) substituída por '#080A6C'
                     <ActivityIndicator size="small" color={'#080A6C'} />
                   ) : (
                     <Text style={styles.searchButtonText}>Buscar</Text>
@@ -756,28 +712,25 @@ const App = ({ navigation }) => {
 
             {/* BOTÃO PRÓXIMA ETAPA */}
             <TouchableOpacity
-              style={styles.nextButton}
-              onPress={goToNextStep}
+              style={[styles.nextButton, isSubmitting && styles.nextButtonDisabled]}
+              onPress={handleFormSubmit}
+              disabled={isSubmitting}
               activeOpacity={0.9}
             >
-              <Text style={styles.nextButtonText}>Próxima Etapa</Text>
+              {isSubmitting ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.nextButtonText}>Próxima Etapa</Text>
+              )}
             </TouchableOpacity>
           </>
-        )}
-
-        {step === 2 && (
+        ) : (
           <>
             <Text style={styles.sectionTitle}>Anexar Documentos</Text>
-            <Text style={styles.sectionSubtitle}>
-              Anexe os documentos relevantes para a sua denúncia. Os arquivos serão enviados de forma segura.
-            </Text>
-
-            <FileUploadItem label="Comprovante de Pagamento" fileType="comprovantePagamento" />
-            <FileUploadItem label="Nota Fiscal" fileType="notaFiscal" />
-            <FileUploadItem label="Contrato" fileType="contrato" />
-            <FileUploadItem label="Recibo de Pagamento" fileType="reciboPagamento" />
-
-            {/* BOTÃO ENVIAR DENÚNCIA */}
+            <UploadField label="Comprovante de Pagamento" field="comprovante" files={files} pickFile={pickFile} />
+            <UploadField label="Nota Fiscal" field="notaFiscal" files={files} pickFile={pickFile} />
+            <UploadField label="Contrato" field="contrato" files={files} pickFile={pickFile} />
+            <UploadField label="Recibo de Pagamento" field="recibo" files={files} pickFile={pickFile} />
             <TouchableOpacity
               style={[styles.nextButton, isSubmitting && styles.nextButtonDisabled]}
               onPress={handleFormSubmit}
@@ -902,12 +855,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     paddingBottom: 8,
-  },
-  sectionSubtitle: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginBottom: 24,
-    lineHeight: 20,
   },
   label: {
     fontSize: 12,
@@ -1080,49 +1027,32 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  // --- ESTILOS PARA UPLOAD ---
-  uploadItemContainer: {
-    backgroundColor: '#F9FAFB',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
-  uploadLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: 12,
-  },
-  uploadButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#E0E7FF',
-    paddingVertical: 10,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#C7D2FE',
-  },
-  uploadButtonText: {
-    color: '#080A6C',
-    fontWeight: 'bold',
-    marginLeft: 8,
-  },
-  filePreview: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 12,
-    backgroundColor: '#EDFDF2',
-    padding: 8,
-    borderRadius: 6,
-  },
-  fileName: {
-    marginLeft: 8,
-    color: '#065F46',
-    flexShrink: 1,
-  },
 });
+
+// Componente auxiliar para upload de arquivos
+const UploadField = ({ label, field, files, pickFile }) => (
+  <View style={{ marginBottom: 20 }}>
+    <Text style={styles.label}>{label}</Text>
+    <TouchableOpacity
+      style={{
+        backgroundColor: files[field] ? '#10B981' : '#F3F4F6',
+        borderRadius: 8,
+        padding: 14,
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#D1D5DB',
+      }}
+      onPress={() => pickFile(field)}
+      activeOpacity={0.8}
+    >
+      <Text style={{ color: files[field] ? '#fff' : '#374151', fontWeight: 'bold' }}>
+        {files[field] ? 'Arquivo Selecionado' : 'Selecionar Arquivo'}
+      </Text>
+    </TouchableOpacity>
+    {files[field] && (
+      <Text style={{ fontSize: 12, color: '#10B981', marginTop: 4 }}>Arquivo pronto para envio</Text>
+    )}
+  </View>
+);
 
 export default App;
