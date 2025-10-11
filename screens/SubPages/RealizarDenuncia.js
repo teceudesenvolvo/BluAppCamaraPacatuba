@@ -1,3 +1,16 @@
+import React, { useState, useCallback } from 'react';
+import {
+  View, Text, TextInput,
+  TouchableOpacity, StyleSheet, ScrollView,
+  ActivityIndicator, Alert,
+  Dimensions, Platform
+} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as ImagePicker from 'expo-image-picker';
+import { addDoc, collection } from 'firebase/firestore';
+import { DB, AUTH } from '../../firebaseConfig';
+
+
 // --- MÁSCARA DE DATA (DD/MM/AAAA) ---
 function applyDateMask(value) {
   if (!value) return '';
@@ -9,30 +22,8 @@ function applyDateMask(value) {
   }
   return clean;
 }
-import React, { useState, useCallback } from 'react';
-import {
-  View, Text, TextInput,
-  TouchableOpacity, StyleSheet, ScrollView,
-  ActivityIndicator, Alert,
-  Dimensions, Platform
-} from 'react-native';
-// IMPORTANTE: VERIFIQUE SE ESTA DEPENDÊNCIA ESTÁ INSTALADA E LINKADA CORRETAMENTE!
-import Icon from 'react-native-vector-icons/MaterialIcons'; 
 
-// --- CONSTANTES DE DADOS (MOCK) ---
-const RECLAMACAO_OPTIONS = ["Problemas com Contrato", "Cobrança Indevida", "Má Qualidade do Serviço", "Atendimento e Suporte"];
-const ASSUNTO_OPTIONS = ["Internet", "Telefonia Móvel", "TV por Assinatura", "Financeiro", "Eletrodomésticos"];
-const RESOLVER_OPTIONS = ["Sim, resolveu parcialmente", "Sim, mas não resolveu", "Não, não procurei"];
-const AQUISICAO_OPTIONS = ["Loja Física", "Telefone", "Internet (E-commerce)", "Representante Autorizado", "Porta a Porta"];
-const CONTRATACAO_OPTIONS = ["Novo Contrato", "Portabilidade", "Renovação", "Alteração de Plano"];
-const DOCUMENTO_OPTIONS = ["Nota Fiscal", "Ordem de Serviço", "Contrato", "Fatura", "Comprovante de Pagamento"];
-const PAGAMENTO_OPTIONS = ["Cartão de Crédito", "Boleto Bancário", "Débito em Conta", "Pix", "Transferência"];
-const PEDIDO_OPTIONS = ["Cancelamento do Contrato", "Ressarcimento de Valor", "Execução do Serviço", "Reparo Técnico", "Outros"];
-
-const { width } = Dimensions.get('window');
-const MAX_WIDTH = 600;
-
-// --- FUNÇÃO DE MÁSCARA ---
+// --- MÁSCARA DE CNPJ ---
 const applyCNPJMask = (value) => {
   if (!value) return value;
   let clean = value.replace(/\D/g, '').substring(0, 14);
@@ -48,14 +39,172 @@ const applyCNPJMask = (value) => {
   return clean;
 };
 
-// --- COMPONENTE PRINCIPAL ---
+// --- CONSTANTES DE DADOS (MOCK) ---
+const RECLAMACAO_OPTIONS = ["Problemas com Contrato", "Cobrança Indevida", "Má Qualidade do Serviço", "Atendimento e Suporte"];
+const ASSUNTO_OPTIONS = ["Internet", "Telefonia Móvel", "TV por Assinatura", "Financeiro", "Eletrodomésticos"];
+const RESOLVER_OPTIONS = ["Sim, resolveu parcialmente", "Sim, mas não resolveu", "Não, não procurei"];
+const AQUISICAO_OPTIONS = ["Loja Física", "Telefone", "Internet (E-commerce)", "Representante Autorizado", "Porta a Porta"];
+const CONTRATACAO_OPTIONS = ["Novo Contrato", "Portabilidade", "Renovação", "Alteração de Plano"];
+const DOCUMENTO_OPTIONS = ["Nota Fiscal", "Ordem de Serviço", "Contrato", "Fatura", "Comprovante de Pagamento"];
+const PAGAMENTO_OPTIONS = ["Cartão de Crédito", "Boleto Bancário", "Débito em Conta", "Pix", "Transferência"];
+const PEDIDO_OPTIONS = ["Cancelamento do Contrato", "Ressarcimento de Valor", "Execução do Serviço", "Reparo Técnico", "Outros"];
+
+const { width } = Dimensions.get('window');
+const MAX_WIDTH = 600;
+
+
+// ---------------------------------------------------
+// COMPONENTE AUXILIAR: DropdownSimulado (Memoizado)
+// ---------------------------------------------------
+const DropdownSimulado = React.memo(({ label, placeholder, options, value, onChange, id, openDropdown, setOpenDropdown }) => {
+  const isOpen = openDropdown === id;
+
+  const handlePress = () => {
+    // Fecha qualquer dropdown aberto ou abre este
+    setOpenDropdown(isOpen ? null : id);
+  };
+
+  const handleSelect = (option) => {
+    // Usa a prop 'onChange' estável para atualizar o estado do formulário pai
+    onChange(id, option);
+    setOpenDropdown(null);
+  };
+
+  return (
+    <View style={[styles.inputGroupDropdown, isOpen && { zIndex: 100 }]}>
+      <Text style={styles.label}>{label}</Text>
+      <TouchableOpacity
+        style={[styles.dropdownContainer, isOpen && styles.dropdownOpen]}
+        onPress={handlePress}
+        activeOpacity={0.8}
+      >
+        <Text style={[styles.dropdownInput, value ? styles.dropdownSelectedText : styles.dropdownPlaceholderText]}>
+          {value || placeholder}
+        </Text>
+        <Icon name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'} size={24} color="#6B7280" />
+      </TouchableOpacity>
+
+      {/* Lista de Opções Condicional */}
+      {isOpen && (
+        <View style={styles.dropdownOptionsList}>
+          <ScrollView style={{ maxHeight: 180 }}>
+            {options.map((opt, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.dropdownOptionItem}
+                onPress={() => handleSelect(opt)}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.dropdownOptionText}>{opt}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
+    </View>
+  );
+});
+
+
+// ---------------------------------------------------
+// COMPONENTE AUXILIAR: FormField (Memoizado e Corrigido contra Recursão)
+// ---------------------------------------------------
+const FormField = React.memo(({ label, id, placeholder, multiline = false, type = 'text', maxLength, value, onChange: propOnChange }) => {
+  let inputProps = {};
+  let displayValue = value;
+  let onBlur = undefined;
+  
+  // Handler padrão: chama a prop estável para atualizar o estado no componente App
+  let onChangeHandler = text => propOnChange(id, text);
+
+  if (type === 'date') {
+    inputProps.placeholder = placeholder || 'DD/MM/AAAA';
+    inputProps.keyboardType = Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'numeric';
+    
+    // Handler para digitar (aplica apenas filtro numérico)
+    onChangeHandler = text => propOnChange(id, text.replace(/\D/g, '').slice(0, 8));
+    
+    // Handler para perder o foco (aplica a máscara completa)
+    onBlur = () => propOnChange(id, applyDateMask(value));
+    
+    maxLength = 10;
+
+  } else if (type === 'number' || id === 'valorCompra') {
+    if (id === 'valorCompra') {
+      
+      // Handler para digitar (corrige a recursão)
+      onChangeHandler = text => {
+        let clean = text.replace(/\D/g, '').slice(0, 8);
+        propOnChange(id, clean); // CORRIGIDO: Chama a prop estável, não a si mesmo.
+      };
+
+      // Handler para perder o foco (aplica a máscara de moeda)
+      onBlur = () => {
+        if (value) {
+          // Garante que 'value' é um número antes de formatar
+          const cleanValue = parseInt(String(value).replace(/\D/g, ''), 10);
+          if (isNaN(cleanValue)) {
+            propOnChange(id, '');
+            return;
+          }
+          const masked = (cleanValue / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+          propOnChange(id, masked);
+        }
+      };
+      
+      // Limpa o valor formatado ao focar para permitir edição
+      inputProps.onFocus = () => {
+         if (typeof value === 'string' && value.includes('R$')) {
+            const clean = String(value).replace(/[^0-9]/g, ''); // Mantém apenas números (ex: 10000 -> 100.00)
+            propOnChange(id, clean.slice(0, 8));
+         }
+      };
+
+      // Quando o valor está mascarado, o 'displayValue' precisa ser o valor do estado.
+      displayValue = value;
+      inputProps.keyboardType = 'numeric';
+      inputProps.placeholder = placeholder || 'R$ 0,00';
+    } else {
+      inputProps.keyboardType = 'numeric';
+    }
+  } 
+  // Se 'type' for 'text' ou outros, usa o 'onChangeHandler' padrão.
+
+  return (
+    <View style={styles.inputGroup}>
+      <Text style={styles.label}>{label}</Text>
+      <TextInput
+        style={multiline ? styles.textarea : styles.input}
+        value={displayValue}
+        onChangeText={onChangeHandler} // Usa o handler correto
+        onBlur={onBlur}
+        multiline={multiline}
+        numberOfLines={multiline ? 5 : 1}
+        textAlignVertical={multiline ? "top" : "center"}
+        maxLength={maxLength}
+        {...inputProps}
+      />
+    </View>
+  );
+});
+
+
+// ---------------------------------------------------
+// COMPONENTE PRINCIPAL
+// ---------------------------------------------------
 const App = ({ navigation }) => {
-  // --- LOG DE INICIALIZAÇÃO ---
-  console.log("App: Componente App iniciando renderização."); 
+  console.log("App: Componente App iniciando renderização.");
+
+  // --- ESTADO PARA CONTROLAR A ETAPA DO FORMULÁRIO ---
+  const [step, setStep] = useState(1);
+
+  // --- HANDLER ESTÁVEL PARA MUDANÇAS NO FORMULÁRIO (CHAVE PARA A ESTABILIDADE) ---
+  const handleFormChange = useCallback((key, value) => {
+    setFormData(prev => ({ ...prev, [key]: value }));
+  }, []); 
 
   // --- ESTADOS ---
 
-  // Mock de navegação (para simular a funcionalidade `goBack` em um ambiente sem `navigation`)
   const goBack = useCallback(() => {
     if (navigation && navigation.goBack) {
       navigation.goBack();
@@ -68,12 +217,19 @@ const App = ({ navigation }) => {
   const [companyName, setCompanyName] = useState('');
   const [isNameEditable, setIsNameEditable] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  // Inicialização do estado de mensagem
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [cnpjMessage, setCnpjMessage] = useState({ text: '', type: 'info' });
   const [areaAtuacaoOptions, setAreaAtuacaoOptions] = useState([]);
 
-  // Estado para controlar qual dropdown está aberto
-  const [openDropdown, setOpenDropdown] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(null); // Estado para controlar qual dropdown está aberto
+
+  // --- ESTADO PARA ARMAZENAR OS ARQUIVOS ---
+  const [files, setFiles] = useState({
+    comprovantePagamento: null,
+    notaFiscal: null,
+    contrato: null,
+    reciboPagamento: null,
+  });
 
   // Estados do Formulário
   const [formData, setFormData] = useState({
@@ -99,8 +255,6 @@ const App = ({ navigation }) => {
   // ---------------------------------------------------
   // MANIPULADORES DE ESTADO E VALIDAÇÃO
   // ---------------------------------------------------
-  
-  // OMITIDO: handleCNPJChange, handleFormChange, isCNPJValid, searchCNPJ, handleFormSubmit
 
   const handleCNPJChange = (text) => {
     const maskedText = applyCNPJMask(text);
@@ -109,10 +263,6 @@ const App = ({ navigation }) => {
     setCnpjMessage({ text: '', type: 'info' });
     setIsNameEditable(false);
   };
-
-  const handleFormChange = (key, value) => {
-    setFormData(prev => ({ ...prev, [key]: value }));
-  }
 
   const isCNPJValid = cnpj.replace(/\D/g, '').length === 14;
 
@@ -124,9 +274,9 @@ const App = ({ navigation }) => {
     setCnpjMessage({ text: 'Buscando informações da empresa...', type: 'info' });
     setCompanyName('');
     setIsNameEditable(false);
-    setAreaAtuacaoOptions([]); 
+    setAreaAtuacaoOptions([]);
 
-    const apiUrl = `https://open.cnpja.com/office/${cleanCNPJ}`; 
+    const apiUrl = `https://open.cnpja.com/office/${cleanCNPJ}`;
     const MAX_RETRIES = 3;
     let attempts = 0;
     let finished = false;
@@ -220,20 +370,91 @@ const App = ({ navigation }) => {
     setIsSearching(false);
   }, [cnpj, isSearching, handleFormChange]);
 
-  const handleFormSubmit = () => {
-    if (!isCNPJValid || !companyName) {
-      // Usando Alert (pop-up nativo) para notificação de erro no RN
-      Alert.alert('Erro de Preenchimento', 'Preencha e valide o CNPJ e o Nome da Empresa Reclamada.');
+  // --- FUNÇÃO PARA SELECIONAR ARQUIVOS ---
+  const handleFilePick = async (fileType) => {
+    // 1. Pedir permissão
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permissão necessária', 'Precisamos de acesso à sua galeria para anexar arquivos.');
       return;
     }
-    // Lógica para avançar
-    Alert.alert('Formulário Enviado', 'Dados validados! Próxima etapa (2. Acesso e Envio) seria carregada.');
-    console.log('App: Dados do Formulário:', { cnpj, companyName, ...formData });
+
+    // 2. Abrir o seletor de imagens
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.5, // Reduz a qualidade para diminuir o tamanho do base64
+      base64: true, // Pede para o picker já converter para base64
+    });
+
+    if (!result.canceled) {
+      const fileInfo = {
+        uri: result.assets[0].uri,
+        name: result.assets[0].uri.split('/').pop(), // Pega o nome do arquivo da URI
+        base64: result.assets[0].base64,
+      };
+      setFiles(prev => ({ ...prev, [fileType]: fileInfo }));
+    }
+  };
+
+  const handleFormSubmit = async () => {
+    const user = AUTH.currentUser;
+    if (!user) {
+      Alert.alert('Erro de Autenticação', 'Você precisa estar logado para enviar uma denúncia.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Prepara os arquivos para envio (apenas o base64)
+      const filesBase64 = {
+        comprovantePagamento: files.comprovantePagamento?.base64 || null,
+        notaFiscal: files.notaFiscal?.base64 || null,
+        contrato: files.contrato?.base64 || null,
+        reciboPagamento: files.reciboPagamento?.base64 || null,
+      };
+
+      const denunciaData = {
+        ...formData,
+        cnpj,
+        companyName,
+        userId: user.uid,
+        userEmail: user.email,
+        createdAt: new Date(),
+        status: 'aberta',
+        anexos: filesBase64, // Salva os anexos em base64
+      };
+
+      const docRef = await addDoc(collection(DB, "denuncias-procon"), denunciaData);
+
+      Alert.alert(
+        'Denúncia Enviada',
+        'Sua denúncia foi registrada com sucesso!',
+        [{ text: 'OK', onPress: () => navigation.goBack() }]
+      );
+      console.log("Document written with ID: ", docRef.id);
+
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert('Erro ao Enviar', 'Ocorreu um erro ao registrar sua denúncia. Tente novamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const goToNextStep = () => {
+    if (!isCNPJValid || !companyName) {
+      Alert.alert('Erro de Preenchimento', 'Preencha e valide o CNPJ e o Nome da Empresa Reclamada antes de prosseguir.');
+      return;
+    }
+    setStep(2);
   };
 
 
   // ---------------------------------------------------
-  // COMPONENTES DE RENDERIZAÇÃO
+  // RENDERIZAÇÃO
   // ---------------------------------------------------
 
   /**
@@ -258,121 +479,37 @@ const App = ({ navigation }) => {
     }
   };
 
-  // Calcula os estilos na hora da renderização
   const messageStyle = calculateMessageStyle(cnpjMessage);
-  
-  // --- LOG DE RENDERIZAÇÃO ---
-  console.log("App: Estilos da mensagem calculados. Retornando JSX.");
 
-
-  /**
-   * Componente customizado para simular o <select> (dropdown) no React Native
-   */
-  const DropdownSimulado = ({ label, placeholder, options, value, onChange, id }) => {
-    const isOpen = openDropdown === id;
-
-    const handlePress = () => {
-      setOpenDropdown(isOpen ? null : id);
-    };
-
-    const handleSelect = (option) => {
-      onChange(id, option);
-      setOpenDropdown(null);
-    };
-
-    return (
-      // Aumenta o zIndex do container se o dropdown estiver aberto
-      <View style={[styles.inputGroupDropdown, isOpen && { zIndex: 100 }]}>
-        <Text style={styles.label}>{label}</Text>
-        <TouchableOpacity
-          style={[styles.dropdownContainer, isOpen && styles.dropdownOpen]}
-          onPress={handlePress}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.dropdownInput, value ? styles.dropdownSelectedText : styles.dropdownPlaceholderText]}>
-            {value || placeholder}
+  // --- COMPONENTE PARA CADA ITEM DE UPLOAD ---
+  const FileUploadItem = ({ label, fileType }) => (
+    <View style={styles.uploadItemContainer}>
+      <Text style={styles.uploadLabel}>{label}</Text>
+      <TouchableOpacity
+        style={styles.uploadButton}
+        onPress={() => handleFilePick(fileType)}
+      >
+        <Icon name="attach-file" size={20} color="#080A6C" />
+        <Text style={styles.uploadButtonText}>
+          {files[fileType] ? 'Alterar' : 'Selecionar'}
+        </Text>
+      </TouchableOpacity>
+      {files[fileType] && (
+        <View style={styles.filePreview}>
+          <Icon name="check-circle" size={16} color="#10B981" />
+          <Text style={styles.fileName} numberOfLines={1}>
+            {files[fileType].name}
           </Text>
-          <Icon name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'} size={24} color="#6B7280" />
-        </TouchableOpacity>
+        </View>
+      )}
+    </View>
+  );
 
-        {/* Lista de Opções Condicional */}
-        {isOpen && (
-          <View style={styles.dropdownOptionsList}>
-            <ScrollView style={{ maxHeight: 180 }}>
-              {options.map((opt, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.dropdownOptionItem}
-                  onPress={() => handleSelect(opt)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.dropdownOptionText}>{opt}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        )}
-      </View>
-    );
-  };
-
-  /**
-   * Componente de input genérico
-   */
-  const FormField = ({ label, id, placeholder, multiline = false, type = 'text', maxLength }) => {
-    let inputProps = {};
-    let value = formData[id];
-    let onChange = text => handleFormChange(id, text);
-
-    if (type === 'date') {
-      inputProps.placeholder = placeholder || 'DD/MM/AAAA';
-      inputProps.keyboardType = Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'numeric';
-      onChange = text => handleFormChange(id, applyDateMask(text));
-      value = applyDateMask(value);
-      maxLength = 10;
-    } else if (type === 'number' || id === 'valorCompra') {
-      if (id === 'valorCompra') {
-        onChange = text => {
-          let clean = text.replace(/\D/g, '');
-          clean = clean.slice(0, 8);
-          let masked = '';
-          if (clean.length > 0) {
-            let num = parseInt(clean, 10) / 100;
-            // Garante que o valor exibido está sempre mascarado corretamente
-            masked = num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-          }
-          // Armazena a string mascarada no estado
-          handleFormChange(id, masked);
-        };
-      }
-      inputProps.keyboardType = 'numeric';
-      inputProps.placeholder = placeholder || 'R$ 0,00';
-    } else {
-      inputProps.placeholder = placeholder;
-      inputProps.keyboardType = 'default';
-    }
-
-    return (
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>{label}</Text>
-        <TextInput
-          style={multiline ? styles.textarea : styles.input}
-          value={value}
-          onChangeText={onChange}
-          multiline={multiline}
-          numberOfLines={multiline ? 5 : 1}
-          textAlignVertical={multiline ? "top" : "center"}
-          maxLength={maxLength}
-          {...inputProps}
-        />
-      </View>
-    );
-  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
-      {/* BOTÃO DE VOLTAR */}
-      <TouchableOpacity style={styles.backButton} onPress={goBack}>
+      {/* BOTÃO DE VOLTAR (Volta uma etapa ou sai da tela) */}
+      <TouchableOpacity style={styles.backButton} onPress={step === 2 ? () => setStep(1) : goBack}>
         <Icon name="arrow-back" size={24} color="#000" />
       </TouchableOpacity>
       {/* HEADER: Título e Steps */}
@@ -382,13 +519,13 @@ const App = ({ navigation }) => {
           {/* Steps Indicator */}
           <View style={styles.stepsContainer}>
             <View style={styles.stepItem}>
-              <Text style={styles.stepTextActive}>1. Detalhes da Reclamação</Text>
-              <View style={styles.stepLineActive} />
+              <Text style={step === 1 ? styles.stepTextActive : styles.stepTextInactive}>1. Detalhes</Text>
+              <View style={step === 1 ? styles.stepLineActive : styles.stepLineInactive} />
             </View>
             <View style={styles.stepSeparator} />
             <View style={styles.stepItem}>
-              <Text style={styles.stepTextInactive}>2. Acesso e Envio</Text>
-              <View style={styles.stepLineInactive} />
+              <Text style={step === 2 ? styles.stepTextActive : styles.stepTextInactive}>2. Anexos</Text>
+              <View style={step === 2 ? styles.stepLineActive : styles.stepLineInactive} />
             </View>
           </View>
         </View>
@@ -396,208 +533,266 @@ const App = ({ navigation }) => {
 
       {/* CONTEÚDO PRINCIPAL - CARD */}
       <View style={styles.card}>
-        <Text style={styles.sectionTitle}>Informações da Empresa Reclamada</Text>
+        {step === 1 && (
+          <>
+            <Text style={styles.sectionTitle}>Informações da Empresa Reclamada</Text>
 
-        {/* --- SEÇÃO CNPJ E BUSCA --- */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>CNPJ da Empresa Reclamada</Text>
-          <View style={styles.cnpjInputContainer}>
-            <TextInput
-              style={styles.cnpjInput}
-              placeholder="00.000.000/0000-00"
-              maxLength={18}
-              keyboardType='numeric'
-              value={cnpj}
-              onChangeText={handleCNPJChange}
-              editable={!isSearching}
+            {/* --- SEÇÃO CNPJ E BUSCA --- */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>CNPJ da Empresa Reclamada</Text>
+              <View style={styles.cnpjInputContainer}>
+                <TextInput
+                  style={styles.cnpjInput}
+                  placeholder="00.000.000/0000-00"
+                  maxLength={18}
+                  keyboardType='numeric'
+                  value={cnpj}
+                  onChangeText={handleCNPJChange}
+                  editable={!isSearching}
+                />
+                <TouchableOpacity
+                  style={[
+                    styles.searchButton,
+                    (!isCNPJValid || isSearching) && styles.searchButtonDisabled
+                  ]}
+                  onPress={searchCNPJ}
+                  disabled={!isCNPJValid || isSearching}
+                  activeOpacity={0.7}
+                >
+                  {isSearching ? (
+                    <ActivityIndicator size="small" color={'#080A6C'} />
+                  ) : (
+                    <Text style={styles.searchButtonText}>Buscar</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Renderiza a mensagem de forma segura com o objeto de estilo garantido */}
+            {cnpjMessage.text ? (
+              <View style={messageStyle.container}>
+                <Text style={styles.messageText}>
+                  {messageStyle.icon} {cnpjMessage.text}
+                </Text>
+              </View>
+            ) : null}
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Nome da Empresa Reclamada</Text>
+              <TextInput
+                style={[styles.input, !isNameEditable && styles.inputDisabled]}
+                placeholder="Razão Social Empresa"
+                value={companyName}
+                onChangeText={setCompanyName}
+                editable={isNameEditable}
+              />
+            </View>
+
+            <View style={styles.divider} />
+
+            <Text style={styles.sectionTitle}>Detalhes da Ocorrência</Text>
+
+            {/* --- CAMPOS DE FORMULÁRIO (Componentes de entrada estáveis) --- */}
+
+            <DropdownSimulado
+              label="Atividade Exercida"
+              id="areaAtuacao"
+              placeholder="Selecione..."
+              options={areaAtuacaoOptions.length > 0 ? areaAtuacaoOptions : [formData.areaAtuacao].filter(Boolean)}
+              value={formData.areaAtuacao}
+              onChange={handleFormChange}
+              openDropdown={openDropdown}
+              setOpenDropdown={setOpenDropdown}
             />
+
+            <DropdownSimulado
+              label="Tipo de Reclamação"
+              id="tipoReclamacao"
+              placeholder="Selecione..."
+              options={RECLAMACAO_OPTIONS}
+              value={formData.tipoReclamacao}
+              onChange={handleFormChange}
+              openDropdown={openDropdown}
+              setOpenDropdown={setOpenDropdown}
+            />
+
+            <DropdownSimulado
+              label="Assunto da Denúncia"
+              id="assuntoDenuncia"
+              placeholder="Selecione..."
+              options={ASSUNTO_OPTIONS}
+              value={formData.assuntoDenuncia}
+              onChange={handleFormChange}
+              openDropdown={openDropdown}
+              setOpenDropdown={setOpenDropdown}
+            />
+
+            <DropdownSimulado
+              label="Procurou o fornecedor?"
+              id="fornecedorResolver"
+              placeholder="Selecione..."
+              options={RESOLVER_OPTIONS}
+              value={formData.fornecedorResolver}
+              onChange={handleFormChange}
+              openDropdown={openDropdown}
+              setOpenDropdown={setOpenDropdown}
+            />
+
+            <DropdownSimulado
+              label="Forma de Aquisição"
+              id="formaAquisicao"
+              placeholder="Selecione..."
+              options={AQUISICAO_OPTIONS}
+              value={formData.formaAquisicao}
+              onChange={handleFormChange}
+              openDropdown={openDropdown}
+              setOpenDropdown={setOpenDropdown}
+            />
+
+            <DropdownSimulado
+              label="Tipo de Contratação"
+              id="tipoContratacao"
+              placeholder="Selecione..."
+              options={CONTRATACAO_OPTIONS}
+              value={formData.tipoContratacao}
+              onChange={handleFormChange}
+              openDropdown={openDropdown}
+              setOpenDropdown={setOpenDropdown}
+            />
+
+            <FormField
+              label="Data da Contratação"
+              id="dataContratacao"
+              type="date"
+              value={formData.dataContratacao}
+              onChange={handleFormChange}
+            />
+            <FormField
+              label="Data da Ocorrência"
+              id="dataOcorrencia"
+              type="date"
+              value={formData.dataOcorrencia}
+              onChange={handleFormChange}
+            />
+            <FormField
+              label="Data do Cancelamento"
+              id="dataCancelamento"
+              type="date"
+              value={formData.dataCancelamento}
+              onChange={handleFormChange}
+            />
+
+            <FormField
+              label="Nome do Serviço ou Plano"
+              id="nomeServico"
+              placeholder="Ex: Internet Fibra 300MB"
+              value={formData.nomeServico}
+              onChange={handleFormChange}
+            />
+            <FormField
+              label="Detalhes do Serviço ou Plano"
+              id="detalhesServico"
+              placeholder="Número do contrato, conta, etc."
+              value={formData.detalhesServico}
+              onChange={handleFormChange}
+            />
+
+            <DropdownSimulado
+              label="Tipo de Documento"
+              id="tipoDocumento"
+              placeholder="Tipo"
+              options={DOCUMENTO_OPTIONS}
+              value={formData.tipoDocumento}
+              onChange={handleFormChange}
+              openDropdown={openDropdown}
+              setOpenDropdown={setOpenDropdown}
+            />
+            <FormField
+              label="Número do documento"
+              id="numeroDocumento"
+              placeholder="Número"
+              value={formData.numeroDocumento}
+              onChange={handleFormChange}
+            />
+            <FormField
+              label="Valor da Compra (R$)"
+              id="valorCompra"
+              type="number"
+              value={formData.valorCompra}
+              onChange={handleFormChange}
+            />
+
+            <DropdownSimulado
+              label="Forma de Pagamento"
+              id="formaPagamento"
+              placeholder="Selecione..."
+              options={PAGAMENTO_OPTIONS}
+              value={formData.formaPagamento}
+              onChange={handleFormChange}
+              openDropdown={openDropdown}
+              setOpenDropdown={setOpenDropdown}
+            />
+            <DropdownSimulado
+              label="Pedido do Consumidor"
+              id="pedidoConsumidor"
+              placeholder="Selecione..."
+              options={PEDIDO_OPTIONS}
+              value={formData.pedidoConsumidor}
+              onChange={handleFormChange}
+              openDropdown={openDropdown}
+              setOpenDropdown={setOpenDropdown}
+            />
+
+            {/* Descrição (Linha única) */}
+            <FormField
+              label="Descrição detalhada de sua reclamação (máximo 500 caracteres)"
+              id="descricao"
+              placeholder="Descreva o problema com o máximo de detalhes possível."
+              multiline={true}
+              maxLength={500}
+              value={formData.descricao}
+              onChange={handleFormChange}
+            />
+
+            {/* BOTÃO PRÓXIMA ETAPA */}
             <TouchableOpacity
-              style={[
-                styles.searchButton,
-                // Cor do botão de busca (ACCENT_YELLOW) substituída por '#FCD34D'
-                (!isCNPJValid || isSearching) && styles.searchButtonDisabled
-              ]}
-              onPress={searchCNPJ}
-              disabled={!isCNPJValid || isSearching}
-              activeOpacity={0.7}
+              style={styles.nextButton}
+              onPress={goToNextStep}
+              activeOpacity={0.9}
             >
-              {isSearching ? (
-                // Cor do ActivityIndicator (PRIMARY_BLUE) substituída por '#080A6C'
-                <ActivityIndicator size="small" color={'#080A6C'} />
+              <Text style={styles.nextButtonText}>Próxima Etapa</Text>
+            </TouchableOpacity>
+          </>
+        )}
+
+        {step === 2 && (
+          <>
+            <Text style={styles.sectionTitle}>Anexar Documentos</Text>
+            <Text style={styles.sectionSubtitle}>
+              Anexe os documentos relevantes para a sua denúncia. Os arquivos serão enviados de forma segura.
+            </Text>
+
+            <FileUploadItem label="Comprovante de Pagamento" fileType="comprovantePagamento" />
+            <FileUploadItem label="Nota Fiscal" fileType="notaFiscal" />
+            <FileUploadItem label="Contrato" fileType="contrato" />
+            <FileUploadItem label="Recibo de Pagamento" fileType="reciboPagamento" />
+
+            {/* BOTÃO ENVIAR DENÚNCIA */}
+            <TouchableOpacity
+              style={[styles.nextButton, isSubmitting && styles.nextButtonDisabled]}
+              onPress={handleFormSubmit}
+              disabled={isSubmitting}
+              activeOpacity={0.9}
+            >
+              {isSubmitting ? (
+                <ActivityIndicator color="#fff" />
               ) : (
-                <Text style={styles.searchButtonText}>Buscar</Text>
+                <Text style={styles.nextButtonText}>Enviar Denúncia</Text>
               )}
             </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Renderiza a mensagem de forma segura com o objeto de estilo garantido */}
-        {cnpjMessage.text ? (
-          <View style={messageStyle.container}>
-            <Text style={styles.messageText}>
-              {messageStyle.icon} {cnpjMessage.text}
-            </Text>
-          </View>
-        ) : null}
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Nome da Empresa Reclamada</Text>
-          <TextInput
-            style={[styles.input, !isNameEditable && styles.inputDisabled]}
-            placeholder="Razão Social Empresa"
-            value={companyName}
-            onChangeText={setCompanyName}
-            editable={isNameEditable}
-          />
-        </View>
-
-        <View style={styles.divider} />
-
-        <Text style={styles.sectionTitle}>Detalhes da Ocorrência</Text>
-
-        {/* Campos em coluna única */}
-
-        <DropdownSimulado
-          label="Atividade Exercida"
-          id="areaAtuacao"
-          placeholder="Selecione..."
-          // Garante que o campo principal de atuação retornado pela API seja a primeira opção
-          options={areaAtuacaoOptions.length > 0 ? areaAtuacaoOptions : [formData.areaAtuacao].filter(Boolean)}
-          value={formData.areaAtuacao}
-          onChange={handleFormChange}
-        />
-
-        <DropdownSimulado
-          label="Tipo de Reclamação"
-          id="tipoReclamacao"
-          placeholder="Selecione..."
-          options={RECLAMACAO_OPTIONS}
-          value={formData.tipoReclamacao}
-          onChange={handleFormChange}
-        />
-
-
-
-        <DropdownSimulado
-          label="Assunto da Denúncia"
-          id="assuntoDenuncia"
-          placeholder="Selecione..."
-          options={ASSUNTO_OPTIONS}
-          value={formData.assuntoDenuncia}
-          onChange={handleFormChange}
-        />
-
-        <DropdownSimulado
-          label="Procurou o fornecedor?"
-          id="fornecedorResolver"
-          placeholder="Selecione..."
-          options={RESOLVER_OPTIONS}
-          value={formData.fornecedorResolver}
-          onChange={handleFormChange}
-        />
-
-        <DropdownSimulado
-          label="Forma de Aquisição"
-          id="formaAquisicao"
-          placeholder="Selecione..."
-          options={AQUISICAO_OPTIONS}
-          value={formData.formaAquisicao}
-          onChange={handleFormChange}
-        />
-
-        <DropdownSimulado
-          label="Tipo de Contratação"
-          id="tipoContratacao"
-          placeholder="Selecione..."
-          options={CONTRATACAO_OPTIONS}
-          value={formData.tipoContratacao}
-          onChange={handleFormChange}
-        />
-
-        <FormField
-          label="Data da Contratação"
-          id="dataContratacao"
-          type="date"
-        />
-        <FormField
-          label="Data da Ocorrência"
-          id="dataOcorrencia"
-          type="date"
-        />
-        <FormField
-          label="Data do Cancelamento"
-          id="dataCancelamento"
-          type="date"
-        />
-
-        <FormField
-          label="Nome do Serviço ou Plano"
-          id="nomeServico"
-          placeholder="Ex: Internet Fibra 300MB"
-        />
-        <FormField
-          label="Detalhes do Serviço ou Plano"
-          id="detalhesServico"
-          placeholder="Número do contrato, conta, etc."
-        />
-
-        <DropdownSimulado
-          label="Tipo de Documento"
-          id="tipoDocumento"
-          placeholder="Tipo"
-          options={DOCUMENTO_OPTIONS}
-          value={formData.tipoDocumento}
-          onChange={handleFormChange}
-        />
-        <FormField
-          label="Número do documento"
-          id="numeroDocumento"
-          placeholder="Número"
-        />
-        <FormField
-          label="Valor da Compra (R$)"
-          id="valorCompra"
-          type="number"
-        />
-
-        <DropdownSimulado
-          label="Forma de Pagamento"
-          id="formaPagamento"
-          placeholder="Selecione..."
-          options={PAGAMENTO_OPTIONS}
-          value={formData.formaPagamento}
-          onChange={handleFormChange}
-        />
-        <DropdownSimulado
-          label="Pedido do Consumidor"
-          id="pedidoConsumidor"
-          placeholder="Selecione..."
-          options={PEDIDO_OPTIONS}
-          value={formData.pedidoConsumidor}
-          onChange={handleFormChange}
-        />
-
-        {/* Descrição (Linha única) */}
-        <FormField
-          label="Descrição detalhada de sua reclamação (máximo 500 caracteres)"
-          id="descricao"
-          placeholder="Descreva o problema com o máximo de detalhes possível."
-          multiline={true}
-          maxLength={500}
-        />
-
-        {/* BOTÃO PRÓXIMA ETAPA */}
-        <TouchableOpacity
-          style={styles.nextButton}
-          onPress={handleFormSubmit}
-          activeOpacity={0.9}
-        >
-          <Text style={styles.nextButtonText}>Próxima Etapa</Text>
-        </TouchableOpacity>
-
+          </>
+        )}
       </View>
-
-
     </ScrollView>
   );
 };
@@ -707,6 +902,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     paddingBottom: 8,
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 24,
+    lineHeight: 20,
   },
   label: {
     fontSize: 12,
@@ -870,10 +1071,57 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 8,
   },
+  nextButtonDisabled: {
+    backgroundColor: '#080A6C',
+    opacity: 0.7,
+  },
   nextButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  // --- ESTILOS PARA UPLOAD ---
+  uploadItemContainer: {
+    backgroundColor: '#F9FAFB',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  uploadLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 12,
+  },
+  uploadButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#E0E7FF',
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#C7D2FE',
+  },
+  uploadButtonText: {
+    color: '#080A6C',
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  filePreview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+    backgroundColor: '#EDFDF2',
+    padding: 8,
+    borderRadius: 6,
+  },
+  fileName: {
+    marginLeft: 8,
+    color: '#065F46',
+    flexShrink: 1,
   },
 });
 

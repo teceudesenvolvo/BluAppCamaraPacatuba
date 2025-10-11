@@ -53,7 +53,7 @@ const AppWrapper = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#080A6C" />
-        <Text style={styles.loadingText}>Verificando status de autenticação...</Text>
+        <Text style={styles.loadingText}>Carregando...</Text>
       </View>
     );
   }

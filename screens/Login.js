@@ -18,7 +18,7 @@ const LoginScreen = ({navigation}) => {
 
     const onRegister = () => {
         // Simula a navegação para a tela de Cadastro
-        // navigation.navigate('Cadastro');
+        navigation.navigate('Cadastro');
         console.log('Navegar para Cadastro');
     }
 

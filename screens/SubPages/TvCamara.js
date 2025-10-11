@@ -43,7 +43,7 @@ const TVWebScreen = ({ navigation }) => {
                     id: item.contentDetails.videoId,
                     title: item.snippet.title,
                     description: item.snippet.description,
-                    thumbnail: item.snippet.thumbnails.high.url,
+                    thumbnail: (item.snippet.thumbnails && item.snippet.thumbnails.high && item.snippet.thumbnails.high.url) ? item.snippet.thumbnails.high.url : '',
                     videoId: item.contentDetails.videoId,
                     dateVideo: item.snippet.publishedAt,
                 }));
@@ -90,7 +90,7 @@ const TVWebScreen = ({ navigation }) => {
             }}
         >
             <Image
-                source={{ uri: item.thumbnail }}
+                source={item.thumbnail ? { uri: item.thumbnail } : require('../../assets/logo-pacatuba.png')}
                 style={styles.videoThumbnail}
             />
             <View style={styles.videoInfo}>
