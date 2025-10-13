@@ -48,15 +48,19 @@ const ProconScreen = ({navigation}) => {
 
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 {reclamacoes.map(reclamacao => (
-                    <View key={reclamacao.id} style={styles.reclamacaoCard}>
+                    <TouchableOpacity
+                        key={reclamacao.id}
+                        style={styles.reclamacaoCard}
+                        onPress={() => navigation.navigate('Denuncia', { denunciaId: reclamacao.id })}
+                        activeOpacity={0.85}
+                    >
                         <View style={styles.cardHeader}>
-                        <Text style={styles.cardDescricao}>{reclamacao.assuntoDenuncia || '-'}</Text>
+                            <Text style={styles.cardDescricao}>{reclamacao.assuntoDenuncia || '-'}</Text>
                             <Text style={styles.cardProtocolo}>Protocolo: {reclamacao.protocolo}</Text>
                             <Text style={styles.cardServico}>{reclamacao.companyName || '-'}</Text>
-                            <Text style={styles.cardServico}>{reclamacao.detalhesServico || '-'}</Text>
-
+                            <Text style={styles.cardServico}>Solicitação: {reclamacao.pedidoConsumidor || '-'}</Text>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 ))}
             </ScrollView>
 

@@ -259,10 +259,8 @@ const styles = StyleSheet.create({
     },
     detailsImage: {
         width: 100,
-        height: 100,
+        height: 130,
         borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#080A6C',
         marginRight: 20,
         resizeMode: 'cover',
     },

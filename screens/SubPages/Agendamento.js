@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import MaskInput from 'react-native-mask-input';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // Importações Firebase para o ambiente React (modular SDK)
-import { AUTH, DB } from '../firebaseConfig';
+import { AUTH, DB } from '../../firebaseConfig';
 import { setLogLevel } from 'firebase/firestore';
 import { doc, setDoc, onSnapshot } from 'firebase/firestore';
 
@@ -22,23 +22,30 @@ const MOCK_HORARIOS = [
 ];
 
 // --- COMPONENTE PRINCIPAL ---
-const App = () => {
+const App = ({ navigation }) => {
+    const goBack = useCallback(() => {
+        if (navigation && navigation.goBack) {
+            navigation.goBack();
+        } else {
+            console.log("App: Navegação de retorno simulada.");
+        }
+    }, [navigation]);
     // --- ESTADOS DO FIREBASE ---
     const [userId, setUserId] = useState(null);
     const [isAuthReady, setIsAuthReady] = useState(false);
-    
+
     // --- ESTADOS DO APLICATIVO ---
     const [step, setStep] = useState(1);
-    const [mode, setMode] = useState(null); 
-    const [selectedItem, setSelectedItem] = useState(null); 
-    
+    const [mode, setMode] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null);
+
     // Dados do formulário
     const [date, setDate] = useState('');
     const [time, setTime] = useState(null);
     const [nome, setNome] = useState('');
     const [telefone, setTelefone] = useState('');
     const [motivo, setMotivo] = useState('');
-    
+
     const [loading, setLoading] = useState(false);
     const [profileLoading, setProfileLoading] = useState(true);
     const [error, setError] = useState('');
@@ -65,12 +72,12 @@ const App = () => {
         if (DB && userId && isAuthReady) {
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
             // Caminho privado: /artifacts/{appId}/users/{userId}/user_data/contact_info
-            const userDocRef = doc(DB, 
+            const userDocRef = doc(DB,
                 `artifacts/${appId}/users/${userId}/user_data/contact_info`
             );
 
             // Reseta o profileLoading ao iniciar o listener, caso o ID tenha mudado
-            setProfileLoading(true); 
+            setProfileLoading(true);
 
             const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
                 if (docSnap.exists()) {
@@ -79,16 +86,16 @@ const App = () => {
                     setTelefone(data.telefone || '');
                 } else {
                     // Cria um documento inicial se não existir
-                    setDoc(userDocRef, { 
-                            nome: `Visitante #${userId.substring(0, 4)}`, 
-                            telefone: '' 
-                        }, { merge: true })
+                    setDoc(userDocRef, {
+                        nome: `Visitante #${userId ? userId.substring(0, 4) : ''}`,
+                        telefone: ''
+                    }, { merge: true })
                         .catch(e => console.error('Erro ao criar documento inicial:', e));
                     // Mantém os campos vazios na UI até serem preenchidos ou atualizados pelo snapshot
-                    setNome(''); 
+                    setNome('');
                     setTelefone('');
                 }
-                setProfileLoading(false); 
+                setProfileLoading(false);
             }, (error) => {
                 console.error('Erro ao carregar dados do perfil:', error);
                 setProfileLoading(false);
@@ -97,7 +104,7 @@ const App = () => {
             return () => unsubscribe();
         } else if (!isAuthReady) {
             // Se a autenticação não estiver pronta, mantenha o profileLoading como true até que 'isAuthReady' seja true
-            setProfileLoading(true); 
+            setProfileLoading(true);
         }
     }, [DB, userId, isAuthReady]);
 
@@ -157,11 +164,11 @@ const App = () => {
 
         setLoading(true);
         setError('');
-        
-    // Simulação de envio de dados
+
+        // Simulação de envio de dados
         setTimeout(() => {
             setLoading(false);
-            setStep(3); 
+            setStep(3);
             // Lógica para salvar o agendamento no Firestore seria adicionada aqui.
         }, 1500);
     };
@@ -182,15 +189,15 @@ const App = () => {
     const renderStepOne = () => (
         <View style={styles.card}>
             <Text style={styles.headerText}>1. Escolha a Opção</Text>
-            
+
             <View style={styles.modeContainer}>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={[styles.modeButton, mode === 'VEREADOR' && styles.modeButtonActive]}
                     onPress={() => setMode('VEREADOR')}
                 >
                     <Text style={[styles.modeText, mode === 'VEREADOR' && styles.modeTextActive]}>Vereador</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={[styles.modeButton, mode === 'SERVICO' && styles.modeButtonActive]}
                     onPress={() => setMode('SERVICO')}
                 >
@@ -219,7 +226,7 @@ const App = () => {
                                     <Text style={styles.itemText}>{item.NomeParlamentar}</Text>
                                     <Text style={styles.itemSelectText}> &rarr;</Text>
                                 </TouchableOpacity>
-                                    
+
                             ))
                         )
                     ) : (
@@ -234,10 +241,9 @@ const App = () => {
                             </TouchableOpacity>
                         ))
                     )}
-                    <View style={{height: 100}}></View>
                 </View>
             )}
-            
+
             {/* Exibi\u00e7\u00e3o do User ID (MANDAT\u00d3RIO em apps multiusu\u00e1rio) */}
             {userId && <Text style={styles.userIdText}>ID do Usuário: {userId}</Text>}
             {error && !db && <Text style={styles.errorText}>Erro Fatal: {error}</Text>}
@@ -306,7 +312,7 @@ const App = () => {
                         style={[styles.input, styles.inputDisabled]}
                         placeholder="Nome"
                         value={nome}
-                        editable={false} 
+                        editable={false}
                     />
 
                     <Text style={styles.label}>Telefone / WhatsApp (Preenchido Automaticamente)</Text>
@@ -334,7 +340,7 @@ const App = () => {
 
             {error && <Text style={styles.errorText}>{error}</Text>}
 
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={[styles.finalizeButton, (loading || profileLoading) && styles.finalizeButtonDisabled]}
                 onPress={handleFinalizeScheduling}
                 disabled={loading || profileLoading}
@@ -346,13 +352,12 @@ const App = () => {
                 )}
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => setStep(1)} style={styles.backButton}>
+            <TouchableOpacity onPress={() => setStep(1)} style={styles.backButtonTextContainer}>
                 <Text style={styles.backButtonText}>&larr; Voltar para a Seleção</Text>
             </TouchableOpacity>
-            <View style={{height: 130}}></View>
         </View>
     );
-    
+
     // Etapa 3: Confirma\u00e7\u00e3o
     const renderStepThree = () => (
         <View style={styles.card}>
@@ -366,10 +371,10 @@ const App = () => {
                 <Text style={styles.summaryTitle}>Detalhes:</Text>
                 <Text style={styles.summaryText}>&bull; Data: {datasDisponiveis.find(d => d.value === dataSelecionada)?.label} - {time}</Text>
                 <Text style={styles.summaryText}>&bull; Assunto: {motivo}</Text>
-                <Text style={styles.summaryText}>&bull; Contato: {telefone} (<Text style={{fontWeight: 'bold'}}>{nome}</Text>)</Text>
+                <Text style={styles.summaryText}>&bull; Contato: {telefone} (<Text style={{ fontWeight: 'bold' }}>{nome}</Text>)</Text>
             </View>
 
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={styles.finalizeButton}
                 onPress={handleNewScheduling}
             >
@@ -392,22 +397,24 @@ const App = () => {
         if (step === 1) return renderStepOne();
         if (step === 2) return renderStepTwo();
         if (step === 3) return renderStepThree();
-        return null; 
+        return null;
     };
 
     return (
-        <View>
-            <View style={styles.header}>
-                <Text style={styles.mainTitle}>Portal de Agendamentos</Text>
-                <Text style={styles.subTitle}>Passo {step} de 3</Text>
-            </View>
-        
-        <ScrollView contentContainerStyle={styles.container}>
-            
-            <View style={styles.contentWrapper}>
-                {renderContent()}
-            </View>
-        </ScrollView>
+        <View style={{ flex: 1 }}>
+            {/* Botão de voltar */}
+            <ScrollView contentContainerStyle={styles.container}>
+                <View style={styles.header}>
+                    <TouchableOpacity style={styles.backButton} onPress={goBack}>
+                        <Icon name="arrow-back" size={24} color="#000" />
+                    </TouchableOpacity>
+                    <Text style={styles.mainTitle}>Portal de Agendamentos</Text>
+                    <Text style={styles.subTitle}>Passo {step} de 3</Text>
+                </View>
+                <View style={styles.contentWrapper}>
+                    {renderContent()}
+                </View>
+            </ScrollView>
         </View>
     );
 };
@@ -419,31 +426,31 @@ const styles = StyleSheet.create({
         backgroundColor: '#F3F4F6', // light gray background
     },
     header: {
-        paddingTop: 88, 
-        paddingBottom: 20,
-        paddingLeft: 20,
-        alignItems: 'left',
-        borderBottomLeftRadius: 16,
-        borderBottomRightRadius: 16,
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
-        elevation: 8,
+        width: '100%',
+        paddingVertical: 20,
+        paddingHorizontal: 16, 
+        paddingTop: 60,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 4,
     },
     mainTitle: {
         fontSize: 18,
         fontWeight: 'bold',
         color: 'black',
         marginBottom: 4,
-        textAlign: `left`,
+        textAlign: `center`,
     },
     subTitle: {
         fontSize: 16,
+        textAlign: `center`,
         color: '#1f1f1f', // Accent Yellow
     },
     contentWrapper: {
         padding: 20,
         alignItems: 'center',
-        marginBottom: 80,
         height: '100%',
     },
     card: {
@@ -457,7 +464,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 8,
         elevation: 5,
-        marginBottom: 20,
     },
     headerText: {
         fontSize: 15,
@@ -594,7 +600,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#D1D5DB',
         marginBottom: 16,
-        textAlignVertical: 'top', 
+        textAlignVertical: 'top',
     },
     timeSlotsContainer: {
         flexDirection: 'row',
@@ -618,7 +624,7 @@ const styles = StyleSheet.create({
     timeSlotText: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#374151', 
+        color: '#374151',
     },
     timeSlotTextActive: {
         color: '#fff',
@@ -652,14 +658,35 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     backButton: {
-        marginTop: 16,
+        position: 'absolute',
+        top: 50,
+        left: 16,
         padding: 8,
-        alignSelf: 'center',
+        borderRadius: 8,
+        zIndex: 10,
+    },
+    backButtonTextContainer: {
+        marginTop: 16,
+        alignItems: 'center',
     },
     backButtonText: {
-        color: '#080A6C',
+        color: '#ff9100ff',
         fontSize: 14,
         textDecorationLine: 'underline',
+    },
+    backButtonAbsolute: {
+        position: 'absolute',
+        top: 48,
+        left: 16,
+        zIndex: 20,
+        backgroundColor: '#fff',
+        borderRadius: 24,
+        padding: 6,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
     },
     confirmationTitle: {
         fontSize: 24,

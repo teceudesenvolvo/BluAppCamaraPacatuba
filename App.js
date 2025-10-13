@@ -20,8 +20,12 @@ import ProconScreen from './screens/SubPages/Procon';
 import TvCamaraScreen from './screens/SubPages/TvCamara';
 import LicitacoesScreen from './screens/SubPages/Licitacoes';
 
+// Página Agendamento
+import AgendamentosScreen from './screens/SubPages/Agendamento'
+
 // Componente RealizarDenuncia (O nome da variável de import deve corresponder ao export default)
 import RealizarDenunciaScreen from './screens/SubPages/RealizarDenuncia'; 
+import DenunciaScreen from './screens/SubPages/Denuncia'; 
 
 const Stack = createNativeStackNavigator();
 
@@ -75,8 +79,12 @@ const AppWrapper = () => {
         <Stack.Screen name='TvCamara' component={TvCamaraScreen} options={{headerShown: false}}/>
         <Stack.Screen name='Licitacoes' component={LicitacoesScreen} options={{headerShown: false}}/>
 
+        {/* Página Agendamento */}
+        <Stack.Screen name='Agendamento' component={AgendamentosScreen} options={{headerShown: false}}/>
+
         {/* TELA DE DENÚNCIA */}
         <Stack.Screen name='RealizarDenuncia' component={RealizarDenunciaScreen} options={{headerShown: false}}/>
+        <Stack.Screen name='Denuncia' component={DenunciaScreen} options={{headerShown: false}}/>
 
       </Stack.Navigator>
     </NavigationContainer>

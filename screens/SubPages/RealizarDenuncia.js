@@ -473,12 +473,12 @@ const App = ({ navigation }) => {
           {/* Steps Indicator */}
           <View style={styles.stepsContainer}>
             <View style={styles.stepItem}>
-              <Text style={step === 1 ? styles.stepTextActive : styles.stepTextInactive}>1. Detalhes da Reclamação</Text>
+              <Text style={step === 1 ? styles.stepTextActive : styles.stepTextInactive}>1. Detalhes</Text>
               <View style={step === 1 ? styles.stepLineActive : styles.stepLineInactive} />
             </View>
             <View style={styles.stepSeparator} />
             <View style={styles.stepItem}>
-              <Text style={step === 2 ? styles.stepTextActive : styles.stepTextInactive}>2. Anexos e Envio</Text>
+              <Text style={step === 2 ? styles.stepTextActive : styles.stepTextInactive}>2. Anexos </Text>
               <View style={step === 2 ? styles.stepLineActive : styles.stepLineInactive} />
             </View>
           </View>
@@ -760,7 +760,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 55,
+    top: 50,
     left: 16,
     padding: 8,
     borderRadius: 8,
@@ -787,7 +787,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     // Cor primária substituída por '#080A6C'
     color: '#080A6C',
@@ -805,13 +805,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   stepTextActive: {
-    fontSize: 12,
+    fontSize: 11,
     // Cor primária substituída por '#080A6C'
     color: '#080A6C',
-    fontWeight: '700',
+    fontWeight: '500',
   },
   stepTextInactive: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#6B7280',
   },
   stepLineActive: {
