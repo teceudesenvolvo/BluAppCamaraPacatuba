@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, KeyboardAvoidingView, StyleSheet, TextInput, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import MaskInput from 'react-native-mask-input';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -288,6 +288,15 @@ const App = ({ navigation }) => {
                     </TouchableOpacity>
                 ))}
             </View>
+            <Text style={styles.label}>Motivo do Contato / Assunto</Text>
+            <TextInput
+                style={styles.textarea}
+                placeholder="Breve descrição do motivo do agendamento"
+                value={motivo}
+                onChangeText={setMotivo}
+                multiline
+                numberOfLines={4}
+            />
 
             {profileLoading ? (
                 <View style={styles.loadingProfileContainer}>
@@ -315,15 +324,7 @@ const App = ({ navigation }) => {
                 </>
             )}
 
-            <Text style={styles.label}>Motivo do Contato / Assunto</Text>
-            <TextInput
-                style={styles.textarea}
-                placeholder="Breve descrição do motivo do agendamento"
-                value={motivo}
-                onChangeText={setMotivo}
-                multiline
-                numberOfLines={4}
-            />
+            
 
             {error && <Text style={styles.errorText}>{error}</Text>}
 
@@ -388,7 +389,7 @@ const App = ({ navigation }) => {
     };
 
     return (
-        <View style={{ flex: 1 }}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
             {/* Botão de voltar */}
             <ScrollView contentContainerStyle={styles.container}>
                 <View style={styles.header}>
@@ -402,7 +403,7 @@ const App = ({ navigation }) => {
                     {renderContent()}
                 </View>
             </ScrollView>
-        </View>
+        </KeyboardAvoidingView >
     );
 };
 
