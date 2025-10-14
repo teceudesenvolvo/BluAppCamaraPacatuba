@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
+import { getFirestore } from 'firebase/firestore';
 import { initializeAuth, getReactNativePersistence, signInWithCustomToken, signInAnonymously } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -28,13 +29,35 @@ console.log("Inicializando Firebase App...");
 // Inicializa o App primeiro!
 export const app = initializeApp(firebaseConfig);
 
+
 // Inicializa o Auth com persistência AsyncStorage
 export const AUTH = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
+
+// Função utilitária para aguardar o usuário autenticado
+export function waitForAuthUser(timeout = 10000) {
+    return new Promise((resolve, reject) => {
+        const start = Date.now();
+        function check() {
+            if (AUTH.currentUser) {
+                resolve(AUTH.currentUser);
+            } else if (Date.now() - start > timeout) {
+                reject(new Error('Timeout esperando usuário autenticado.'));
+            } else {
+                setTimeout(check, 100);
+            }
+        }
+        check();
+    });
+}
+
 
 // Inicializa e exporta o Realtime Database
 export const DB = getDatabase(app);
+
+// Inicializa e exporta o Firestore
+export const FIRESTORE = getFirestore(app);
 
 console.log("Firebase App e serviços prontos para uso.");
 

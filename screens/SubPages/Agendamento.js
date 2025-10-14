@@ -6,8 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // Importações Firebase para o ambiente React (modular SDK)
 import { AUTH, DB } from '../../firebaseConfig';
-import { setLogLevel } from 'firebase/firestore';
-import { doc, setDoc, onSnapshot } from 'firebase/firestore';
+import { ref, onValue } from 'firebase/database';
 
 // --- MOCKS DE DADOS ---
 const MOCK_SERVICOS = [
@@ -62,51 +61,41 @@ const App = ({ navigation }) => {
 
     // --- 1. SETUP FIREBASE E AUTENTICAÇÃO (USANDO firebaseConfig.js) ---
     useEffect(() => {
-        setLogLevel('debug');
         setIsAuthReady(true); // Considera pronto, pois AUTH e DB já estão configurados
+        // Captura o userId do usuário autenticado
+        if (AUTH && AUTH.currentUser && AUTH.currentUser.uid) {
+            setUserId(AUTH.currentUser.uid);
+        }
     }, []);
 
-    // --- 2. BUSCA DE DADOS DO PERFIL ---
+    // Buscar dados do usuário no Realtime Database (modelo Perfil.js)
     useEffect(() => {
-        // Certifique-se de que DB e userId estão prontos
-        if (DB && userId && isAuthReady) {
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-            // Caminho privado: /artifacts/{appId}/users/{userId}/user_data/contact_info
-            const userDocRef = doc(DB,
-                `artifacts/${appId}/users/${userId}/user_data/contact_info`
-            );
-
-            // Reseta o profileLoading ao iniciar o listener, caso o ID tenha mudado
-            setProfileLoading(true);
-
-            const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    setNome(data.nome || '');
-                    setTelefone(data.telefone || '');
-                } else {
-                    // Cria um documento inicial se não existir
-                    setDoc(userDocRef, {
-                        nome: `Visitante #${userId ? userId.substring(0, 4) : ''}`,
-                        telefone: ''
-                    }, { merge: true })
-                        .catch(e => console.error('Erro ao criar documento inicial:', e));
-                    // Mantém os campos vazios na UI até serem preenchidos ou atualizados pelo snapshot
-                    setNome('');
-                    setTelefone('');
-                }
-                setProfileLoading(false);
-            }, (error) => {
-                console.error('Erro ao carregar dados do perfil:', error);
-                setProfileLoading(false);
-            });
-
-            return () => unsubscribe();
-        } else if (!isAuthReady) {
-            // Se a autenticação não estiver pronta, mantenha o profileLoading como true até que 'isAuthReady' seja true
-            setProfileLoading(true);
+        setProfileLoading(true);
+        const user = AUTH?.currentUser;
+        if (!user || !DB) {
+            setProfileLoading(false);
+            return;
         }
-    }, [DB, userId, isAuthReady]);
+        const userRef = ref(DB, `users/${user.uid}`);
+        const unsubscribe = onValue(userRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                setNome(data.name || '');
+                setTelefone(data.phone || '');
+            } else {
+                setNome('');
+                setTelefone('');
+            }
+            setProfileLoading(false);
+        }, (error) => {
+            console.error('Erro ao buscar dados do usuário no RTDB:', error);
+            setProfileLoading(false);
+        });
+        return () => unsubscribe();
+    }, [DB, AUTH?.currentUser]);
+
+    // --- 2. BUSCA DE DADOS DO PERFIL ---
+    // (Removido: Firestore não é usado, só RTDB)
 
     // --- CARREGAMENTO DINÂMICO DOS VEREADORES ---
     useEffect(() => {
@@ -307,7 +296,7 @@ const App = ({ navigation }) => {
                 </View>
             ) : (
                 <>
-                    <Text style={styles.label}>Seu Nome Completo (Preenchido Automaticamente)</Text>
+                    <Text style={styles.label}>Nome</Text>
                     <TextInput
                         style={[styles.input, styles.inputDisabled]}
                         placeholder="Nome"
@@ -315,16 +304,14 @@ const App = ({ navigation }) => {
                         editable={false}
                     />
 
-                    <Text style={styles.label}>Telefone / WhatsApp (Preenchido Automaticamente)</Text>
+                    <Text style={styles.label}>Telefone / WhatsApp</Text>
                     <TextInput
                         style={[styles.input, styles.inputDisabled]}
                         placeholder="(00) 99999-9999"
                         value={telefone}
                         editable={false}
                     />
-                    <Text style={styles.profileHint}>
-                        Para alterar nome ou telefone, você precisa editar seu perfil.
-                    </Text>
+                   
                 </>
             )}
 
@@ -581,6 +568,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#E5E7EB', // Gray-200
         color: '#6B7280', // Gray-500
         borderColor: '#9CA3AF',
+        paddingTop: -15,
     },
     profileHint: {
         fontSize: 12,

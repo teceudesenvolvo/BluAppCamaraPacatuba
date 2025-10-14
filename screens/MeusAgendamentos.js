@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { AUTH, DB } from '../firebaseConfig';
+import { AUTH, FIRESTORE } from '../firebaseConfig';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 
 const MeusAgendamentos = ({ navigation }) => {
@@ -21,7 +21,7 @@ const MeusAgendamentos = ({ navigation }) => {
 					return;
 				}
 				// Coleção: 'agendamentos' (ajuste conforme o nome salvo no Firestore)
-				const agCol = collection(DB, 'agendamentos');
+				const agCol = collection(FIRESTORE, 'agendamentos');
 				const q = query(agCol, where('userId', '==', user.uid), orderBy('createdAt', 'desc'));
 				const querySnapshot = await getDocs(q);
 				const ags = [];
