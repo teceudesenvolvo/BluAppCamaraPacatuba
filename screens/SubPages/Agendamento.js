@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // Importações Firebase para o ambiente React (modular SDK)
 import { AUTH, DB } from '../../firebaseConfig';
-import { ref, onValue } from 'firebase/database';
+import { ref, onValue, push, set } from 'firebase/database';
 
 // --- MOCKS DE DADOS ---
 const MOCK_SERVICOS = [
@@ -143,7 +143,7 @@ const App = ({ navigation }) => {
         setError('');
     };
 
-    const handleFinalizeScheduling = () => {
+    const handleFinalizeScheduling = async () => {
         if (!nome || !telefone || !dataSelecionada || !time || !motivo) {
             // Usa Alert do React Native em vez de alert()
             Alert.alert('Campos obrigatórios', 'Por favor, preencha todos os campos obrigatórios.');
@@ -154,12 +154,39 @@ const App = ({ navigation }) => {
         setLoading(true);
         setError('');
 
-        // Simulação de envio de dados
-        setTimeout(() => {
+        const user = AUTH.currentUser;
+        if (!user) {
+            setError('Usuário não autenticado. Faça login novamente.');
+            setLoading(false);
+            return;
+        }
+
+        const agendamentoData = {
+            userId: user.uid,
+            email: user.email,
+            nome: nome,
+            telefone: telefone,
+            dataSelecionada: datasDisponiveis.find(d => d.value === dataSelecionada)?.label || dataSelecionada,
+            time: time,
+            motivo: motivo,
+            nomeAgendado: selectedItem?.nome,
+            tipo: mode === 'VEREADOR' ? 'Vereador' : 'Serviço Público',
+            status: 'Pendente',
+            createdAt: new Date().toISOString(),
+        };
+
+        try {
+            // Ajuste: Salvar na coleção 'meus-atendimentos' para consistência com a tela de listagem.
+            const atendimentosRef = ref(DB, 'meus-atendimentos');
+            const newAgendamentoRef = push(atendimentosRef);
+            await set(newAgendamentoRef, agendamentoData);
             setLoading(false);
             setStep(3);
-            // Lógica para salvar o agendamento no Firestore seria adicionada aqui.
-        }, 1500);
+        } catch (error) {
+            console.error("Erro ao salvar agendamento: ", error);
+            setError('Ocorreu um erro ao salvar seu agendamento. Tente novamente.');
+            setLoading(false);
+        }
     };
 
     const handleNewScheduling = () => {
@@ -234,7 +261,6 @@ const App = ({ navigation }) => {
             )}
 
             {/* Exibi\u00e7\u00e3o do User ID (MANDAT\u00d3RIO em apps multiusu\u00e1rio) */}
-            {userId && <Text style={styles.userIdText}>ID do Usuário: {userId}</Text>}
             {error && !db && <Text style={styles.errorText}>Erro Fatal: {error}</Text>}
         </View>
     );
@@ -396,8 +422,7 @@ const App = ({ navigation }) => {
                     <TouchableOpacity style={styles.backButton} onPress={goBack}>
                         <Icon name="arrow-back" size={24} color="#000" />
                     </TouchableOpacity>
-                    <Text style={styles.mainTitle}>Portal de Agendamentos</Text>
-                    <Text style={styles.subTitle}>Passo {step} de 3</Text>
+                    <Text style={styles.mainTitle}>Serviços</Text>
                 </View>
                 <View style={styles.contentWrapper}>
                     {renderContent()}

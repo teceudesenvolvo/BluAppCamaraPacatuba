@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { AUTH, FIRESTORE } from '../firebaseConfig';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { AUTH, DB } from '../firebaseConfig'; // Importa o banco de dados
+import { ref, query, orderByChild, equalTo, onValue } from 'firebase/database';
 
 const MeusAgendamentos = ({ navigation }) => {
 	const [agendamentos, setAgendamentos] = useState([]);
@@ -20,27 +20,54 @@ const MeusAgendamentos = ({ navigation }) => {
 					setLoading(false);
 					return;
 				}
-				// Coleção: 'agendamentos' (ajuste conforme o nome salvo no Firestore)
-				const agCol = collection(FIRESTORE, 'agendamentos');
-				const q = query(agCol, where('userId', '==', user.uid), orderBy('createdAt', 'desc'));
-				const querySnapshot = await getDocs(q);
-				const ags = [];
-				querySnapshot.forEach(docSnap => {
-					ags.push({ id: docSnap.id, ...docSnap.data() });
+				// 1. Referência para a coleção 'meus-atendimentos'
+				const atendimentosRef = ref(DB, 'meus-atendimentos');
+				
+				// 2. Cria a query para filtrar por 'userId' e ordenar por data de criação
+				const q = query(atendimentosRef, orderByChild('userId'), equalTo(user.uid));
+				
+				// 3. Escuta as mudanças em tempo real nos dados filtrados
+				const unsubscribe = onValue(q, (snapshot) => {
+					const data = snapshot.val();
+					if (data) {
+						const ags = Object.keys(data).map(key => ({
+							id: key,
+							...data[key]
+						})).reverse(); // .reverse() para mostrar os mais recentes primeiro
+						setAgendamentos(ags);
+					} else {
+						setAgendamentos([]);
+					}
+					setLoading(false);
+				}, (error) => {
+					console.error(error);
+					setError('Erro ao carregar agendamentos.');
+					setLoading(false);
 				});
-				setAgendamentos(ags);
+				return () => unsubscribe(); // Limpa o listener ao desmontar
 			} catch (e) {
-				setError('Erro ao carregar agendamentos.');
+				console.error(e);
+				setError('Ocorreu um erro inesperado.');
+				setLoading(false);
 			}
-			setLoading(false);
 		};
-		fetchAgendamentos();
+
+		const unsubscribe = fetchAgendamentos();
+
+		return () => {
+			if (unsubscribe && typeof unsubscribe === 'function') {
+				unsubscribe();
+			}
+		};
 	}, []);
 
 		return (
 			<View style={styles.container}>
 				<View style={styles.header}>
-					<Text style={styles.headerTitle}>Meus Agendamentos</Text>
+					<TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+						<Icon name="arrow-back" size={24} color="#000" />
+					</TouchableOpacity>
+					<Text style={styles.headerTitle}>Meus Atendimentos</Text>
 				</View>
 				{loading ? (
 					<View style={styles.centered}><ActivityIndicator size="large" color="#080A6C" /></View>
@@ -53,13 +80,13 @@ const MeusAgendamentos = ({ navigation }) => {
 						{agendamentos.map(ag => (
 							<View key={ag.id} style={styles.card}>
 								<Text style={styles.label}>Data:</Text>
-								<Text style={styles.value}>{ag.dataSelecionada || '-'}</Text>
+								<Text style={styles.value}>{ag.dataSelecionada ? `${ag.dataSelecionada}` : '-'}</Text>
 								<Text style={styles.label}>Horário:</Text>
 								<Text style={styles.value}>{ag.time || '-'}</Text>
 								<Text style={styles.label}>Com:</Text>
-								<Text style={styles.value}>{ag.nomeAgendado || ag.nome || '-'}</Text>
+								<Text style={styles.value}>{ag.nomeAgendado || '-'}</Text>
 								<Text style={styles.label}>Tipo:</Text>
-								<Text style={styles.value}>{ag.tipo || '-'}</Text>
+								<Text style={styles.value}>{ag.tipo || 'Não especificado'}</Text>
 								<Text style={styles.label}>Motivo:</Text>
 								<Text style={styles.value}>{ag.motivo || '-'}</Text>
 								<Text style={styles.label}>Status:</Text>
@@ -88,20 +115,23 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		paddingTop: 60,
-        textAlign: 'center',
-        padding: 20,
-        marginTop: '5%',
+		paddingBottom: 20,
+		paddingHorizontal: 20,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center',
+		width: '100%',
 	},
 	backButton: {
-		marginRight: 16,
-		padding: 8,
-		borderRadius: 8,
+		position: 'absolute',
+		left: 16,
+		top: 55,
+		padding: 8
 	},
 	headerTitle: {
 		fontSize: 18,
         fontWeight: 'bold',
         color: '#333',
-        marginBottom: 20,
 	},
 	scrollContent: {
 		padding: 20,
