@@ -1,111 +1,168 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { AUTH, DB } from '../firebaseConfig'; // Importa o banco de dados
+import { AUTH, DB } from '../firebaseConfig';
 import { ref, query, orderByChild, equalTo, onValue } from 'firebase/database';
 
+// --- COMPONENTE DE CARD REUTILIZÁVEL ---
+const AtendimentoCard = ({ item, type }) => {
+	// Adapta os campos com base no tipo de atendimento
+	let details = {};
+	switch (type) {
+		case 'vereadores':
+			details = {
+				title: item.nomeAgendado || 'Agendamento com Vereador',
+				fields: [
+					{ label: 'Data', value: item.dataSelecionada },
+					{ label: 'Horário', value: item.time },
+					{ label: 'Motivo', value: item.motivo },
+				],
+				status: item.status || 'Pendente'
+			};
+			break;
+		case 'juridico':
+			details = {
+				title: item.assuntoJuridico || 'Atendimento Jurídico',
+				fields: [
+					{ label: 'Data do Acontecimento', value: item.dataAcontecimento },
+					{ label: 'Descrição', value: item.descricaoCaso },
+				],
+				status: item.status || 'Recebido'
+			};
+			break;
+		case 'balcao':
+			details = {
+				title: item.assuntoBalcao || 'Balcão do Cidadão',
+				fields: [
+					{ label: 'Solicitação', value: item.descricaoSolicitacao },
+				],
+				status: item.status || 'Recebido'
+			};
+			break;
+		case 'ouvidoria':
+			details = {
+				title: item.tipoManifestacao || 'Ouvidoria',
+				fields: [
+					{ label: 'Assunto', value: item.assuntoOuvidoria },
+					{ label: 'Descrição', value: item.descricaoNotificacao },
+				],
+				status: item.status || 'Recebido'
+			};
+			break;
+		default:
+			details = { title: 'Atendimento', fields: [], status: 'N/A' };
+	}
+
+	return (
+		<View style={styles.card}>
+			<Text style={styles.cardTitle}>{details.title}</Text>
+			{details.fields.map((field, index) => (
+				<View key={index}>
+					<Text style={styles.label}>{field.label}:</Text>
+					<Text style={styles.value}>{field.value || '-'}</Text>
+				</View>
+			))}
+			<Text style={styles.label}>Status:</Text>
+			<Text style={[styles.value, { color: '#10B981', fontWeight: 'bold' }]}>{details.status}</Text>
+		</View>
+	);
+};
+
 const MeusAgendamentos = ({ navigation }) => {
-	const [agendamentos, setAgendamentos] = useState([]);
+	const [atendimentos, setAtendimentos] = useState({
+		juridico: [],
+		balcao: [],
+		ouvidoria: [],
+		vereadores: [],
+	});
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
 
 	useEffect(() => {
-		const fetchAgendamentos = async () => {
-			setLoading(true);
-			setError('');
-			try {
-				const user = AUTH.currentUser;
-				if (!user) {
-					setError('Usuário não autenticado.');
-					setLoading(false);
-					return;
-				}
-				// 1. Referência para a coleção 'meus-atendimentos'
-				const atendimentosRef = ref(DB, 'meus-atendimentos');
-				
-				// 2. Cria a query para filtrar por 'userId' e ordenar por data de criação
-				const q = query(atendimentosRef, orderByChild('userId'), equalTo(user.uid));
-				
-				// 3. Escuta as mudanças em tempo real nos dados filtrados
-				const unsubscribe = onValue(q, (snapshot) => {
-					const data = snapshot.val();
-					if (data) {
-						const ags = Object.keys(data).map(key => ({
-							id: key,
-							...data[key]
-						})).reverse(); // .reverse() para mostrar os mais recentes primeiro
-						setAgendamentos(ags);
-					} else {
-						setAgendamentos([]);
-					}
-					setLoading(false);
-				}, (error) => {
-					console.error(error);
-					setError('Erro ao carregar agendamentos.');
-					setLoading(false);
-				});
-				return () => unsubscribe(); // Limpa o listener ao desmontar
-			} catch (e) {
-				console.error(e);
-				setError('Ocorreu um erro inesperado.');
-				setLoading(false);
-			}
+		const user = AUTH.currentUser;
+		if (!user) {
+			setError('Usuário não autenticado.');
+			setLoading(false);
+			return;
+		}
+
+		const collections = {
+			juridico: 'atendimento-juridico',
+			balcao: 'balcao-cidadao',
+			ouvidoria: 'ouvidoria',
+			// Agendamentos com vereadores são salvos em 'meus-atendimentos'
+			vereadores: 'meus-atendimentos',
 		};
 
-		const unsubscribe = fetchAgendamentos();
+		const listeners = Object.keys(collections).map(category => {
+			const collectionName = collections[category];
+			const dbRef = ref(DB, collectionName);
+			const q = query(dbRef, orderByChild('userId'), equalTo(user.uid));
+
+			return onValue(q, (snapshot) => {
+				const data = snapshot.val();
+				const items = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
+				
+				setAtendimentos(prev => ({ ...prev, [category]: items }));
+				setLoading(false); // Para o loading assim que o primeiro dado chegar
+			}, (dbError) => {
+				console.error(`Erro ao buscar ${collectionName}:`, dbError);
+				setError('Erro ao carregar seus atendimentos.');
+				setLoading(false);
+			});
+		});
 
 		return () => {
-			if (unsubscribe && typeof unsubscribe === 'function') {
-				unsubscribe();
-			}
+			// A função onValue retorna a função de unsubscribe
+			listeners.forEach(unsubscribe => unsubscribe());
 		};
 	}, []);
 
-		return (
-			<View style={styles.container}>
-				<View style={styles.header}>
-					<TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-						<Icon name="arrow-back" size={24} color="#000" />
-					</TouchableOpacity>
-					<Text style={styles.headerTitle}>Meus Atendimentos</Text>
-				</View>
-				{loading ? (
-					<View style={styles.centered}><ActivityIndicator size="large" color="#080A6C" /></View>
-				) : error ? (
-					<View style={styles.centered}><Text style={styles.errorText}>{error}</Text></View>
-				) : agendamentos.length === 0 ? (
-					<View style={styles.centered}><Text>Nenhum agendamento encontrado.</Text></View>
-				) : (
-					<ScrollView contentContainerStyle={styles.scrollContent}>
-						{agendamentos.map(ag => (
-							<View key={ag.id} style={styles.card}>
-								<Text style={styles.label}>Data:</Text>
-								<Text style={styles.value}>{ag.dataSelecionada ? `${ag.dataSelecionada}` : '-'}</Text>
-								<Text style={styles.label}>Horário:</Text>
-								<Text style={styles.value}>{ag.time || '-'}</Text>
-								<Text style={styles.label}>Com:</Text>
-								<Text style={styles.value}>{ag.nomeAgendado || '-'}</Text>
-								<Text style={styles.label}>Tipo:</Text>
-								<Text style={styles.value}>{ag.tipo || 'Não especificado'}</Text>
-								<Text style={styles.label}>Motivo:</Text>
-								<Text style={styles.value}>{ag.motivo || '-'}</Text>
-								<Text style={styles.label}>Status:</Text>
-								<Text style={[styles.value, { color: '#10B981', fontWeight: 'bold' }]}>{ag.status || 'Pendente'}</Text>
-							</View>
-						))}
-					</ScrollView>
-				)}
+	const totalAtendimentos = Object.values(atendimentos).reduce((sum, list) => sum + list.length, 0);
 
-				{/* Botão flutuante para novo agendamento */}
-				<TouchableOpacity
-					style={styles.fab}
-					onPress={() => navigation.navigate('Agendamento')}
-					activeOpacity={0.85}
-				>
-					<Icon name="add" size={32} color="#fff" />
-				</TouchableOpacity>
+	const renderSection = (title, data, type) => {
+		if (data.length === 0) return null;
+		return (
+			<View style={styles.section}>
+				<Text style={styles.sectionTitle}>{title}</Text>
+				{data.map(item => <AtendimentoCard key={item.id} item={item} type={type} />)}
 			</View>
 		);
+	};
+
+	return (
+		<View style={styles.container}>
+			<View style={styles.header}>
+				<TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+					<Icon name="arrow-back" size={24} color="#000" />
+				</TouchableOpacity>
+				<Text style={styles.headerTitle}>Meus Atendimentos</Text>
+			</View>
+			{loading ? (
+				<View style={styles.centered}><ActivityIndicator size="large" color="#080A6C" /></View>
+			) : error ? (
+				<View style={styles.centered}><Text style={styles.errorText}>{error}</Text></View>
+			) : totalAtendimentos === 0 ? (
+				<View style={styles.centered}><Text>Nenhum atendimento encontrado.</Text></View>
+			) : (
+				<ScrollView contentContainerStyle={styles.scrollContent}>
+					{renderSection('Agendamentos com Vereadores', atendimentos.vereadores, 'vereadores')}
+					{renderSection('Atendimento Jurídico', atendimentos.juridico, 'juridico')}
+					{renderSection('Balcão do Cidadão', atendimentos.balcao, 'balcao')}
+					{renderSection('Ouvidoria', atendimentos.ouvidoria, 'ouvidoria')}
+				</ScrollView>
+			)}
+
+			{/* Botão flutuante para novo agendamento */}
+			<TouchableOpacity
+				style={styles.fab}
+				onPress={() => navigation.navigate('Agendamento')}
+				activeOpacity={0.85}
+			>
+				<Icon name="add" size={32} color="#fff" />
+			</TouchableOpacity>
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
@@ -133,6 +190,19 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
 	},
+	section: {
+		width: '100%',
+		marginBottom: 20,
+	},
+	sectionTitle: {
+		fontSize: 16,
+		fontWeight: 'bold',
+		color: '#4B5563',
+		marginBottom: 12,
+		paddingBottom: 4,
+		borderBottomWidth: 1,
+		borderBottomColor: '#E5E7EB',
+	},
 	scrollContent: {
 		padding: 20,
 		alignItems: 'center',
@@ -149,6 +219,12 @@ const styles = StyleSheet.create({
 		shadowRadius: 8,
 		elevation: 3,
 	},
+	cardTitle: {
+		fontSize: 15,
+		fontWeight: 'bold',
+		color: '#080A6C',
+		marginBottom: 8,
+	},
 	label: {
 		fontWeight: 'bold',
 		color: '#374151',
@@ -158,6 +234,7 @@ const styles = StyleSheet.create({
 	value: {
 		color: '#1F2937',
 		fontSize: 15,
+		marginBottom: 4,
 	},
 	errorText: {
 		color: '#DC2626',

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Platform, KeyboardAvoidingView, StyleSheet, TextInput, ScrollView, ActivityIndicator, Alert } from 'react-native';
-import MaskInput from 'react-native-mask-input';
-import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as ImagePicker from 'expo-image-picker';
+import { getStorage, ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 
 // Importações Firebase para o ambiente React (modular SDK)
 import { AUTH, DB } from '../../firebaseConfig';
@@ -10,15 +10,157 @@ import { ref, onValue, push, set } from 'firebase/database';
 
 // --- MOCKS DE DADOS ---
 const MOCK_SERVICOS = [
+    { id: 's1', nome: 'Atendimento Jurídico', collection: 'atendimento-juridico' },
     { id: 's2', nome: 'Balcão do Cidadão' },
-    { id: 's3', nome: 'Procuradoria da Mulher' },
-    { id: 's4', nome: 'Ouvidoria Municipal' },
-    { id: 's5', nome: 'Atendimento Jurídico' },
+    { id: 's3', nome: 'Ouvidoria Municipal', collection: 'ouvidoria' },
 ];
+
+// --- OPÇÕES PARA OS SELECTS DOS NOVOS FORMULÁRIOS ---
+const ASSUNTOS_JURIDICO = ['Direito Familiar', 'Questões de Vizinhança', 'Regularização de Imóveis', 'Outros'];
+const ASSUNTOS_BALCAO = ['Informações gerais', 'Solicitação de Documentos', 'Agendamento', 'Outros'];
+const TIPOS_MANIFESTACAO_OUVIDORIA = ['Reclamação', 'Sugestão', 'Denúncia', 'Elogio', 'Crítica', 'Outros'];
+const IDENTIFICACAO_OUVIDORIA = ['Identificar-se', 'Anônimo'];
+
+
+// --- FORMULÁRIO GENÉRICO ---
+const initialFormData = {
+    // Atendimento Jurídico
+    sobreAcontecimento: '', dataAcontecimento: '', cep: '', endereco: '', numero: '', bairro: '', cidade: '', assuntoJuridico: '', descricaoCaso: '',
+    // Balcão do Cidadão
+    assuntoBalcao: '', descricaoSolicitacao: '',
+    // Ouvidoria
+    tipoManifestacao: '', identificacao: 'Identificar-se', assuntoOuvidoria: '', descricaoNotificacao: '', dataFato: '', localFato: '', envolvidos: '',
+    // Agendamento Vereador
+    motivo: '',
+};
 
 const MOCK_HORARIOS = [
     '09:00', '10:00', '11:00', '14:00', '15:00', '16:00'
 ];
+
+// --- SUB-COMPONENTES DE FORMULÁRIO (Movidos para fora para evitar re-renderização) ---
+
+const FormAtendimentoJuridico = ({ formData, handleFormChange, openDropdown, setOpenDropdown }) => (
+    <>
+        <Text style={styles.label}>Sobre o acontecimento</Text>
+        <TextInput style={styles.input} value={formData.sobreAcontecimento} onChangeText={text => handleFormChange('sobreAcontecimento', text)} />
+        <Text style={styles.label}>Data do Acontecimento</Text>
+        <TextInput style={styles.input} placeholder="DD/MM/AAAA" value={formData.dataAcontecimento} onChangeText={text => handleFormChange('dataAcontecimento', text)} />
+        <Text style={styles.label}>CEP do local</Text>
+        <TextInput style={styles.input} keyboardType="numeric" value={formData.cep} onChangeText={text => handleFormChange('cep', text)} />
+        <Text style={styles.label}>Endereço</Text>
+        <TextInput style={styles.input} value={formData.endereco} onChangeText={text => handleFormChange('endereco', text)} />
+        <Text style={styles.label}>Número</Text>
+        <TextInput style={styles.input} keyboardType="numeric" value={formData.numero} onChangeText={text => handleFormChange('numero', text)} />
+        <Text style={styles.label}>Bairro</Text>
+        <TextInput style={styles.input} value={formData.bairro} onChangeText={text => handleFormChange('bairro', text)} />
+        <Text style={styles.label}>Cidade</Text>
+        <TextInput style={styles.input} value={formData.cidade} onChangeText={text => handleFormChange('cidade', text)} />
+        
+        <DropdownSimulado label="Assunto" id="assuntoJuridico" options={ASSUNTOS_JURIDICO} value={formData.assuntoJuridico} onChange={handleFormChange} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />
+
+        <Text style={styles.label}>Descreva seu caso</Text>
+        <TextInput style={styles.textarea} multiline value={formData.descricaoCaso} onChangeText={text => handleFormChange('descricaoCaso', text)} />
+    </>
+);
+
+const FormBalcaoCidadao = ({ formData, handleFormChange, openDropdown, setOpenDropdown }) => (
+    <>
+        <DropdownSimulado label="Assunto" id="assuntoBalcao" options={ASSUNTOS_BALCAO} value={formData.assuntoBalcao} onChange={handleFormChange} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />
+        <Text style={styles.label}>Descreva sua solicitação</Text>
+        <TextInput style={styles.textarea} multiline value={formData.descricaoSolicitacao} onChangeText={text => handleFormChange('descricaoSolicitacao', text)} />
+    </>
+);
+
+const FormOuvidoria = ({ formData, handleFormChange, openDropdown, setOpenDropdown, anexos, pickImage, setAnexos }) => (
+    <>
+        <DropdownSimulado label="Tipo de Manifestação" id="tipoManifestacao" options={TIPOS_MANIFESTACAO_OUVIDORIA} value={formData.tipoManifestacao} onChange={handleFormChange} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />
+        <DropdownSimulado label="Identificação" id="identificacao" options={IDENTIFICACAO_OUVIDORIA} value={formData.identificacao} onChange={handleFormChange} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />
+        
+        <Text style={styles.label}>Assunto</Text>
+        <TextInput style={styles.input} value={formData.assuntoOuvidoria} onChangeText={text => handleFormChange('assuntoOuvidoria', text)} />
+        
+        <Text style={styles.label}>Descrição detalhada da notificação</Text>
+        <TextInput style={styles.textarea} multiline value={formData.descricaoNotificacao} onChangeText={text => handleFormChange('descricaoNotificacao', text)} />
+        
+        <Text style={styles.label}>Data do fato</Text>
+        <TextInput style={styles.input} placeholder="DD/MM/AAAA" value={formData.dataFato} onChangeText={text => handleFormChange('dataFato', text)} />
+        
+        <Text style={styles.label}>Local do Fato</Text>
+        <TextInput style={styles.input} value={formData.localFato} onChangeText={text => handleFormChange('localFato', text)} />
+        
+        <Text style={styles.label}>Pessoas ou setores envolvidos</Text>
+        <TextInput style={styles.input} value={formData.envolvidos} onChangeText={text => handleFormChange('envolvidos', text)} />
+
+        <Text style={styles.label}>Anexar Arquivos (máx. 3)</Text>
+        <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
+            <Icon name="attach-file" size={20} color="#080A6C" />
+            <Text style={styles.uploadButtonText}>Selecionar Imagem (PDF, PNG, JPG)</Text>
+        </TouchableOpacity>
+        <View style={styles.anexosContainer}>
+            {anexos.map((anexo, index) => (
+                <View key={index} style={styles.anexoItem}>
+                    <Text style={styles.anexoText} numberOfLines={1}>{anexo.fileName || `imagem_${index + 1}.jpg`}</Text>
+                    <TouchableOpacity onPress={() => setAnexos(prev => prev.filter((_, i) => i !== index))}>
+                        <Icon name="close" size={18} color="#DC2626" />
+                    </TouchableOpacity>
+                </View>
+            ))}
+        </View>
+    </>
+);
+
+const FormAgendamentoVereador = ({ formData, handleFormChange, dataSelecionada, setDataSelecionada, datasDisponiveis, showDataPicker, setShowDataPicker, time, setTime }) => (
+    <>
+        <Text style={styles.label}>Data Desejada</Text>
+        <TouchableOpacity
+            style={styles.input}
+            onPress={() => setShowDataPicker(!showDataPicker)}>
+            <Text style={{ color: dataSelecionada ? '#1F2937' : '#9CA3AF', fontSize: 16 }} numberOfLines={1} ellipsizeMode="tail">
+                {datasDisponiveis.find(d => d.value === dataSelecionada)?.label || 'Selecione a data'}
+            </Text>
+            <Icon name="arrow-drop-down" size={24} color="#333" style={{ position: 'absolute', right: 12, top: 12 }} />
+        </TouchableOpacity>
+        {showDataPicker && (
+            <View style={{ backgroundColor: '#fff', borderRadius: 8, marginTop: 4, borderWidth: 1, borderColor: '#D1D5DB' }}>
+                {datasDisponiveis.map((d) => (
+                    <TouchableOpacity
+                        key={d.value + '-' + d.label}
+                        style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: '#F3F4F6' }}
+                        onPress={() => {
+                            setDataSelecionada(d.value);
+                            setShowDataPicker(false);
+                        }}
+                    >
+                        <Text style={{ fontSize: 16, color: '#1F2937' }}>{d.label}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+        )}
+
+        <Text style={styles.label}>Horários Disponíveis</Text>
+        <View style={styles.timeSlotsContainer}>
+            {MOCK_HORARIOS.map((slot) => (
+                <TouchableOpacity
+                    key={'horario-' + slot}
+                    style={[styles.timeSlot, time === slot && styles.timeSlotActive]}
+                    onPress={() => setTime(slot)}
+                >
+                    <Text style={[styles.timeSlotText, time === slot && styles.timeSlotTextActive]}>{slot}</Text>
+                </TouchableOpacity>
+            ))}
+        </View>
+        <Text style={styles.label}>Motivo do Contato / Assunto</Text>
+        <TextInput
+            style={styles.textarea}
+            placeholder="Breve descrição do motivo do agendamento"
+            value={formData.motivo}
+            onChangeText={text => handleFormChange('motivo', text)}
+            multiline
+            numberOfLines={4}
+        />
+    </>
+);
 
 // --- COMPONENTE PRINCIPAL ---
 const App = ({ navigation }) => {
@@ -39,11 +181,13 @@ const App = ({ navigation }) => {
     const [selectedItem, setSelectedItem] = useState(null);
 
     // Dados do formulário
-    const [date, setDate] = useState('');
     const [time, setTime] = useState(null);
     const [nome, setNome] = useState('');
     const [telefone, setTelefone] = useState('');
-    const [motivo, setMotivo] = useState('');
+    
+    // Novo estado para formulários dinâmicos
+    const [formData, setFormData] = useState(initialFormData);
+    const [anexos, setAnexos] = useState([]); // Para arquivos da ouvidoria
 
     const [loading, setLoading] = useState(false);
     const [profileLoading, setProfileLoading] = useState(true);
@@ -58,6 +202,9 @@ const App = ({ navigation }) => {
     const [datasDisponiveis, setDatasDisponiveis] = useState([]);
     const [dataSelecionada, setDataSelecionada] = useState('');
     const [showDataPicker, setShowDataPicker] = useState(false);
+    
+    // Estado para dropdowns dinâmicos
+    const [openDropdown, setOpenDropdown] = useState(null);
 
     // --- 1. SETUP FIREBASE E AUTENTICAÇÃO (USANDO firebaseConfig.js) ---
     useEffect(() => {
@@ -76,6 +223,8 @@ const App = ({ navigation }) => {
             setProfileLoading(false);
             return;
         }
+        setUserId(user.uid);
+        setIsAuthReady(true);
         const userRef = ref(DB, `users/${user.uid}`);
         const unsubscribe = onValue(userRef, (snapshot) => {
             if (snapshot.exists()) {
@@ -92,26 +241,29 @@ const App = ({ navigation }) => {
             setProfileLoading(false);
         });
         return () => unsubscribe();
-    }, [DB, AUTH?.currentUser]);
-
-    // --- 2. BUSCA DE DADOS DO PERFIL ---
-    // (Removido: Firestore não é usado, só RTDB)
+    }, []);
 
     // --- CARREGAMENTO DINÂMICO DOS VEREADORES ---
     useEffect(() => {
         if (mode === 'VEREADOR') {
             setVereadoresLoading(true);
             setVereadoresError('');
-            fetch('https://cmpacatuba.ce.gov.br/dadosabertosexportar?d=vereadores&a=&f=json&itens_por_pagina=20')
-                .then(res => res.json())
-                .then(data => {
-                    setVereadores(Array.isArray(data) ? data : []);
-                    setVereadoresLoading(false);
-                })
-                .catch(() => {
-                    setVereadoresError('Erro ao carregar vereadores. Tente novamente.');
-                    setVereadoresLoading(false);
-                });
+            const usersRef = ref(DB, 'users');
+            const unsubscribe = onValue(usersRef, (snapshot) => {
+                const usersData = snapshot.val();
+                if (usersData) {
+                    const vereadoresList = Object.keys(usersData)
+                        .map(key => ({ id: key, ...usersData[key] }))
+                        .filter(user => user.tipo === 'Vereador');
+                    setVereadores(vereadoresList);
+                }
+                setVereadoresLoading(false);
+            }, (error) => {
+                setVereadoresError('Erro ao carregar vereadores. Tente novamente.');
+                console.error(error);
+                setVereadoresLoading(false);
+            });
+            return () => unsubscribe();
         }
     }, [mode]);
 
@@ -143,48 +295,108 @@ const App = ({ navigation }) => {
         setError('');
     };
 
-    const handleFinalizeScheduling = async () => {
-        if (!nome || !telefone || !dataSelecionada || !time || !motivo) {
-            // Usa Alert do React Native em vez de alert()
-            Alert.alert('Campos obrigatórios', 'Por favor, preencha todos os campos obrigatórios.');
-            setError('Por favor, preencha todos os campos obrigatórios (Nome e telefone são preenchidos automaticamente pelo seu perfil).');
+    const handleFormChange = (field, value) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const pickImage = async () => {
+        if (anexos.length >= 3) {
+            Alert.alert("Limite atingido", "Você pode anexar no máximo 3 arquivos.");
             return;
         }
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 0.5,
+            base64: true,
+        });
 
+        if (!result.canceled) {
+            const file = result.assets[0];
+            if (file.fileSize > 2 * 1024 * 1024) { // 2MB
+                Alert.alert("Arquivo muito grande", "O arquivo deve ter no máximo 2MB.");
+                return;
+            }
+            setAnexos(prev => [...prev, file]);
+        }
+    };
+
+    const handleFinalizeScheduling = async () => {
         setLoading(true);
         setError('');
 
         const user = AUTH.currentUser;
         if (!user) {
-            setError('Usuário não autenticado. Faça login novamente.');
+            Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
             setLoading(false);
             return;
         }
 
-        const agendamentoData = {
+        let submissionData = {
             userId: user.uid,
             email: user.email,
             nome: nome,
             telefone: telefone,
-            dataSelecionada: datasDisponiveis.find(d => d.value === dataSelecionada)?.label || dataSelecionada,
-            time: time,
-            motivo: motivo,
-            nomeAgendado: selectedItem?.nome,
-            tipo: mode === 'VEREADOR' ? 'Vereador' : 'Serviço Público',
             status: 'Pendente',
             createdAt: new Date().toISOString(),
         };
+        let collectionName = 'meus-atendimentos'; // Default
+
+        if (mode === 'VEREADOR') {
+            if (!nome || !telefone || !dataSelecionada || !time || !formData.motivo) {
+                Alert.alert('Campos obrigatórios', 'Por favor, preencha todos os campos.');
+                setLoading(false);
+                return;
+            }
+            submissionData = {
+                ...submissionData,
+                dataSelecionada: datasDisponiveis.find(d => d.value === dataSelecionada)?.label || dataSelecionada,
+                time: time,
+                motivo: formData.motivo,
+                nomeAgendado: selectedItem?.nome,
+                tipo: 'Vereador',
+            };
+            collectionName = 'meus-atendimentos';
+        } else if (selectedItem?.id === 's1') { // Atendimento Jurídico
+            collectionName = 'atendimento-juridico';
+            submissionData = { ...submissionData, ...formData };
+        } else if (selectedItem?.id === 's2') { // Balcão do Cidadão
+            collectionName = 'balcao-cidadao';
+            submissionData = { ...submissionData, ...formData };
+        } else if (selectedItem?.id === 's3') { // Ouvidoria
+            collectionName = 'ouvidoria';
+            if (formData.identificacao === 'Anônimo') {
+                submissionData.nome = 'Anônimo';
+                submissionData.email = 'Anônimo';
+                submissionData.telefone = 'Anônimo';
+                submissionData.userId = 'Anônimo';
+            }
+
+            // Upload de anexos
+            const anexoUrls = [];
+            if (anexos.length > 0) {
+                const storage = getStorage();
+                for (const anexo of anexos) {
+                    const fileRef = storageRef(storage, `ouvidoria/${user.uid || 'anon'}/${Date.now()}_${anexo.fileName}`);
+                    const base64String = anexo.base64;
+                    await uploadString(fileRef, `data:image/jpeg;base64,${base64String}`, 'data_url');
+                    const downloadUrl = await getDownloadURL(fileRef);
+                    anexoUrls.push(downloadUrl);
+                }
+            }
+            submissionData = { ...submissionData, ...formData, anexoUrls };
+        }
 
         try {
-            // Ajuste: Salvar na coleção 'meus-atendimentos' para consistência com a tela de listagem.
-            const atendimentosRef = ref(DB, 'meus-atendimentos');
-            const newAgendamentoRef = push(atendimentosRef);
-            await set(newAgendamentoRef, agendamentoData);
+            const dbRef = ref(DB, collectionName);
+            const newItemRef = push(dbRef);
+            await set(newItemRef, submissionData);
             setLoading(false);
             setStep(3);
         } catch (error) {
-            console.error("Erro ao salvar agendamento: ", error);
-            setError('Ocorreu um erro ao salvar seu agendamento. Tente novamente.');
+            console.error("Erro ao salvar: ", error);
+            Alert.alert('Erro', 'Ocorreu um erro ao salvar. Tente novamente.');
             setLoading(false);
         }
     };
@@ -193,9 +405,9 @@ const App = ({ navigation }) => {
         setStep(1);
         setMode(null);
         setSelectedItem(null);
-        setDate('');
         setTime(null);
-        setMotivo('');
+        setFormData(initialFormData);
+        setAnexos([]);
         setError('');
     };
 
@@ -234,12 +446,12 @@ const App = ({ navigation }) => {
                                 <TouchableOpacity
                                     key={String(item.id || item.ID || item.nome || Math.random())}
                                     style={styles.itemButton}
-                                    onPress={() => handleSelectItem({
-                                        id: item.id || item.ID || item.id,
-                                        nome: item.NomeParlamentar
-                                    }, mode)}
+                                    onPress={() => handleSelectItem(
+                                        { id: item.id, nome: item.name }, // Ajustado para 'name' do user object
+                                        mode
+                                    )}
                                 >
-                                    <Text style={styles.itemText}>{item.NomeParlamentar}</Text>
+                                    <Text style={styles.itemText}>{item.name}</Text>
                                     <Text style={styles.itemSelectText}> &rarr;</Text>
                                 </TouchableOpacity>
 
@@ -260,69 +472,48 @@ const App = ({ navigation }) => {
                 </View>
             )}
 
-            {/* Exibi\u00e7\u00e3o do User ID (MANDAT\u00d3RIO em apps multiusu\u00e1rio) */}
-            {error && !db && <Text style={styles.errorText}>Erro Fatal: {error}</Text>}
+            {error && <Text style={styles.errorText}>{error}</Text>}
         </View>
     );
+
+    const renderFormForSelection = () => {
+        if (mode === 'VEREADOR') {
+            return <FormAgendamentoVereador 
+                formData={formData} handleFormChange={handleFormChange}
+                dataSelecionada={dataSelecionada} setDataSelecionada={setDataSelecionada}
+                datasDisponiveis={datasDisponiveis} showDataPicker={showDataPicker}
+                setShowDataPicker={setShowDataPicker} time={time} setTime={setTime}
+            />;
+        }
+        switch (selectedItem?.id) {
+            case 's1': // Atendimento Jurídico
+                return <FormAtendimentoJuridico formData={formData} handleFormChange={handleFormChange} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />;
+            case 's2': // Balcão do Cidadão
+                return <FormBalcaoCidadao formData={formData} handleFormChange={handleFormChange} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />;
+            case 's3': // Ouvidoria
+                return <FormOuvidoria 
+                    formData={formData} handleFormChange={handleFormChange} 
+                    openDropdown={openDropdown} setOpenDropdown={setOpenDropdown}
+                    anexos={anexos} pickImage={pickImage} setAnexos={setAnexos}
+                />;
+            default:
+                return <Text>Selecione um serviço.</Text>;
+        }
+    };
+
 
     // Etapa 2: Detalhes do Agendamento
     const renderStepTwo = () => (
         <View style={styles.card}>
-            <Text style={styles.headerText}>2. Detalhes do Agendamento</Text>
+            <Text style={styles.headerText}>2. Detalhes da Solicitação</Text>
 
             <View style={styles.infoBox}>
-                <Text style={styles.infoTitle}>Agendando com:</Text>
+                <Text style={styles.infoTitle}>Serviço Selecionado:</Text>
                 <Text style={styles.infoItem}>{selectedItem?.nome}</Text>
-                <Text style={styles.infoSubtitle}>Tipo: {mode === 'VEREADOR' ? 'Vereador' : 'Servi\u00e7o P\u00fablico'}</Text>
+                <Text style={styles.infoSubtitle}>Tipo: {mode === 'VEREADOR' ? 'Gabinete do Vereador' : 'Serviço Público'}</Text>
             </View>
 
-            <Text style={styles.label}>Data Desejada</Text>
-            <TouchableOpacity
-                style={styles.input}
-                onPress={() => setShowDataPicker(!showDataPicker)}>
-                <Text style={{ color: dataSelecionada ? '#1F2937' : '#9CA3AF', fontSize: 16 }} numberOfLines={1} ellipsizeMode="tail">
-                    {datasDisponiveis.find(d => d.value === dataSelecionada)?.label || 'Selecione a data'}
-                </Text>
-                <Icon name="arrow-drop-down" size={24} color="#333" style={{ position: 'absolute', right: 12, top: 12 }} />
-            </TouchableOpacity>
-            {showDataPicker && (
-                <View style={{ backgroundColor: '#fff', borderRadius: 8, marginTop: 4, borderWidth: 1, borderColor: '#D1D5DB' }}>
-                    {datasDisponiveis.map((d) => (
-                        <TouchableOpacity
-                            key={d.value + '-' + d.label}
-                            style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: '#F3F4F6' }}
-                            onPress={() => {
-                                setDataSelecionada(d.value);
-                                setShowDataPicker(false);
-                            }}
-                        >
-                            <Text style={{ fontSize: 16, color: '#1F2937' }}>{d.label}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </View>
-            )}
-
-            <Text style={styles.label}>Horários Disponíveis</Text>
-            <View style={styles.timeSlotsContainer}>
-                {MOCK_HORARIOS.map((slot) => (
-                    <TouchableOpacity
-                        key={'horario-' + slot}
-                        style={[styles.timeSlot, time === slot && styles.timeSlotActive]}
-                        onPress={() => setTime(slot)}
-                    >
-                        <Text style={[styles.timeSlotText, time === slot && styles.timeSlotTextActive]}>{slot}</Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-            <Text style={styles.label}>Motivo do Contato / Assunto</Text>
-            <TextInput
-                style={styles.textarea}
-                placeholder="Breve descrição do motivo do agendamento"
-                value={motivo}
-                onChangeText={setMotivo}
-                multiline
-                numberOfLines={4}
-            />
+            {renderFormForSelection()}
 
             {profileLoading ? (
                 <View style={styles.loadingProfileContainer}>
@@ -330,24 +521,25 @@ const App = ({ navigation }) => {
                     <Text style={styles.loadingProfileText}>Carregando dados do perfil...</Text>
                 </View>
             ) : (
-                <>
-                    <Text style={styles.label}>Nome</Text>
-                    <TextInput
-                        style={[styles.input, styles.inputDisabled]}
-                        placeholder="Nome"
-                        value={nome}
-                        editable={false}
-                    />
+                formData.identificacao !== 'Anônimo' && (
+                    <>
+                        <Text style={styles.label}>Nome (do seu perfil)</Text>
+                        <TextInput
+                            style={[styles.input, styles.inputDisabled]}
+                            placeholder="Nome"
+                            value={nome}
+                            editable={false}
+                        />
 
-                    <Text style={styles.label}>Telefone / WhatsApp</Text>
-                    <TextInput
-                        style={[styles.input, styles.inputDisabled]}
-                        placeholder="(00) 99999-9999"
-                        value={telefone}
-                        editable={false}
-                    />
-                   
-                </>
+                        <Text style={styles.label}>Telefone / WhatsApp (do seu perfil)</Text>
+                        <TextInput
+                            style={[styles.input, styles.inputDisabled]}
+                            placeholder="(00) 99999-9999"
+                            value={telefone}
+                            editable={false}
+                        />
+                    </>
+                )
             )}
 
             
@@ -362,7 +554,7 @@ const App = ({ navigation }) => {
                 {loading ? (
                     <ActivityIndicator size="small" color="#080A6C" />
                 ) : (
-                    <Text style={styles.finalizeButtonText}>Confirmar Agendamento</Text>
+                    <Text style={styles.finalizeButtonText}>Confirmar Solicitação</Text>
                 )}
             </TouchableOpacity>
 
@@ -372,27 +564,27 @@ const App = ({ navigation }) => {
         </View>
     );
 
-    // Etapa 3: Confirma\u00e7\u00e3o
+    // Etapa 3: Confirmação
     const renderStepThree = () => (
         <View style={styles.card}>
-            <Text style={styles.confirmationTitle}>Agendamento Realizado com Sucesso!</Text>
+            <Text style={styles.confirmationTitle}>Solicitação Enviada com Sucesso!</Text>
             <Text style={styles.confirmationSubtitle}>
-                Seu agendamento com <Text style={styles.confirmationHighlight}>{selectedItem?.nome}</Text> foi registrado.
+                Sua solicitação para <Text style={styles.confirmationHighlight}>{selectedItem?.nome}</Text> foi registrada.
                 Aguarde a confirmação e detalhes finais via telefone ou e-mail.
             </Text>
 
             <View style={styles.summaryBox}>
                 <Text style={styles.summaryTitle}>Detalhes:</Text>
-                <Text style={styles.summaryText}>&bull; Data: {datasDisponiveis.find(d => d.value === dataSelecionada)?.label} - {time}</Text>
-                <Text style={styles.summaryText}>&bull; Assunto: {motivo}</Text>
-                <Text style={styles.summaryText}>&bull; Contato: {telefone} (<Text style={{ fontWeight: 'bold' }}>{nome}</Text>)</Text>
+                {mode === 'VEREADOR' && <Text style={styles.summaryText}>&bull; Data: {datasDisponiveis.find(d => d.value === dataSelecionada)?.label} - {time}</Text>}
+                <Text style={styles.summaryText}>&bull; Assunto: {formData.motivo || formData.assuntoBalcao || formData.assuntoJuridico || formData.assuntoOuvidoria}</Text>
+                {formData.identificacao !== 'Anônimo' && <Text style={styles.summaryText}>&bull; Contato: {telefone} (<Text style={{ fontWeight: 'bold' }}>{nome}</Text>)</Text>}
             </View>
 
             <TouchableOpacity
                 style={styles.finalizeButton}
                 onPress={handleNewScheduling}
             >
-                <Text style={styles.finalizeButtonText}>Fazer Novo Agendamento</Text>
+                <Text style={styles.finalizeButtonText}>Fazer Nova Solicitação</Text>
             </TouchableOpacity>
         </View>
     );
@@ -431,6 +623,54 @@ const App = ({ navigation }) => {
         </KeyboardAvoidingView >
     );
 };
+
+// Componente Dropdown Simulado para manter a UI consistente
+const DropdownSimulado = React.memo(({ label, placeholder, options, value, onChange, id, openDropdown, setOpenDropdown }) => {
+    const isOpen = openDropdown === id;
+  
+    const handlePress = () => {
+      setOpenDropdown(isOpen ? null : id);
+    };
+  
+    const handleSelect = (option) => {
+      onChange(id, option);
+      setOpenDropdown(null);
+    };
+  
+    return (
+      <View style={[styles.inputGroupDropdown, isOpen && { zIndex: 100 }]}>
+        <Text style={styles.label}>{label}</Text>
+        <TouchableOpacity
+          style={[styles.dropdownContainer, isOpen && styles.dropdownOpen]}
+          onPress={handlePress}
+          activeOpacity={0.8}
+        >
+          <Text style={[styles.dropdownInput, value ? styles.dropdownSelectedText : styles.dropdownPlaceholderText]}>
+            {value || placeholder || 'Selecione...'}
+          </Text>
+          <Icon name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'} size={24} color="#6B7280" />
+        </TouchableOpacity>
+  
+        {isOpen && (
+          <View style={styles.dropdownOptionsList}>
+            <ScrollView style={{ maxHeight: 180 }}>
+              {options.map((opt, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.dropdownOptionItem}
+                  onPress={() => handleSelect(opt)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.dropdownOptionText}>{opt}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+      </View>
+    );
+  });
+
 
 // --- ESTILOS REACT NATIVE ---
 const styles = StyleSheet.create({
@@ -760,6 +1000,84 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         color: '#080A6C',
         fontWeight: '600',
+    },
+    // Estilos para Dropdown Simulado
+    inputGroupDropdown: {
+        marginBottom: 16,
+        zIndex: 1, // Padrão
+    },
+    dropdownContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderWidth: 1,
+        borderColor: '#D1D5DB',
+        borderRadius: 8,
+        height: 48,
+        backgroundColor: '#F3F4F6',
+        paddingHorizontal: 12,
+    },
+    dropdownOpen: {
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+        borderColor: '#080A6C',
+    },
+    dropdownInput: {
+        fontSize: 16,
+        flex: 1,
+    },
+    dropdownSelectedText: {
+        color: '#1F2937',
+    },
+    dropdownPlaceholderText: {
+        color: '#9CA3AF',
+    },
+    dropdownOptionsList: {
+        position: 'absolute',
+        top: 72, // Ajuste para label + input
+        left: 0,
+        right: 0,
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#080A6C',
+        borderTopWidth: 0,
+        borderBottomLeftRadius: 8,
+        borderBottomRightRadius: 8,
+        elevation: 10,
+        zIndex: 100,
+    },
+    dropdownOptionItem: {
+        padding: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#F3F4F6',
+    },
+    dropdownOptionText: {
+        fontSize: 16,
+        color: '#1F2937',
+    },
+    // Estilos para Upload de Arquivos
+    uploadButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#E6F0FF',
+        padding: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#080A6C',
+        borderStyle: 'dashed',
+        justifyContent: 'center',
+        marginBottom: 8,
+    },
+    uploadButtonText: {
+        marginLeft: 8,
+        color: '#080A6C',
+        fontWeight: '600',
+    },
+    anexosContainer: { marginTop: 8 },
+    anexoItem: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#F3F4F6', padding: 8, borderRadius: 6, marginBottom: 4 },
+    anexoText: {
+        color: '#374151',
+        flex: 1,
     },
 });
 
