@@ -40,13 +40,8 @@ const HomeScreen = ({ navigation }) => {
         fetchNews();
     }, []);
 
-    const handleSearchClick = () => {
-        setIsSearching(true);
-        Animated.timing(searchAnimation, {
-            toValue: 1,
-            duration: 300,
-            useNativeDriver: false,
-        }).start();
+    const handleNotificationPage = () => {
+        navigation.navigate('Notificacoes');
     };
 
     const handleCancelSearch = () => {
@@ -101,28 +96,15 @@ const HomeScreen = ({ navigation }) => {
                         />
                     </View>
                     <View style={styles.headerRight}>
-                        {/* <TouchableOpacity style={styles.iconButton}>
-                                <Ionicons name="notifications" size={25} color="#080A6C" />
-                            </TouchableOpacity> */}
-                        <Ionicons name="person-circle" size={35} color="#080A6C" style={styles.profileIcon} />
+                        <TouchableOpacity style={styles.iconButton} onPress={handleNotificationPage}>
+                             <Ionicons name="notifications" size={25} color="#080A6C" />
+                        </TouchableOpacity>
                     </View>
                 </View>
                 {/* Boas-vindas e Título */}
                 <Text style={styles.welcomeText}>Bem-vindo, Nome!</Text>
                 <Text style={styles.pageTitle}>Câmara Municipal de Pacatuba - CE</Text>
 
-                {/* Barra de Pesquisa */}
-                {/* <TouchableOpacity style={styles.searchBar} activeOpacity={1} onPress={handleSearchClick}>
-                    <Ionicons name="search" size={20} color="#999" />
-                    <TextInput
-                        style={styles.searchInput}
-                        placeholder="Pesquise o que você precisa."
-                        placeholderTextColor="#999"
-                        editable={false}
-                    />
-                </TouchableOpacity> */}
-
-                {/* Menu de Ícones */}
                 <View style={styles.iconMenu}>
                     <TouchableOpacity style={styles.menuItem} onPress={onVereadores}>
                         <View style={styles.menuIconContainer}>

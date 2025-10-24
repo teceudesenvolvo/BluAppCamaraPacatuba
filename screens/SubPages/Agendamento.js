@@ -29,13 +29,14 @@ const initialFormData = {
     // Balcão do Cidadão
     assuntoBalcao: '', descricaoSolicitacao: '',
     // Ouvidoria
-    tipoManifestacao: '', identificacao: 'Identificar-se', assuntoOuvidoria: '', descricaoNotificacao: '', dataFato: '', localFato: '', envolvidos: '',
+    tipoManifestacao: '', identificacao: 'Identificar-se', assuntoOuvidoria: '', descricaoNotificacao: '', dataFato: '', localFato: '', envolvidos: '', anexoUrls: [],
     // Agendamento Vereador
-    motivo: '',
+    assuntoVereador: '', horarioPreferencial: '', descricaoSolicitacaoVereador: '',
 };
 
-const MOCK_HORARIOS = [
-    '09:00', '10:00', '11:00', '14:00', '15:00', '16:00'
+const HORARIOS_PREFERENCIAIS = [
+    'Manhã 08:00 - 12:00',
+    'Tarde 13:00 - 14:00'
 ];
 
 // --- SUB-COMPONENTES DE FORMULÁRIO (Movidos para fora para evitar re-renderização) ---
@@ -110,7 +111,7 @@ const FormOuvidoria = ({ formData, handleFormChange, openDropdown, setOpenDropdo
     </>
 );
 
-const FormAgendamentoVereador = ({ formData, handleFormChange, dataSelecionada, setDataSelecionada, datasDisponiveis, showDataPicker, setShowDataPicker, time, setTime }) => (
+const FormAgendamentoVereador = ({ formData, handleFormChange, dataSelecionada, setDataSelecionada, datasDisponiveis, showDataPicker, setShowDataPicker, openDropdown, setOpenDropdown }) => (
     <>
         <Text style={styles.label}>Data Desejada</Text>
         <TouchableOpacity
@@ -138,24 +139,14 @@ const FormAgendamentoVereador = ({ formData, handleFormChange, dataSelecionada, 
             </View>
         )}
 
-        <Text style={styles.label}>Horários Disponíveis</Text>
-        <View style={styles.timeSlotsContainer}>
-            {MOCK_HORARIOS.map((slot) => (
-                <TouchableOpacity
-                    key={'horario-' + slot}
-                    style={[styles.timeSlot, time === slot && styles.timeSlotActive]}
-                    onPress={() => setTime(slot)}
-                >
-                    <Text style={[styles.timeSlotText, time === slot && styles.timeSlotTextActive]}>{slot}</Text>
-                </TouchableOpacity>
-            ))}
-        </View>
-        <Text style={styles.label}>Motivo do Contato / Assunto</Text>
+        <DropdownSimulado label="Horário Preferencial" id="horarioPreferencial" options={HORARIOS_PREFERENCIAIS} value={formData.horarioPreferencial} onChange={handleFormChange} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />
+
+        <Text style={styles.label}>Descrição da Solicitação</Text>
         <TextInput
             style={styles.textarea}
             placeholder="Breve descrição do motivo do agendamento"
-            value={formData.motivo}
-            onChangeText={text => handleFormChange('motivo', text)}
+            value={formData.descricaoSolicitacaoVereador}
+            onChangeText={text => handleFormChange('descricaoSolicitacaoVereador', text)}
             multiline
             numberOfLines={4}
         />
@@ -193,6 +184,7 @@ const App = ({ navigation }) => {
     const [profileLoading, setProfileLoading] = useState(true);
     const [error, setError] = useState('');
 
+    const [userProfile, setUserProfile] = useState(null); // Estado para guardar o perfil completo
     // --- ESTADO DINÂMICO DE VEREADORES ---
     const [vereadores, setVereadores] = useState([]);
     const [vereadoresLoading, setVereadoresLoading] = useState(false);
@@ -230,6 +222,7 @@ const App = ({ navigation }) => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 setNome(data.name || '');
+                setUserProfile(data); // Salva o perfil completo
                 setTelefone(data.phone || '');
             } else {
                 setNome('');
@@ -267,21 +260,22 @@ const App = ({ navigation }) => {
         }
     }, [mode]);
 
-    // Gere as próximas 30 datas úteis (sem finais de semana)
+    // Gere as datas disponíveis para o mês atual (sem sex, sab, dom)
     useEffect(() => {
         const hoje = new Date();
+        const ultimoDiaDoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
         const datas = [];
-        let count = 0;
         let dia = new Date(hoje);
-        while (datas.length < 30 && count < 60) {
-            if (dia.getDay() !== 0 && dia.getDay() !== 6) {
+
+        while (dia <= ultimoDiaDoMes) {
+            const diaDaSemana = dia.getDay();
+            if (diaDaSemana >= 1 && diaDaSemana <= 4) { // 1=Segunda, 4=Quinta
                 // Formato ISO para o value, e pt-BR para o label
                 const value = dia.toISOString().split('T')[0];
                 const label = dia.toLocaleDateString('pt-BR');
                 datas.push({ value, label });
             }
             dia.setDate(dia.getDate() + 1);
-            count++;
         }
         setDatasDisponiveis(datas);
         setDataSelecionada(datas[0]?.value || '');
@@ -341,29 +335,79 @@ const App = ({ navigation }) => {
             status: 'Pendente',
             createdAt: new Date().toISOString(),
         };
-        let collectionName = 'meus-atendimentos'; // Default
+        let collectionName;
 
         if (mode === 'VEREADOR') {
-            if (!nome || !telefone || !dataSelecionada || !time || !formData.motivo) {
+            if (!nome || !telefone || !dataSelecionada || !formData.horarioPreferencial || !formData.descricaoSolicitacaoVereador) {
                 Alert.alert('Campos obrigatórios', 'Por favor, preencha todos os campos.');
                 setLoading(false);
                 return;
             }
+            // Estrutura para Vereadores
             submissionData = {
-                ...submissionData,
-                dataSelecionada: datasDisponiveis.find(d => d.value === dataSelecionada)?.label || dataSelecionada,
-                time: time,
-                motivo: formData.motivo,
-                nomeAgendado: selectedItem?.nome,
-                tipo: 'Vereador',
+                dadosSolicitacao: {
+                    assunto: formData.assuntoVereador,
+                    dataPreferencial: datasDisponiveis.find(d => d.value === dataSelecionada)?.label || dataSelecionada,
+                    descricao: formData.descricaoSolicitacaoVereador,
+                    horarioPreferencial: formData.horarioPreferencial,
+                    tipoAtendimento: "Presencial", // Valor padrão
+                    vereadorId: selectedItem?.id,
+                    vereadorNome: selectedItem?.nome,
+                },
+                dadosUsuario: {
+                    email: user.email,
+                    id: user.uid,
+                    name: nome,
+                },
+                dataSolicitacao: Date.now(),
+                status: 'Pendente',
+                userId: user.uid,
             };
-            collectionName = 'meus-atendimentos';
+            collectionName = 'solicitacoes-vereadores';
         } else if (selectedItem?.id === 's1') { // Atendimento Jurídico
+            // Estrutura de dados corrigida para Atendimento Jurídico
             collectionName = 'atendimento-juridico';
-            submissionData = { ...submissionData, ...formData };
+            submissionData = {
+                dadosAcontecimento: {
+                    assunto: formData.assuntoJuridico,
+                    bairroAcontecimento: formData.bairro,
+                    cepAcontecimento: formData.cep,
+                    cidadeAcontecimento: formData.cidade,
+                    dataAcontecimento: formData.dataAcontecimento,
+                    descricao: formData.descricaoCaso,
+                    enderecoAcontecimento: formData.endereco,
+                    numeroAcontecimento: formData.numero,
+                },
+                dadosUsuario: {
+                    ...userProfile, // Inclui todos os dados do perfil do usuário
+                    id: user.uid,
+                    email: user.email,
+                    name: nome,
+                    phone: telefone,
+                },
+                dataSolicitacao: Date.now(),
+                status: 'Pendente',
+                messages: {}, // Inicia sem mensagens
+            };
         } else if (selectedItem?.id === 's2') { // Balcão do Cidadão
+            // Estrutura para Balcão do Cidadão
             collectionName = 'balcao-cidadao';
-            submissionData = { ...submissionData, ...formData };
+            submissionData = {
+                dadosSolicitacao: {
+                    assunto: formData.assuntoBalcao,
+                    descricao: formData.descricaoSolicitacao,
+                },
+                dadosUsuario: {
+                    ...userProfile,
+                    id: user.uid,
+                    email: user.email,
+                    name: nome,
+                    phone: telefone,
+                },
+                dataSolicitacao: Date.now(),
+                status: 'Em Análise',
+                userId: user.uid,
+            };
         } else if (selectedItem?.id === 's3') { // Ouvidoria
             collectionName = 'ouvidoria';
             if (formData.identificacao === 'Anônimo') {
@@ -371,6 +415,31 @@ const App = ({ navigation }) => {
                 submissionData.email = 'Anônimo';
                 submissionData.telefone = 'Anônimo';
                 submissionData.userId = 'Anônimo';
+            }
+
+            // Estrutura para Ouvidoria
+            submissionData = {
+                dadosManifestacao: {
+                    assunto: formData.assuntoOuvidoria,
+                    dataFato: formData.dataFato,
+                    descricao: formData.descricaoNotificacao,
+                    envolvidos: formData.envolvidos,
+                    identificacao: formData.identificacao === 'Identificar-se' ? 'identificado' : 'anonimo',
+                    localFato: formData.localFato,
+                    tipoManifestacao: formData.tipoManifestacao,
+                },
+                dadosUsuario: {
+                    ...userProfile,
+                    id: user.uid,
+                    email: user.email,
+                    name: nome,
+                    phone: telefone,
+                    identificacao: formData.identificacao === 'Identificar-se' ? 'Identificado' : 'Anônimo',
+                },
+                dataManifestacao: Date.now(),
+                status: 'Recebida',
+                userId: user.uid,
+                anexoUrls: [], // Será preenchido abaixo
             }
 
             // Upload de anexos
@@ -385,7 +454,7 @@ const App = ({ navigation }) => {
                     anexoUrls.push(downloadUrl);
                 }
             }
-            submissionData = { ...submissionData, ...formData, anexoUrls };
+            submissionData.anexoUrls = anexoUrls;
         }
 
         try {
@@ -481,8 +550,8 @@ const App = ({ navigation }) => {
             return <FormAgendamentoVereador 
                 formData={formData} handleFormChange={handleFormChange}
                 dataSelecionada={dataSelecionada} setDataSelecionada={setDataSelecionada}
-                datasDisponiveis={datasDisponiveis} showDataPicker={showDataPicker}
-                setShowDataPicker={setShowDataPicker} time={time} setTime={setTime}
+                datasDisponiveis={datasDisponiveis} showDataPicker={showDataPicker} setShowDataPicker={setShowDataPicker}
+                openDropdown={openDropdown} setOpenDropdown={setOpenDropdown}
             />;
         }
         switch (selectedItem?.id) {
@@ -575,8 +644,8 @@ const App = ({ navigation }) => {
 
             <View style={styles.summaryBox}>
                 <Text style={styles.summaryTitle}>Detalhes:</Text>
-                {mode === 'VEREADOR' && <Text style={styles.summaryText}>&bull; Data: {datasDisponiveis.find(d => d.value === dataSelecionada)?.label} - {time}</Text>}
-                <Text style={styles.summaryText}>&bull; Assunto: {formData.motivo || formData.assuntoBalcao || formData.assuntoJuridico || formData.assuntoOuvidoria}</Text>
+                {mode === 'VEREADOR' && <Text style={styles.summaryText}>&bull; Data: {datasDisponiveis.find(d => d.value === dataSelecionada)?.label} - {formData.horarioPreferencial}</Text>}
+                <Text style={styles.summaryText}>&bull; Assunto: {formData.assuntoVereador || formData.assuntoBalcao || formData.assuntoJuridico || formData.assuntoOuvidoria}</Text>
                 {formData.identificacao !== 'Anônimo' && <Text style={styles.summaryText}>&bull; Contato: {telefone} (<Text style={{ fontWeight: 'bold' }}>{nome}</Text>)</Text>}
             </View>
 

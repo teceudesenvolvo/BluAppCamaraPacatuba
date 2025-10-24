@@ -41,7 +41,7 @@ const MainApp = () => {
                     if (route.name === 'Inicio') {
                         iconName = focused ? 'home' : 'home-outline';
                     } else if (route.name === 'Notificacoes') {
-                        iconName = focused ? 'notifications' : 'notifications-outline';
+                        iconName = focused ? 'woman' : 'woman-outline';
                     } else if (route.name === 'MeusAgendamento') {
                         iconName = focused ? 'add-circle' : 'add-circle-outline';
                     } else if (route.name === 'Perfil') {

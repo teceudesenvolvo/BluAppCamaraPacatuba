@@ -11,11 +11,12 @@ const AtendimentoCard = ({ item, type }) => {
 	switch (type) {
 		case 'vereadores':
 			details = {
-				title: item.nomeAgendado || 'Agendamento com Vereador',
+				title: item.nomeAgendado || 'Solicitação para Vereador',
 				fields: [
-					{ label: 'Data', value: item.dataSelecionada },
-					{ label: 'Horário', value: item.time },
-					{ label: 'Motivo', value: item.motivo },
+					{ label: 'Assunto', value: item.assunto },
+					{ label: 'Data Preferencial', value: item.dataPreferencial },
+					{ label: 'Horário Preferencial', value: item.horarioPreferencial },
+					{ label: 'Descrição', value: item.descricao },
 				],
 				status: item.status || 'Pendente'
 			};
@@ -90,8 +91,8 @@ const MeusAgendamentos = ({ navigation }) => {
 			juridico: 'atendimento-juridico',
 			balcao: 'balcao-cidadao',
 			ouvidoria: 'ouvidoria',
-			// Agendamentos com vereadores são salvos em 'meus-atendimentos'
-			vereadores: 'meus-atendimentos',
+			// Solicitações para vereadores são salvas em 'solicitacoes-vereadores'
+			vereadores: 'solicitacoes-vereadores',
 		};
 
 		const listeners = Object.keys(collections).map(category => {
@@ -133,9 +134,7 @@ const MeusAgendamentos = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				<TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-					<Icon name="arrow-back" size={24} color="#000" />
-				</TouchableOpacity>
+				
 				<Text style={styles.headerTitle}>Meus Atendimentos</Text>
 			</View>
 			{loading ? (
