@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Activit
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AUTH, DB } from '../../firebaseConfig';
 import { ref, onValue, push, set } from 'firebase/database';
-import * as Location from 'expo-location';
 
 const AtendimentoCard = ({ item }) => (
     <View style={styles.atendimentoCard}>
@@ -17,11 +16,25 @@ const AtendimentoCard = ({ item }) => (
 const ProcuradoriaMulherScreen = ({ navigation }) => {
     const [atendimentos, setAtendimentos] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showFemaleSpecificButtons, setShowFemaleSpecificButtons] = useState(false);
 
     useEffect(() => {
         // Use onAuthStateChanged for robust auth state listening
         const authUnsubscribe = AUTH.onAuthStateChanged(user => {
             if (user) {
+                // 1. Buscar o perfil do usuário para verificar o sexo
+                const userProfileRef = ref(DB, `users/${user.uid}`);
+                const profileUnsubscribe = onValue(userProfileRef, (profileSnapshot) => {
+                    if (profileSnapshot.exists()) {
+                        const profileData = profileSnapshot.val();
+                        // Condição para mostrar o botão do pânico
+                        setShowFemaleSpecificButtons(profileData.sexo === 'feminino');
+                    } else {
+                        setShowFemaleSpecificButtons(false);
+                    }
+                });
+
+                // 2. Buscar os atendimentos do usuário
                 const atendimentosRef = ref(DB, 'procuradoria-mulher');
                 const dbUnsubscribe = onValue(atendimentosRef, (snapshot) => {
                     const data = snapshot.val();
@@ -38,11 +51,15 @@ const ProcuradoriaMulherScreen = ({ navigation }) => {
                 });
 
                 // Return the database listener cleanup function
-                return () => dbUnsubscribe();
+                return () => {
+                    profileUnsubscribe();
+                    dbUnsubscribe();
+                };
             } else {
                 // No user is signed in
                 setAtendimentos([]);
                 setLoading(false);
+                setShowFemaleSpecificButtons(false);
             }
         });
 
@@ -52,7 +69,7 @@ const ProcuradoriaMulherScreen = ({ navigation }) => {
     const handlePanicButton = async () => {
         Alert.alert(
             "Confirmar Ação",
-            "Deseja realmente acionar o Botão do Pânico? Um alerta será enviado ao seu contato de confiança.",
+            "Deseja realmente acionar o Botão do Pânico? Um alerta (sem localização) será enviado.",
             [
                 { text: "Cancelar", style: "cancel" },
                 {
@@ -64,26 +81,14 @@ const ProcuradoriaMulherScreen = ({ navigation }) => {
                             return;
                         }
 
-                        // 1. Pedir permissão de localização
-                        let { status } = await Location.requestForegroundPermissionsAsync();
-                        if (status !== 'granted') {
-                            Alert.alert('Permissão Negada', 'A permissão de localização é necessária para o botão do pânico.');
-                            return;
-                        }
-
-                        // 2. Obter localização
-                        let location = await Location.getCurrentPositionAsync({});
-                        const { latitude, longitude } = location.coords;
-
-                        // 3. Gerar protocolo
+                        // Gerar protocolo
                         const protocolo = `PANICO-${Date.now()}${Math.floor(Math.random() * 1000)}`;
 
-                        // 4. Montar dados do alerta
+                        // Montar dados do alerta (sem coordenadas)
                         const alertaData = {
                             protocolo,
                             userId: user.uid,
                             userEmail: user.email,
-                            coordenadas: { latitude, longitude },
                             timestamp: new Date().toISOString(),
                         };
 
@@ -117,14 +122,18 @@ const ProcuradoriaMulherScreen = ({ navigation }) => {
                 contentContainerStyle={styles.scrollContent}
                 ListHeaderComponent={
                     <>
-                        <TouchableOpacity style={styles.panicButton} onPress={handlePanicButton}>
-                            <Icon name="crisis-alert" size={30} color="#fff" />
-                            <Text style={styles.panicButtonText}>Botão do Pânico</Text>
-                        </TouchableOpacity>
+                        {showFemaleSpecificButtons && (
+                            <>
+                                <TouchableOpacity style={styles.panicButton} onPress={handlePanicButton}>
+                                    <Icon name="crisis-alert" size={30} color="#fff" />
+                                    <Text style={styles.panicButtonText}>Botão do Pânico</Text>
+                                </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.contactButton} onPress={() => navigation.navigate('ContatoConfianca')}>
-                            <Text style={styles.contactButtonText}>Gerenciar Contato de Confiança</Text>
-                        </TouchableOpacity>
+                                <TouchableOpacity style={styles.contactButton} onPress={() => navigation.navigate('ContatoConfianca')}>
+                                    <Text style={styles.contactButtonText}>Gerenciar Contato de Confiança</Text>
+                                </TouchableOpacity>
+                            </>
+                        )}
 
                         <View style={styles.card}>
                             <Text style={styles.title}>O que é a Procuradoria da Mulher?</Text>
@@ -291,7 +300,7 @@ const styles = StyleSheet.create({
     fab: {
         position: 'absolute',
         right: 20,
-        bottom: 90, // Ajustado para não ficar sobre a tab bar
+        bottom: '12%', // Ajustado para não ficar sobre a tab bar
         backgroundColor: '#b100a8',
         width: 60,
         height: 60,

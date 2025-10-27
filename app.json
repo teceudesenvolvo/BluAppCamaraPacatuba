@@ -30,17 +30,7 @@
     "extra": {
       "eas": {
         "projectId": "876c5eb3-85b0-4feb-bbee-5f31981049c2"
-      },
-      "plugins": [
-        [
-          "expo-location",
-          {
-            "locationWhenInUsePermission": "Sua localização é necessária para o botão do pânico enviar um alerta preciso.",
-            "isAndroidBackgroundLocationEnabled": true,
-            "isAndroidForegroundServiceEnabled": true
-          }
-        ]
-      ]
+      }
     }
   }
 }

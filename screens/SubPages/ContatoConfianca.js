@@ -37,7 +37,12 @@ const ContatoConfiancaScreen = ({ navigation }) => {
 
         setSaving(true);
         try {
-            await set(contatoRef, contato);
+            const dataToSave = {
+                ...contato,
+                userId: user.uid,
+                userEmail: user.email,
+            };
+            await set(contatoRef, dataToSave);
             setSaving(false);
             Alert.alert("Sucesso", "Contato de confiança salvo!");
             navigation.goBack();
