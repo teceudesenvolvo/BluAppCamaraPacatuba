@@ -37,19 +37,20 @@ const MainApp = () => {
                 tabBarShowLabel: false,
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
+                    let iconColor = focused ? '#FFB800' : '#808080';
 
                     if (route.name === 'Inicio') {
                         iconName = focused ? 'home' : 'home-outline';
                     } else if (route.name === 'Procuradoria') {
                         iconName = focused ? 'woman' : 'woman-outline';
-                        color = focused ? '#d911fcff !important' : '#808080';
+                        iconColor = focused ? '#d911fc' : '#808080';
                     } else if (route.name === 'MeusAgendamento') {
                         iconName = focused ? 'add-circle' : 'add-circle-outline';
                     } else if (route.name === 'Perfil') {
                         iconName = focused ? 'person' : 'person-outline';
                     }
 
-                    return <Ionicons name={iconName} size={25} color={focused ? '#FFB800' : '#808080'} />;
+                    return <Ionicons name={iconName} size={25} color={iconColor} />;
                 },
             })}
         >
