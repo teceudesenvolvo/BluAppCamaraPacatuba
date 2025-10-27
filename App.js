@@ -19,6 +19,10 @@ import VereadoresScreen from './screens/SubPages/Vereadores';
 import ProconScreen from './screens/SubPages/Procon';
 import TvCamaraScreen from './screens/SubPages/TvCamara';
 import LicitacoesScreen from './screens/SubPages/Licitacoes';
+import ProcuradoriaMulherScreen from './screens/SubPages/ProcuradoriaMulher';
+import NotificacoesScreen from './screens/SubPages/Notificacoes';
+import FormProcuradoriaScreen from './screens/SubPages/FormProcuradoria';
+import ContatoConfiancaScreen from './screens/SubPages/ContatoConfianca';
 
 // Página Agendamento
 import AgendamentosScreen from './screens/SubPages/Agendamento'
@@ -78,6 +82,10 @@ const AppWrapper = () => {
         <Stack.Screen name='Procon' component={ProconScreen} options={{headerShown: false}}/>
         <Stack.Screen name='TvCamara' component={TvCamaraScreen} options={{headerShown: false}}/>
         <Stack.Screen name='Licitacoes' component={LicitacoesScreen} options={{headerShown: false}}/>
+        <Stack.Screen name='ProcuradoriaMulher' component={ProcuradoriaMulherScreen} options={{headerShown: false}}/>
+        <Stack.Screen name='Notificacoes' component={NotificacoesScreen} options={{headerShown: false}}/>
+        <Stack.Screen name='FormProcuradoria' component={FormProcuradoriaScreen} options={{headerShown: false}}/>
+        <Stack.Screen name='ContatoConfianca' component={ContatoConfiancaScreen} options={{headerShown: false}}/>
 
         {/* Página Agendamento */}
         <Stack.Screen name='Agendamento' component={AgendamentosScreen} options={{headerShown: false}}/>

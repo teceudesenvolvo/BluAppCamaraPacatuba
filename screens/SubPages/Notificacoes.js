@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const notificationsData = [
     // { id: '1', title: '', body: '', date: '' },
@@ -13,9 +14,12 @@ const NotificationItem = ({ title, body, date }) => (
     </View>
 );
 
-const NotificacoesScreen = () => {
+const NotificacoesScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
+             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                <Icon name="arrow-back" size={24} color="#000" />
+            </TouchableOpacity>
             <Text style={styles.headerTitle}>Notificações</Text>
             <FlatList
                 data={notificationsData}
@@ -42,12 +46,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
         padding: 20,
         marginTop: '15%',
+        textAlign: 'center',
+    },
+    backButton: {
+        position: 'absolute',
+        top: 20,
+        left: 20,
+        zIndex: 1,
     },
     headerTitle: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#333',
         marginBottom: 20,
+        textAlign: 'center',
     },
     listContainer: {
         paddingBottom: 20,

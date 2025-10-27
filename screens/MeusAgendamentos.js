@@ -7,45 +7,46 @@ import { ref, query, orderByChild, equalTo, onValue } from 'firebase/database';
 // --- COMPONENTE DE CARD REUTILIZÁVEL ---
 const AtendimentoCard = ({ item, type }) => {
 	// Adapta os campos com base no tipo de atendimento
+	// Ajustado para a nova estrutura de dados (ex: item.dadosSolicitacao)
 	let details = {};
 	switch (type) {
 		case 'vereadores':
 			details = {
-				title: item.nomeAgendado || 'Solicitação para Vereador',
+				title: item.dadosSolicitacao?.vereadorNome || 'Solicitação para Vereador',
 				fields: [
-					{ label: 'Assunto', value: item.assunto },
-					{ label: 'Data Preferencial', value: item.dataPreferencial },
-					{ label: 'Horário Preferencial', value: item.horarioPreferencial },
-					{ label: 'Descrição', value: item.descricao },
+					{ label: 'Assunto', value: item.dadosSolicitacao?.assunto },
+					{ label: 'Data Preferencial', value: item.dadosSolicitacao?.dataPreferencial },
+					{ label: 'Horário', value: item.dadosSolicitacao?.horarioPreferencial },
+					{ label: 'Descrição', value: item.dadosSolicitacao?.descricao },
 				],
 				status: item.status || 'Pendente'
 			};
 			break;
 		case 'juridico':
 			details = {
-				title: item.assuntoJuridico || 'Atendimento Jurídico',
+				title: item.dadosAcontecimento?.assunto || 'Atendimento Jurídico',
 				fields: [
-					{ label: 'Data do Acontecimento', value: item.dataAcontecimento },
-					{ label: 'Descrição', value: item.descricaoCaso },
+					{ label: 'Data do Fato', value: item.dadosAcontecimento?.dataAcontecimento },
+					{ label: 'Descrição', value: item.dadosAcontecimento?.descricao },
 				],
 				status: item.status || 'Recebido'
 			};
 			break;
 		case 'balcao':
 			details = {
-				title: item.assuntoBalcao || 'Balcão do Cidadão',
+				title: item.dadosSolicitacao?.assunto || 'Balcão do Cidadão',
 				fields: [
-					{ label: 'Solicitação', value: item.descricaoSolicitacao },
+					{ label: 'Solicitação', value: item.dadosSolicitacao?.descricao },
 				],
 				status: item.status || 'Recebido'
 			};
 			break;
 		case 'ouvidoria':
 			details = {
-				title: item.tipoManifestacao || 'Ouvidoria',
+				title: item.dadosManifestacao?.tipoManifestacao || 'Ouvidoria',
 				fields: [
-					{ label: 'Assunto', value: item.assuntoOuvidoria },
-					{ label: 'Descrição', value: item.descricaoNotificacao },
+					{ label: 'Assunto', value: item.dadosManifestacao?.assunto },
+					{ label: 'Descrição', value: item.dadosManifestacao?.descricao },
 				],
 				status: item.status || 'Recebido'
 			};
@@ -78,6 +79,7 @@ const MeusAgendamentos = ({ navigation }) => {
 	});
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
+	const [activeTab, setActiveTab] = useState('vereadores');
 
 	useEffect(() => {
 		const user = AUTH.currentUser;
@@ -121,36 +123,52 @@ const MeusAgendamentos = ({ navigation }) => {
 
 	const totalAtendimentos = Object.values(atendimentos).reduce((sum, list) => sum + list.length, 0);
 
-	const renderSection = (title, data, type) => {
-		if (data.length === 0) return null;
+	const renderContent = () => {
+		const data = atendimentos[activeTab];
+		const type = activeTab;
+
+		if (loading) {
+			return <View style={styles.centered}><ActivityIndicator size="large" color="#080A6C" /></View>;
+		}
+		if (error) {
+			return <View style={styles.centered}><Text style={styles.errorText}>{error}</Text></View>;
+		}
+		if (totalAtendimentos === 0) {
+			return <View style={styles.centered}><Text>Nenhum atendimento encontrado.</Text></View>;
+		}
+		if (data.length === 0) {
+			return <View style={styles.centered}><Text>Nenhum atendimento nesta categoria.</Text></View>;
+		}
+
 		return (
-			<View style={styles.section}>
-				<Text style={styles.sectionTitle}>{title}</Text>
+			<ScrollView contentContainerStyle={styles.scrollContent}>
 				{data.map(item => <AtendimentoCard key={item.id} item={item} type={type} />)}
-			</View>
+			</ScrollView>
 		);
 	};
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				
 				<Text style={styles.headerTitle}>Meus Atendimentos</Text>
 			</View>
-			{loading ? (
-				<View style={styles.centered}><ActivityIndicator size="large" color="#080A6C" /></View>
-			) : error ? (
-				<View style={styles.centered}><Text style={styles.errorText}>{error}</Text></View>
-			) : totalAtendimentos === 0 ? (
-				<View style={styles.centered}><Text>Nenhum atendimento encontrado.</Text></View>
-			) : (
-				<ScrollView contentContainerStyle={styles.scrollContent}>
-					{renderSection('Agendamentos com Vereadores', atendimentos.vereadores, 'vereadores')}
-					{renderSection('Atendimento Jurídico', atendimentos.juridico, 'juridico')}
-					{renderSection('Balcão do Cidadão', atendimentos.balcao, 'balcao')}
-					{renderSection('Ouvidoria', atendimentos.ouvidoria, 'ouvidoria')}
-				</ScrollView>
-			)}
+
+			<View style={styles.tabContainer}>
+				<TouchableOpacity style={[styles.tab, activeTab === 'vereadores' && styles.activeTab]} onPress={() => setActiveTab('vereadores')}>
+					<Text style={[styles.tabText, activeTab === 'vereadores' && styles.activeTabText]}>Vereadores</Text>
+				</TouchableOpacity>
+				<TouchableOpacity style={[styles.tab, activeTab === 'juridico' && styles.activeTab]} onPress={() => setActiveTab('juridico')}>
+					<Text style={[styles.tabText, activeTab === 'juridico' && styles.activeTabText]}>Jurídico</Text>
+				</TouchableOpacity>
+				<TouchableOpacity style={[styles.tab, activeTab === 'balcao' && styles.activeTab]} onPress={() => setActiveTab('balcao')}>
+					<Text style={[styles.tabText, activeTab === 'balcao' && styles.activeTabText]}>Balcão</Text>
+				</TouchableOpacity>
+				<TouchableOpacity style={[styles.tab, activeTab === 'ouvidoria' && styles.activeTab]} onPress={() => setActiveTab('ouvidoria')}>
+					<Text style={[styles.tabText, activeTab === 'ouvidoria' && styles.activeTabText]}>Ouvidoria</Text>
+				</TouchableOpacity>
+			</View>
+
+			{renderContent()}
 
 			{/* Botão flutuante para novo agendamento */}
 			<TouchableOpacity
@@ -189,6 +207,34 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
 	},
+	tabContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		backgroundColor: '#fff',
+		paddingVertical: 10,
+		borderBottomWidth: 1,
+		borderBottomColor: '#E5E7EB',
+	},
+	tab: {
+		paddingHorizontal: 16,
+		paddingVertical: 8,
+		borderRadius: 20,
+	},
+	activeTab: {
+		backgroundColor: '#080A6C',
+	},
+	tabText: {
+		color: '#4B5563',
+		fontWeight: '600',
+		fontSize: 13,
+	},
+	activeTabText: {
+		color: '#fff',
+	},
+	scrollContent: {
+		padding: 20,
+		alignItems: 'center',
+	},
 	section: {
 		width: '100%',
 		marginBottom: 20,
@@ -201,10 +247,6 @@ const styles = StyleSheet.create({
 		paddingBottom: 4,
 		borderBottomWidth: 1,
 		borderBottomColor: '#E5E7EB',
-	},
-	scrollContent: {
-		padding: 20,
-		alignItems: 'center',
 	},
 	card: {
 		width: '100%',

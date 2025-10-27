@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from './screens/Inicio';
 import MeusAgendamentoScreen from './screens/MeusAgendamentos';
 import PerfilScreen from './screens/Perfil';
-import NotificationsScreen from './screens/Notificacoes';
+import ProcuradoriaMulherScreen from './screens/SubPages/ProcuradoriaMulher';
 
 const Tab = createBottomTabNavigator();
 
@@ -40,8 +40,9 @@ const MainApp = () => {
 
                     if (route.name === 'Inicio') {
                         iconName = focused ? 'home' : 'home-outline';
-                    } else if (route.name === 'Notificacoes') {
+                    } else if (route.name === 'Procuradoria') {
                         iconName = focused ? 'woman' : 'woman-outline';
+                        color = focused ? '#d911fcff !important' : '#808080';
                     } else if (route.name === 'MeusAgendamento') {
                         iconName = focused ? 'add-circle' : 'add-circle-outline';
                     } else if (route.name === 'Perfil') {
@@ -54,7 +55,7 @@ const MainApp = () => {
         >
             <Tab.Screen name="Inicio" component={HomeScreen} />
             <Tab.Screen name="MeusAgendamento" component={MeusAgendamentoScreen} />
-            <Tab.Screen name="Notificacoes" component={NotificationsScreen} />
+            <Tab.Screen name="Procuradoria" component={ProcuradoriaMulherScreen} />
             <Tab.Screen name="Perfil" component={PerfilScreen} />
         </Tab.Navigator>
     );
