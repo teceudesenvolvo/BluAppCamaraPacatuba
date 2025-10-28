@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, ActivityIndicator, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AUTH, DB } from '../../firebaseConfig';
-import { ref, onValue, push, set } from 'firebase/database';
+import { ref, onValue, push, set, get, query, orderByChild, equalTo } from 'firebase/database';
 
 const AtendimentoCard = ({ item }) => (
     <View style={styles.atendimentoCard}>
@@ -20,40 +20,38 @@ const ProcuradoriaMulherScreen = ({ navigation }) => {
 
     useEffect(() => {
         // Use onAuthStateChanged for robust auth state listening
-        const authUnsubscribe = AUTH.onAuthStateChanged(user => {
+        const unsubscribeAuth = AUTH.onAuthStateChanged(user => {
             if (user) {
-                // 1. Buscar o perfil do usuário para verificar o sexo
+                // Se o usuário estiver logado, configure os listeners para perfil e atendimentos
                 const userProfileRef = ref(DB, `users/${user.uid}`);
-                const profileUnsubscribe = onValue(userProfileRef, (profileSnapshot) => {
+                const atendimentosRef = ref(DB, 'procuradoria-mulher');
+
+                const unsubscribeProfile = onValue(userProfileRef, (profileSnapshot) => {
                     if (profileSnapshot.exists()) {
                         const profileData = profileSnapshot.val();
-                        // Condição para mostrar o botão do pânico
                         setShowFemaleSpecificButtons(profileData.sexo === 'feminino');
                     } else {
                         setShowFemaleSpecificButtons(false);
                     }
                 });
 
-                // 2. Buscar os atendimentos do usuário
-                const atendimentosRef = ref(DB, 'procuradoria-mulher');
-                const dbUnsubscribe = onValue(atendimentosRef, (snapshot) => {
+                const unsubscribeAtendimentos = onValue(atendimentosRef, (snapshot) => {
                     const data = snapshot.val();
-                    if (data) {
-                        const userAtendimentos = Object.keys(data)
-                            .map(key => ({ id: key, ...data[key] }))
-                            .filter(item => item.dadosUsuario?.id === user.uid)
-                            .reverse();
-                        setAtendimentos(userAtendimentos);
-                    } else {
-                        setAtendimentos([]);
-                    }
+                    const userAtendimentos = data
+                        ? Object.keys(data)
+                              .map(key => ({ id: key, ...data[key] }))
+                              .filter(item => item.dadosUsuario?.id === user.uid)
+                              .reverse()
+                        : [];
+                    setAtendimentos(userAtendimentos);
                     setLoading(false);
                 });
 
-                // Return the database listener cleanup function
+                // Retorna uma função de limpeza que desinscreve de ambos os listeners
+                // quando o usuário faz logout ou o componente é desmontado.
                 return () => {
-                    profileUnsubscribe();
-                    dbUnsubscribe();
+                    unsubscribeProfile();
+                    unsubscribeAtendimentos();
                 };
             } else {
                 // No user is signed in
@@ -63,7 +61,7 @@ const ProcuradoriaMulherScreen = ({ navigation }) => {
             }
         });
 
-        return () => authUnsubscribe(); // Cleanup auth listener on component unmount
+        return () => unsubscribeAuth(); // Limpa o listener de autenticação ao desmontar
     }, []);
 
     const handlePanicButton = async () => {
@@ -80,6 +78,41 @@ const ProcuradoriaMulherScreen = ({ navigation }) => {
                             Alert.alert("Erro", "Usuário não autenticado.");
                             return;
                         }
+
+                        // --- INÍCIO DA LÓGICA DE NOTIFICAÇÃO ---
+
+                        // 1. Buscar o contato de confiança
+                        const contatoRef = ref(DB, `procuradoria-mulher-btn-panico/${user.uid}/contato`);
+                        const contatoSnapshot = await get(contatoRef);
+
+                        if (!contatoSnapshot.exists()) {
+                            Alert.alert("Aviso", "Você não possui um contato de confiança cadastrado para notificar.");
+                            // Continuar mesmo sem contato? Decisão de negócio. Por ora, vamos continuar.
+                        } else {
+                            const contatoEmail = contatoSnapshot.val().email;
+
+                            // 2. Encontrar o usuário do contato pelo e-mail
+                            const usersRef = ref(DB, 'users');
+                            const q = query(usersRef, orderByChild('email'), equalTo(contatoEmail));
+                            const userContatoSnapshot = await get(q);
+
+                            if (userContatoSnapshot.exists()) {
+                                const userData = userContatoSnapshot.val();
+                                const contactUserId = Object.keys(userData)[0];
+
+                                // 3. Criar a notificação para o contato
+                                const notificationRef = ref(DB, `notifications/${contactUserId}`);
+                                const newNotificationRef = push(notificationRef);
+                                await set(newNotificationRef, {
+                                    title: "Alerta de Pânico Recebido",
+                                    body: `${user.displayName || user.email} acionou o botão do pânico e pode precisar de ajuda.`,
+                                    read: false,
+                                    createdAt: new Date().toISOString(),
+                                    fromUserId: user.uid,
+                                });
+                            }
+                        }
+                        // --- FIM DA LÓGICA DE NOTIFICAÇÃO ---
 
                         // Gerar protocolo
                         const protocolo = `PANICO-${Date.now()}${Math.floor(Math.random() * 1000)}`;
@@ -220,9 +253,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 20,
+        padding: 10,
         borderRadius: 15,
-        marginBottom: 15,
+        marginBottom: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
@@ -236,14 +269,14 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     contactButton: {
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#fd70dfff',
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
         marginBottom: 20,
     },
     contactButtonText: {
-        color: '#333',
+        color: '#ffffffff',
         fontWeight: 'bold',
     },
     sectionTitle: {
