@@ -25,8 +25,11 @@ const TVWebScreen = ({ navigation }) => {
 
     // Substitua 'YOUR_API_KEY' pela sua chave de API do YouTube.
     // Lembre-se de restringir esta chave de API para evitar uso indevido.
-    const YOUTUBE_API_KEY = 'AIzaSyCfZfFR3QzWmQWBYMgwmXx8n2EdyjdFi2s';
+    const YOUTUBE_API_KEY = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
     const PLAYLIST_ID = 'PLmz0IMGXMgF996ottv9cmJQvZDzglOtXR';
+
+    // DEBUG: Verifique se a chave está sendo carregada.
+    console.log('Chave da API do YouTube:', YOUTUBE_API_KEY ? 'Carregada' : 'NÃO CARREGADA (undefined)');
 
     useEffect(() => {
         const fetchVideos = async () => {
@@ -111,12 +114,38 @@ const TVWebScreen = ({ navigation }) => {
             <Text style={styles.subHeaderTitle}>Assista Agora</Text>
             {selectedVideo && (
                 <View style={styles.playerContainer}>
+                    {/* 
+                      Correção: Em vez de usar a URI direta, usamos um HTML customizado.
+                      Isso resolve o erro 153, que ocorre porque o WebView não tem uma "origem"
+                      de domínio válida para o player do YouTube.
+                    */}
                     <WebView
                         style={styles.youtubePlayer}
                         javaScriptEnabled={true}
                         domStorageEnabled={true}
-                        allowsFullscreenVideo={true}
-                        source={{ uri: `https://www.youtube.com/embed/${selectedVideo.videoId}?modestbranding=1&rel=0` }}
+                        allowsInlineMediaPlayback={true} // Essencial para iOS
+                        useWebKit={true} // Use a engine moderna no iOS
+                        originWhitelist={['https://*.youtube.com']} // Mais seguro que '*'
+                        mixedContentMode="always" // Essencial para Android
+                        source={{
+                            html: `
+                                <!DOCTYPE html>
+                                <html>
+                                <head>
+                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                    <style>
+                                        body, html, #player { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; }
+                                        iframe { width: 100%; height: 100%; border: 0; }
+                                    </style>
+                                </head>
+                                <body>
+                                    <div id="player">
+                                        <iframe src="https://www.youtube.com/embed/${selectedVideo.videoId}" allowfullscreen></iframe>
+                                    </div>
+                                </body>
+                                </html>
+                            `
+                        }}
                     />
                     
                 </View>

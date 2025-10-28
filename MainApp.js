@@ -42,7 +42,7 @@ const MainApp = () => {
                     if (route.name === 'Inicio') {
                         iconName = focused ? 'home' : 'home-outline';
                     } else if (route.name === 'Procuradoria') {
-                        iconName = focused ? 'woman' : 'woman-outline';
+                        iconName = focused ? 'female-sharp' : 'female-outline';
                         iconColor = focused ? '#d911fc' : '#808080';
                     } else if (route.name === 'MeusAgendamento') {
                         iconName = focused ? 'add-circle' : 'add-circle-outline';
