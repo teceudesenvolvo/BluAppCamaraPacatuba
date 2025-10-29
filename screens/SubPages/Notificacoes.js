@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AUTH, DB } from '../../firebaseConfig';
 import { ref, onValue, update } from 'firebase/database';
@@ -16,13 +16,37 @@ const formatDate = (isoString) => {
     });
 };
 
-const NotificationItem = ({ title, body, date }) => (
-    <View style={styles.notificationCard}>
-        <Text style={styles.notificationTitle}>{title}</Text>
-        <Text style={styles.notificationBody}>{body}</Text>
-        <Text style={styles.notificationDate}>{formatDate(date)}</Text>
-    </View>
-);
+const NotificationItem = ({ title, body, date }) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g; // Regex para encontrar URLs
+    const match = urlRegex.exec(body);
+
+    let textPart = body;
+    let urlPart = null;
+
+    if (match) {
+        const url = match[0];
+        const urlIndex = body.indexOf(url);
+        textPart = body.substring(0, urlIndex); // Texto antes da URL
+        urlPart = url; // A URL em si
+    }
+
+    const handleLinkPress = () => {
+        if (urlPart) {
+            Linking.openURL(urlPart).catch(err => console.error('Falha ao abrir URL:', err));
+        }
+    };
+
+    return (
+        <View style={styles.notificationCard}>
+            <Text style={styles.notificationTitle}>{title}</Text>
+            <Text style={styles.notificationBody}>
+                {textPart}
+                {urlPart && <Text style={styles.clickableLink} onPress={handleLinkPress}>{urlPart}</Text>}
+            </Text>
+            <Text style={styles.notificationDate}>{formatDate(date)}</Text>
+        </View>
+    );
+};
 
 const NotificacoesScreen = ({ navigation }) => {
     const [notifications, setNotifications] = useState([]);
@@ -78,7 +102,7 @@ const NotificacoesScreen = ({ navigation }) => {
                 renderItem={({ item }) => (
                     <NotificationItem
                         title={item.tituloNotification}
-                        body={item.descricaoNotification + " " + item.coordenadas.latitude + " " + item.coordenadas.longitude || item.descricaoNotification}
+                        body={item.descricaoNotification} // A descricaoNotification já contém a URL completa
                         date={item.timestamp || item.date}
                     />
                 )}
@@ -141,6 +165,10 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: '#666',
         marginBottom: 10,
+    },
+    clickableLink: {
+        color: 'blue',
+        textDecorationLine: 'underline',
     },
     notificationDate: {
         fontSize: 12,
