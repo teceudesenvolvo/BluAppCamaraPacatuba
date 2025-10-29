@@ -1,20 +1,72 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { AUTH, DB } from '../../firebaseConfig';
+import { ref, onValue, update } from 'firebase/database';
 
-const notificationsData = [
-    // { id: '1', title: '', body: '', date: '' },
-];
+const formatDate = (isoString) => {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    return date.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+};
 
 const NotificationItem = ({ title, body, date }) => (
     <View style={styles.notificationCard}>
         <Text style={styles.notificationTitle}>{title}</Text>
         <Text style={styles.notificationBody}>{body}</Text>
-        <Text style={styles.notificationDate}>{date}</Text>
+        <Text style={styles.notificationDate}>{formatDate(date)}</Text>
     </View>
 );
 
 const NotificacoesScreen = ({ navigation }) => {
+    const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const user = AUTH.currentUser;
+        if (!user) {
+            setLoading(false);
+            return;
+        }
+
+        setLoading(true); // Garante que o loading seja exibido ao trocar de usuário
+        const notificationsRef = ref(DB, 'notifications');
+
+        const unsubscribe = onValue(notificationsRef, (snapshot) => {
+            const data = snapshot.val();            
+            if (data) {
+                // Mapeia todas as notificações da raiz e filtra as que pertencem ao usuário logado.
+                const allUserNotifications = Object.keys(data)
+                    .map(key => ({ id: key, ...data[key] }))
+                    .filter(notification => notification.targetUserId === user.uid)
+                    .sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)); // Ordena da mais nova para a mais antiga
+
+                // Marca todas as notificações exibidas como lidas no Firebase
+                const updates = {};
+                allUserNotifications.forEach(notif => {
+                    if (!notif.isRead) { // Apenas atualiza se ainda não estiver lida
+                        updates[`${notif.id}/isRead`] = true;
+                    }
+                });
+                // Envia as atualizações para o Firebase
+                if (Object.keys(updates).length > 0) update(notificationsRef, updates);
+                
+                setNotifications(allUserNotifications);
+            } else {
+                setNotifications([]);
+            }
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
     return (
         <View style={styles.container}>
              <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -22,19 +74,23 @@ const NotificacoesScreen = ({ navigation }) => {
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Notificações</Text>
             <FlatList
-                data={notificationsData}
+                data={notifications}
                 renderItem={({ item }) => (
                     <NotificationItem
-                        title={item.title}
-                        body={item.body}
-                        date={item.date}
+                        title={item.tituloNotification}
+                        body={item.descricaoNotification + " " + item.coordenadas.latitude + " " + item.coordenadas.longitude || item.descricaoNotification}
+                        date={item.timestamp || item.date}
                     />
                 )}
                 keyExtractor={item => item.id}
                 contentContainerStyle={styles.listContainer}
-                ListEmptyComponent={
-                    <Text style={styles.emptyText}>Nenhuma notificação a carregar.</Text>
-                }
+                ListEmptyComponent={() => (
+                    loading ? (
+                        <ActivityIndicator size="large" color="#080A6C" style={{ marginTop: 50 }} />
+                    ) : (
+                        <Text style={styles.emptyText}>Nenhuma notificação encontrada.</Text>
+                    )
+                )}
             />
         </View>
     );

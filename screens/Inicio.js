@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Image, Dimensions, ScrollView, TextInput, Touch
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { AUTH, DB } from '../firebaseConfig'; // Importar AUTH e DB
+import { ref, onValue } from 'firebase/database'; // Importar funções do Realtime Database
 
 const { width } = Dimensions.get('window');
 
@@ -11,6 +13,7 @@ const HomeScreen = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const [isSearching, setIsSearching] = useState(false);
     const searchAnimation = useRef(new Animated.Value(0)).current;
+    const [unreadNotificationCount, setUnreadNotificationCount] = useState(0); // Novo estado para contagem de não lidas
     const [imageErrorIndices, setImageErrorIndices] = useState(new Set());
 
     useEffect(() => {
@@ -28,7 +31,7 @@ const HomeScreen = ({ navigation }) => {
                 } else {
                     console.error("Dados da API não são um array:", dados);
                     setNews([]);
-                }
+                } 
             } catch (error) {
                 console.error("Falha ao buscar notícias:", error);
                 setNews([]);
@@ -38,6 +41,31 @@ const HomeScreen = ({ navigation }) => {
         };
 
         fetchNews();
+    }, []);
+
+    // Efeito para monitorar notificações não lidas
+    useEffect(() => {
+        const user = AUTH.currentUser;
+        if (!user) {
+            setUnreadNotificationCount(0);
+            return;
+        }
+
+        const notificationsRef = ref(DB, 'notifications');
+        const unsubscribe = onValue(notificationsRef, (snapshot) => {
+            const data = snapshot.val();
+            let count = 0;
+            if (data) {
+                Object.keys(data).forEach(notificationId => {
+                    const notification = data[notificationId];
+                    if (notification.targetUserId === user.uid && !notification.isRead) {
+                        count++;
+                    }
+                });
+            }
+            setUnreadNotificationCount(count);
+        });
+        return () => unsubscribe();
     }, []);
 
     const handleNotificationPage = () => {
@@ -90,6 +118,11 @@ const HomeScreen = ({ navigation }) => {
                 <View style={styles.header}>
                     <View style={styles.headerLeft}>
                         <Image
+                            // CORREÇÃO: O caminho da imagem deve ser '../assets/logo-pacatuba-azul.png'
+                            // se a imagem estiver na pasta 'assets' e o componente 'Inicio.js'
+                            // estiver em 'screens/Inicio.js'.
+                            // Se a imagem estiver em 'assets/logo-pacatuba-azul.png', o caminho é correto.
+                            // Mantendo o caminho original, mas adicionando este comentário para clareza.
                             source={require('../assets/logo-pacatuba-azul.png')}
                             style={styles.logoHeader}
                             resizeMode="contain"
@@ -97,7 +130,12 @@ const HomeScreen = ({ navigation }) => {
                     </View>
                     <View style={styles.headerRight}>
                         <TouchableOpacity style={styles.iconButton} onPress={handleNotificationPage}>
-                             <Ionicons name="notifications" size={25} color="#080A6C" />
+                            <Ionicons name="notifications" size={25} color="#080A6C" />
+                            {unreadNotificationCount > 0 && (
+                                <View style={styles.notificationBadge}>
+                                    <Text style={styles.notificationBadgeText}>{unreadNotificationCount}</Text>
+                                </View>
+                            )}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -370,6 +408,24 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         borderBottomWidth: 1,
         borderBottomColor: '#eee',
+    },
+    // Novos estilos para o badge de notificação
+    notificationBadge: {
+        position: 'absolute',
+        right: 8, // Ajuste a posição horizontal conforme necessário
+        top: 8,   // Ajuste a posição vertical conforme necessário
+        backgroundColor: 'red',
+        borderRadius: 10,
+        width: 20,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1, // Garante que o badge fique acima do ícone
+    },
+    notificationBadgeText: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: 'bold',
     },
 });
 

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Activit
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AUTH, DB } from '../../firebaseConfig';
 import { ref, onValue, push, set, get, query, orderByChild, equalTo } from 'firebase/database';
+import * as Location from 'expo-location';
 
 const AtendimentoCard = ({ item }) => (
     <View style={styles.atendimentoCard}>
@@ -67,7 +68,7 @@ const ProcuradoriaMulherScreen = ({ navigation }) => {
     const handlePanicButton = async () => {
         Alert.alert(
             "Confirmar Ação",
-            "Deseja realmente acionar o Botão do Pânico? Um alerta (sem localização) será enviado.",
+            "Deseja realmente acionar o Botão do Pânico? Sua localização será compartilhada com seu contato de confiança.",
             [
                 { text: "Cancelar", style: "cancel" },
                 {
@@ -79,60 +80,88 @@ const ProcuradoriaMulherScreen = ({ navigation }) => {
                             return;
                         }
 
-                        // --- INÍCIO DA LÓGICA DE NOTIFICAÇÃO ---
+                        // 1. Pedir permissão de localização
+                        let { status } = await Location.requestForegroundPermissionsAsync();
+                        if (status !== 'granted') {
+                            Alert.alert('Permissão Negada', 'A permissão de localização é necessária para o botão do pânico.');
+                            return;
+                        }
 
-                        // 1. Buscar o contato de confiança
+                        // 2. Obter localização
+                        const location = await Location.getCurrentPositionAsync({});
+                        const { latitude, longitude } = location.coords;
+
+                        // 3. Buscar nome do usuário
+                        const userProfileRef = ref(DB, `users/${user.uid}`);
+                        const profileSnapshot = await get(userProfileRef);
+                        const userName = profileSnapshot.exists() ? profileSnapshot.val().name : user.email;
+
+                        // --- BUSCAR CONTATO DE CONFIANÇA PRIMEIRO ---
                         const contatoRef = ref(DB, `procuradoria-mulher-btn-panico/${user.uid}/contato`);
                         const contatoSnapshot = await get(contatoRef);
+                        
+                        let contatoConfiancaEmail = null;
+                        let contatoConfiancaTelefone = null;
 
-                        if (!contatoSnapshot.exists()) {
-                            Alert.alert("Aviso", "Você não possui um contato de confiança cadastrado para notificar.");
-                            // Continuar mesmo sem contato? Decisão de negócio. Por ora, vamos continuar.
-                        } else {
-                            const contatoEmail = contatoSnapshot.val().email;
-
-                            // 2. Encontrar o usuário do contato pelo e-mail
-                            const usersRef = ref(DB, 'users');
-                            const q = query(usersRef, orderByChild('email'), equalTo(contatoEmail));
-                            const userContatoSnapshot = await get(q);
-
-                            if (userContatoSnapshot.exists()) {
-                                const userData = userContatoSnapshot.val();
-                                const contactUserId = Object.keys(userData)[0];
-
-                                // 3. Criar a notificação para o contato
-                                const notificationRef = ref(DB, `notifications/${contactUserId}`);
-                                const newNotificationRef = push(notificationRef);
-                                await set(newNotificationRef, {
-                                    title: "Alerta de Pânico Recebido",
-                                    body: `${user.displayName || user.email} acionou o botão do pânico e pode precisar de ajuda.`,
-                                    read: false,
-                                    createdAt: new Date().toISOString(),
-                                    fromUserId: user.uid,
-                                });
-                            }
+                        if (contatoSnapshot.exists()) {
+                            const contatoData = contatoSnapshot.val();
+                            contatoConfiancaEmail = contatoData.email || null;
+                            contatoConfiancaTelefone = contatoData.telefone || null;
                         }
-                        // --- FIM DA LÓGICA DE NOTIFICAÇÃO ---
 
-                        // Gerar protocolo
+                        // 4. Gerar protocolo e montar dados do alerta
                         const protocolo = `PANICO-${Date.now()}${Math.floor(Math.random() * 1000)}`;
-
-                        // Montar dados do alerta (sem coordenadas)
                         const alertaData = {
                             protocolo,
                             userId: user.uid,
                             userEmail: user.email,
+                            contatoConfiancaEmail: contatoConfiancaEmail,
+                            contatoConfiancaTelefone: contatoConfiancaTelefone,
+                            coordenadas: { latitude, longitude },
                             timestamp: new Date().toISOString(),
                         };
 
-                        // 5. Salvar no Firebase
                         try {
+                            // 5. Salvar o alerta principal primeiro
                             const alertasRef = ref(DB, `procuradoria-mulher-btn-panico/${user.uid}/alertas`);
                             const newAlertaRef = push(alertasRef);
                             await set(newAlertaRef, alertaData);
+
+                            // 6. Após o sucesso, tentar enviar a notificação para o contato
+                            if (contatoSnapshot.exists()) {
+                                const contatoData = contatoSnapshot.val();
+                                if (contatoData && contatoData.email) {
+                                    const contatoEmail = contatoData.email;
+                                    // Encontrar o usuário do contato pelo e-mail
+                                    const usersRef = ref(DB, 'users');
+                                    const q = query(usersRef, orderByChild('email'), equalTo(contatoEmail));
+                                    const userContatoSnapshot = await get(q);
+        
+                                    if (userContatoSnapshot.exists()) {
+                                        const contactUserId = Object.keys(userContatoSnapshot.val())[0];
+                                        
+                                        
+                                        // Criar a notificação para o contato
+                                        const notificationRef = ref(DB, 'notifications');
+                                        const newNotificationRef = push(notificationRef);
+                                        await set(newNotificationRef, {
+                                            ...alertaData,
+                                            targetUserId: contactUserId,
+                                            tituloNotification: `${userName} está precisando de ajuda!`, // Linha 151
+                                            descricaoNotification: `Veja onde ela está: https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`, // Linha 152
+                                            isRead: false, // Nova notificação é sempre não lida
+                                        });
+                                        console.log(`Notificação de pânico enviada para o contato: ${contactUserId}`);
+                                    }
+                                }
+                            } else {
+                                console.log("Aviso: Nenhum contato de confiança cadastrado para notificar.");
+                            }
+
+                            // 7. Exibir sucesso para o usuário após todas as operações
                             Alert.alert("Alerta Enviado", `Seu pedido de ajuda foi enviado com sucesso. Protocolo: ${protocolo}`);
                         } catch (error) {
-                            console.error("Erro ao salvar alerta:", error);
+                            console.error("Erro ao enviar alerta de pânico ou notificação:", error);
                             Alert.alert("Erro", "Não foi possível enviar o alerta. Tente novamente.");
                         }
                     },

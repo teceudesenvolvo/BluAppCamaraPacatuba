@@ -100,7 +100,16 @@ const MeusAgendamentos = ({ navigation }) => {
 		const listeners = Object.keys(collections).map(category => {
 			const collectionName = collections[category];
 			const dbRef = ref(DB, collectionName);
-			const q = query(dbRef, orderByChild('userId'), equalTo(user.uid));
+
+			// CORREÇÃO: O caminho para o ID do usuário varia entre as coleções.
+			// Para 'solicitacoes-vereadores' e 'atendimento-juridico' é 'dadosUsuario/id'.
+			// Para as outras, é 'userId'.
+			const userPath = 
+				collectionName === 'solicitacoes-vereadores' || collectionName === 'atendimento-juridico'
+				? 'dadosUsuario/id' 
+				: 'userId';
+
+			const q = query(dbRef, orderByChild(userPath), equalTo(user.uid));
 
 			return onValue(q, (snapshot) => {
 				const data = snapshot.val();

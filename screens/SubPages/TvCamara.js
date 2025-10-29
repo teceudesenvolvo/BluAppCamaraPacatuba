@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ActivityIndicator, Linking } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ActivityIndicator, Linking, Alert } from 'react-native';
 import WebView from 'react-native-webview';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+// NOVIDADE: Importa a biblioteca de iFrame nativa
+import YoutubeIframe from 'react-native-youtube-iframe';
+
 
 // Função para formatar a data e hora do formato ISO 8601 (2025-01-28T12:28:35) para DD/MM/YYYY às HH:MM
 const formatDateAndTime = (isoString) => {
@@ -38,6 +41,8 @@ const TVWebScreen = ({ navigation }) => {
                 const data = await response.json();
 
                 if (data.error) {
+                    // Adiciona um log mais detalhado para ajudar no debugging da API
+                    console.error("Erro da API do YouTube:", data.error);
                     setError('Falha ao carregar os vídeos do YouTube. Verifique se a sua chave de API está correta e se a API do YouTube está habilitada para o seu projeto no Google Cloud.');
                     return;
                 }
@@ -114,40 +119,32 @@ const TVWebScreen = ({ navigation }) => {
             <Text style={styles.subHeaderTitle}>Assista Agora</Text>
             {selectedVideo && (
                 <View style={styles.playerContainer}>
-                    {/* 
-                      Correção: Em vez de usar a URI direta, usamos um HTML customizado.
-                      Isso resolve o erro 153, que ocorre porque o WebView não tem uma "origem"
-                      de domínio válida para o player do YouTube.
+                    {/*
+                      CORREÇÃO FINAL: Usando YoutubeIframe para contornar erros de
+                      configuração de player (Erro 153) no iOS.
+                      Isso garante a reprodução no aplicativo.
                     */}
-                    <WebView
-                        style={styles.youtubePlayer}
-                        javaScriptEnabled={true}
-                        domStorageEnabled={true}
-                        allowsInlineMediaPlayback={true} // Essencial para iOS
-                        useWebKit={true} // Use a engine moderna no iOS
-                        originWhitelist={['https://*.youtube.com']} // Mais seguro que '*'
-                        mixedContentMode="always" // Essencial para Android
-                        source={{
-                            html: `
-                                <!DOCTYPE html>
-                                <html>
-                                <head>
-                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                    <style>
-                                        body, html, #player { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; }
-                                        iframe { width: 100%; height: 100%; border: 0; }
-                                    </style>
-                                </head>
-                                <body>
-                                    <div id="player">
-                                        <iframe src="https://www.youtube.com/embed/${selectedVideo.videoId}" allowfullscreen></iframe>
-                                    </div>
-                                </body>
-                                </html>
-                            `
+                    <YoutubeIframe
+                        height={300} // Define a altura
+                        videoId={selectedVideo.videoId} // Usa o ID do vídeo
+                        play={false} // Não inicia automaticamente
+                        // Opções do player Iframe (playsinline é o padrão)
+                        webViewProps={{
+                             // Isso é a opção mais poderosa e flexível para iOS:
+                            allowsInlineMediaPlayback: true,
+                            // O YoutubeIframe usa o WebKit por padrão, mas é bom garantir
+                            // useWebKit: true, 
+                            source: {
+                                // Adiciona o parâmetro playsinline=1 à URL
+                                uri: `https://www.youtube.com/embed/${selectedVideo.videoId}?playsinline=1`,
+                            },
+                        }}
+                        // Tratamento básico de erro para o player
+                        onError={(e) => {
+                            console.error("Erro no Youtube Iframe:", e);
+                            Alert.alert("Erro de Reprodução", "Não foi possível carregar o vídeo. Tente novamente mais tarde.");
                         }}
                     />
-                    
                 </View>
             )}
             <Text style={styles.subHeaderTitle}>Últimas Sessões</Text>
@@ -208,27 +205,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     playerContainer: {
-        height: 250,
+        height: 230,
         marginHorizontal: 10,
         borderRadius: 15,
         overflow: 'hidden',
         backgroundColor: '#000',
     },
-    youtubePlayer: {
-        flex: 1,
-    },
-    youtubeButton: {
-        position: 'absolute',
-        bottom: 10,
-        right: 10,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        padding: 5,
-        borderRadius: 5,
-    },
-    youtubeButtonText: {
-        color: '#fff',
-        fontSize: 12,
-    },
+    // Removido styles.youtubePlayer, pois YoutubeIframe gerencia isso
     videoItem: {
         flexDirection: 'row',
         alignItems: 'center',

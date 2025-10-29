@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 // MUDANÇA CRÍTICA: Importa os serviços JÁ INICIALIZADOS e estáveis
 // Certifique-se de que AUTH e DB são exportados com "export { AUTH, DB }" em firebaseService.js
-import { AUTH } from './firebaseConfig'; 
+import { AUTH, DB } from './firebaseConfig'; 
 import { onAuthStateChanged } from 'firebase/auth';
 
 // Importação dos Componentes de Tela
@@ -33,6 +35,51 @@ import DenunciaScreen from './screens/SubPages/Denuncia';
 
 const Stack = createNativeStackNavigator();
 
+// Configura o comportamento da notificação quando o app está aberto
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
+async function registerForPushNotificationsAsync(userId) {
+  let token;
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  if (Constants.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Falha ao obter o token para notificações push!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log("Expo Push Token:", token);
+
+    // Salva o token no perfil do usuário no Realtime Database
+    const { ref, update } = await import('firebase/database');
+    await update(ref(DB, `users/${userId}`), { expoPushToken: token });
+
+  } else {
+    alert('É necessário um dispositivo físico para testar notificações Push.');
+  }
+
+  return token;
+}
+
 // O AppWrapper agora só lida com o estado de autenticação, não mais com a inicialização do Firebase
 const AppWrapper = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -44,6 +91,7 @@ const AppWrapper = () => {
         // Se houver um usuário (e não for anônimo, se essa for a regra)
         if (currentUser && currentUser.isAnonymous === false) { 
             setUser(currentUser);
+            registerForPushNotificationsAsync(currentUser.uid); // Registra para notificações
             console.log(`Usuário autenticado: ${currentUser.uid}`);
         } else {
              setUser(null); 

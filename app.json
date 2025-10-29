@@ -14,23 +14,30 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.leonarrdoribeiro.BluAppCamaraPacatuba"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true,
-      "package": "com.leonarrdoribeiro.BluAppCamaraPacatuba"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "876c5eb3-85b0-4feb-bbee-5f31981049c2"
+      "bundleIdentifier": "com.leonarrdoribeiro.BluAppCamaraPacatuba",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "audio"
+        ],
+        "AVPlayerAllowBackgroundPlayback": true
       }
+    
+  },
+  "android": {
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/adaptive-icon.png",
+      "backgroundColor": "#ffffff"
+    },
+    "edgeToEdgeEnabled": true,
+    "package": "com.leonarrdoribeiro.BluAppCamaraPacatuba"
+  },
+  "web": {
+    "favicon": "./assets/favicon.png"
+  },
+  "extra": {
+    "eas": {
+      "projectId": "876c5eb3-85b0-4feb-bbee-5f31981049c2"
     }
   }
+}
 }
