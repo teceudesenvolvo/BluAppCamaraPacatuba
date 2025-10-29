@@ -39,6 +39,19 @@ const HORARIOS_PREFERENCIAIS = [
     'Tarde 13:00 - 14:00'
 ];
 
+const applyDateMask = (value) => {
+    if (!value) return '';
+    let clean = value.replace(/\D/g, '').slice(0, 8);
+  
+    if (clean.length > 4) {
+      clean = clean.replace(/(\d{2})(\d{2})(\d{0,4})/, '$1/$2/$3');
+    } else if (clean.length > 2) {
+      clean = clean.replace(/(\d{2})(\d{0,2})/, '$1/$2');
+    }
+  
+    return clean;
+};
+
 // --- SUB-COMPONENTES DE FORMULÁRIO (Movidos para fora para evitar re-renderização) ---
 
 const FormAtendimentoJuridico = ({ formData, handleFormChange, openDropdown, setOpenDropdown }) => (
@@ -46,7 +59,14 @@ const FormAtendimentoJuridico = ({ formData, handleFormChange, openDropdown, set
         <Text style={styles.label}>Sobre o acontecimento</Text>
         <TextInput style={styles.input} value={formData.sobreAcontecimento} onChangeText={text => handleFormChange('sobreAcontecimento', text)} />
         <Text style={styles.label}>Data do Acontecimento</Text>
-        <TextInput style={styles.input} placeholder="DD/MM/AAAA" value={formData.dataAcontecimento} onChangeText={text => handleFormChange('dataAcontecimento', text)} />
+        <TextInput 
+            style={styles.input} 
+            placeholder="DD/MM/AAAA" 
+            value={formData.dataAcontecimento} 
+            onChangeText={text => handleFormChange('dataAcontecimento', applyDateMask(text))} 
+            keyboardType="numeric"
+            maxLength={10}
+        />
         <Text style={styles.label}>CEP do local</Text>
         <TextInput style={styles.input} keyboardType="numeric" value={formData.cep} onChangeText={text => handleFormChange('cep', text)} />
         <Text style={styles.label}>Endereço</Text>
@@ -85,7 +105,13 @@ const FormOuvidoria = ({ formData, handleFormChange, openDropdown, setOpenDropdo
         <TextInput style={styles.textarea} multiline value={formData.descricaoNotificacao} onChangeText={text => handleFormChange('descricaoNotificacao', text)} />
         
         <Text style={styles.label}>Data do fato</Text>
-        <TextInput style={styles.input} placeholder="DD/MM/AAAA" value={formData.dataFato} onChangeText={text => handleFormChange('dataFato', text)} />
+        <TextInput 
+            style={styles.input} 
+            placeholder="DD/MM/AAAA" 
+            value={formData.dataFato} 
+            onChangeText={text => handleFormChange('dataFato', applyDateMask(text))} 
+            keyboardType="numeric"
+            maxLength={10} />
         
         <Text style={styles.label}>Local do Fato</Text>
         <TextInput style={styles.input} value={formData.localFato} onChangeText={text => handleFormChange('localFato', text)} />
@@ -891,7 +917,7 @@ const styles = StyleSheet.create({
         height: 48,
         backgroundColor: '#F3F4F6', // Gray-100
         borderRadius: 8,
-        paddingTop: 15,
+        paddingTop: 0,
         paddingHorizontal: 16,
         fontSize: 16,
         color: '#1F2937',

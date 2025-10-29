@@ -4,6 +4,19 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AUTH, DB } from '../../firebaseConfig';
 import { ref, push, set } from 'firebase/database';
 
+const applyDateMask = (value) => {
+    if (!value) return '';
+    let clean = value.replace(/\D/g, '').slice(0, 8);
+  
+    if (clean.length > 4) {
+      clean = clean.replace(/(\d{2})(\d{2})(\d{0,4})/, '$1/$2/$3');
+    } else if (clean.length > 2) {
+      clean = clean.replace(/(\d{2})(\d{0,2})/, '$1/$2');
+    }
+  
+    return clean;
+};
+
 const FormProcuradoriaScreen = ({ navigation }) => {
     const [formData, setFormData] = useState({
         tipoAtendimento: 'Aconselhamento Jurídico',
@@ -85,9 +98,11 @@ const FormProcuradoriaScreen = ({ navigation }) => {
                     <Text style={styles.label}>Data do Fato (Opcional)</Text>
                     <TextInput
                         style={styles.input}
-                        value={formData.dataFato}
-                        onChangeText={(text) => handleInputChange('dataFato', text)}
+                        value={formData.dataFato} // O valor já está mascarado pelo estado
+                        onChangeText={(text) => handleInputChange('dataFato', applyDateMask(text))}
                         placeholder="DD/MM/AAAA"
+                        keyboardType="numeric"
+                        maxLength={10}
                     />
 
                     <Text style={styles.label}>Descrição do Caso</Text>
