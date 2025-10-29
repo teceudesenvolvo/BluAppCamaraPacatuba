@@ -222,7 +222,12 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 		paddingVertical: 10,
 		borderBottomWidth: 1,
+		paddingHorizontal: 10,
 		borderBottomColor: '#E5E7EB',
+		borderRadius: 100,
+		width: '90%',
+		alignSelf: 'center',
+		marginBottom: 10,
 	},
 	tab: {
 		paddingHorizontal: 16,
