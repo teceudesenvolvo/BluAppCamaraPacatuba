@@ -252,8 +252,8 @@ const styles = StyleSheet.create({
     },
     logoHeader: {
         width: 120,
-        height: 35,
-        marginLeft: -10,
+        height: 60,
+        marginLeft: 0,
     },
     headerRight: {
         flexDirection: 'row',
