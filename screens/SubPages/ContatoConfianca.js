@@ -4,6 +4,19 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AUTH, DB } from '../../firebaseConfig';
 import { ref, onValue, set } from 'firebase/database';
 
+const applyPhoneMask = (value) => {
+    if (!value) return '';
+    let clean = value.replace(/\D/g, '').slice(0, 11);
+
+    if (clean.length > 6) {
+        clean = clean.replace(/^(\d{2})(\d{4,5})(\d{4})$/, '($1) $2-$3');
+    } else if (clean.length > 2) {
+        clean = clean.replace(/^(\d{2})(\d*)$/, '($1) $2');
+    }
+
+    return clean;
+};
+
 const ContatoConfiancaScreen = ({ navigation }) => {
     const [contato, setContato] = useState({ email: '', telefone: '' });
     const [loading, setLoading] = useState(true);
@@ -83,9 +96,10 @@ const ContatoConfiancaScreen = ({ navigation }) => {
                         <TextInput
                             style={styles.input}
                             value={contato.telefone}
-                            onChangeText={(text) => setContato(prev => ({ ...prev, telefone: text }))}
+                            onChangeText={(text) => setContato(prev => ({ ...prev, telefone: applyPhoneMask(text) }))}
                             placeholder="(00) 90000-0000"
                             keyboardType="phone-pad"
+                            maxLength={15}
                         />
 
                         <TouchableOpacity style={styles.saveButton} onPress={handleSave} disabled={saving}>
@@ -107,7 +121,7 @@ const styles = StyleSheet.create({
     header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingTop: 60, paddingBottom: 20, backgroundColor: '#fff' },
     backButton: { position: 'absolute', left: 20, top: 60 },
     headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#333' },
-    content: { padding: 20, flex: 1, justifyContent: 'center' },
+    content: { padding: 20, flex: 1 },
     card: { backgroundColor: '#fff', borderRadius: 15, padding: 20 },
     infoText: { fontSize: 14, color: '#666', textAlign: 'center', marginBottom: 20, lineHeight: 20 },
     label: { fontSize: 14, fontWeight: 'bold', color: '#333', marginBottom: 5, marginTop: 15 },
