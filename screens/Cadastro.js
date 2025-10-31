@@ -6,26 +6,26 @@ import { Ionicons } from '@expo/vector-icons';
 
 import Logo  from '../assets/logo-pacatuba.png';
 
-// CORRE\u00c7\u00c3O CR\u00cdTICA: Mudan\u00e7a de 'auth' e 'db' (min\u00fasculas) para 'AUTH' e 'DB' (mai\u00fasculas) 
-// para corresponder ao que \u00e9 exportado em firebaseConfig.js.
+// CORREÇÃO CRÍTICA: Mudança de 'auth' e 'db' (minúsculas) para 'AUTH' e 'DB' (maiúsculas) 
+// para corresponder ao que é exportado em firebaseConfig.js.
 import { AUTH, DB } from '../firebaseConfig'; 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { ref, set } from 'firebase/database'; 
 
-// --- FUN\u00c7\u00d5ES DE M\u00c1SCARA ---
+// --- FUNÇÕES DE MÁSCARA ---
 
 /**
- * Aplica a m\u00e1scara de telefone (XX) X XXXX-XXXX
+ * Aplica a máscara de telefone (XX) X XXXX-XXXX
  */
 const maskPhone = (value) => {
-    value = value.replace(/\D/g, ""); // Remove tudo o que n\u00e3o \u00e9 d\u00edgito
-    if (value.length > 11) value = value.slice(0, 11); // Limita a 11 d\u00edgitos
+    value = value.replace(/\D/g, ""); // Remove tudo o que não é dígito
+    if (value.length > 11) value = value.slice(0, 11); // Limita a 11 dígitos
     
     // (XX) X XXXX-XXXX
     value = value.replace(/^(\d{2})(\d)/g, "($1) $2");
     value = value.replace(/(\d{4})(\d{4})$/, "$1-$2");
     
-    // Se for celular (9 d\u00edgitos no n\u00famero)
+    // Se for celular (9 dígitos no número)
     if (value.length > 14) {
         value = value.replace(/(\d{1})(\s)(\d{4})/, "$1 $3");
     }
@@ -33,12 +33,36 @@ const maskPhone = (value) => {
 };
 
 /**
- * Aplica a m\u00e1scara de CEP (XXXXX-XXX)
+ * Aplica a máscara de CEP (XXXXX-XXX)
  */
 const maskCep = (value) => {
-    value = value.replace(/\D/g, ""); // Remove tudo o que n\u00e3o \u00e9 d\u00edgito
-    if (value.length > 8) value = value.slice(0, 8); // Limita a 8 d\u00edgitos
-    value = value.replace(/^(\d{5})(\d)/, "$1-$2"); // Coloca o h\u00edfen ap\u00f3s o 5\u00ba d\u00edgito
+    value = value.replace(/\D/g, ""); // Remove tudo o que não é dígito
+    if (value.length > 8) value = value.slice(0, 8); // Limita a 8 dígitos
+    value = value.replace(/^(\d{5})(\d)/, "$1-$2"); // Coloca o hífen após o 5º dígito
+    return value;
+};
+
+/**
+ * Aplica a máscara de CPF (XXX.XXX.XXX-XX)
+ */
+const maskCpf = (value) => {
+    if (!value) return "";
+    value = value.replace(/\D/g, ""); // Remove tudo o que não é dígito
+    if (value.length > 11) value = value.slice(0, 11); // Limita a 11 dígitos
+    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+    value = value.replace(/(\d{3})(\d{2})$/, "$1-$2");
+    return value;
+};
+
+/**
+ * Aplica a máscara de RG (formato simples, pode ser ajustado)
+ */
+const maskRg = (value) => {
+    if (!value) return "";
+    // Remove caracteres não alfanuméricos e limita o tamanho
+    value = value.replace(/[^a-zA-Z0-9]/g, "");
+    if (value.length > 12) value = value.slice(0, 12);
     return value;
 };
 
@@ -54,12 +78,16 @@ const CadastroScreen = ({ navigation }) => {
     const [isSexoDropdownOpen, setIsSexoDropdownOpen] = useState(false);
     
     // Estados para os dados do formul\u00e1rio
-    const [name, setName] = useState('');
+    const [name, setName] = useState(''); // formulário
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     
+    const [cpf, setCpf] = useState('');
+    const [rg, setRg] = useState('');
+    const [estadoCivil, setEstadoCivil] = useState('');
+
     const [cep, setCep] = useState('');
     const [address, setAddress] = useState('');
     const [neighborhood, setNeighborhood] = useState('');
@@ -68,11 +96,11 @@ const CadastroScreen = ({ navigation }) => {
     const [isCepLoading, setIsCepLoading] = useState(false);
 
 
-    // --- L\u00d3GICA DE BUSCA VIA CEP ---
+    // --- LÓGICA DE BUSCA VIA CEP ---
     useEffect(() => {
         const fetchAddressByCep = async () => {
             const cleanedCep = cep.replace(/\D/g, '');
-            // Busca apenas se tiver 8 d\u00edgitos
+            // Busca apenas se tiver 8 dígitos
             if (cleanedCep.length !== 8) return;
             
             setIsCepLoading(true);
@@ -83,7 +111,7 @@ const CadastroScreen = ({ navigation }) => {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
-                if (data.erro) {
+                if (data.erro) { // inválido
                     setError('CEP n\u00e3o encontrado ou inv\u00e1lido.');
                     
                     // Limpa os campos se o CEP for inv\u00e1lido
@@ -109,7 +137,7 @@ const CadastroScreen = ({ navigation }) => {
             }
         };
 
-        // Adiciona um pequeno delay para evitar chamadas excessivas \u00e0 API
+        // Adiciona um pequeno delay para evitar chamadas excessivas à API
         const handler = setTimeout(() => {
             fetchAddressByCep();
         }, 500);
@@ -124,7 +152,7 @@ const CadastroScreen = ({ navigation }) => {
         setError('');
         
         if (step === 1) {
-            // Valida\u00e7\u00e3o b\u00e1sica do Passo 1
+            // Validação básica do Passo 1
             if (!name || !sexo || !phone || !email || !password || !confirmPassword) {
                 setError('Por favor, preencha todos os campos.');
                 return;
@@ -145,28 +173,30 @@ const CadastroScreen = ({ navigation }) => {
         setError('');
         setSuccessMessage('');
         
-        // Valida\u00e7\u00e3o b\u00e1sica do Passo 2
-        if (!cep || !address || !neighborhood || !city || !state) {
-            setError('Por favor, preencha todos os campos de endere\u00e7o.');
+        // Validação básica do Passo 2
+        if (!cpf || !rg || !estadoCivil || !cep || !address || !neighborhood || !city || !state) {
+            setError('Por favor, preencha todos os campos.');
             return;
         }
 
         setLoading(true);
 
         try {
-            // 1. Cria\u00e7\u00e3o do usu\u00e1rio no Firebase Authentication
+            // 1. Criação do usuário no Firebase Authentication
             // AGORA USANDO A CONSTANTE AUTH CORRETA
             const userCredential = await createUserWithEmailAndPassword(AUTH, email, password);
             const user = userCredential.user;
             
-            // 2. Coleta de dados adicionais
+            // 2. Coleta de dados adicionais // adicionais
             const userData = {
                 id: user.uid,
                 email: user.email,
                 name,
                 sexo,
-                phone: phone.replace(/\D/g, ''), // Salva apenas d\u00edgitos
-                cep: cep.replace(/\D/g, ''),     // Salva apenas d\u00edgitos
+                phone: phone.replace(/\D/g, ''), // Salva apenas dígitos
+                cpf: cpf.replace(/\D/g, ''),       // Salva apenas dígitos
+                rg: rg.replace(/[^a-zA-Z0-9]/g, ''), // Salva apenas alfanuméricos
+                estadoCivil,                cep: cep.replace(/\D/g, ''),     // Salva apenas dígitos
                 address,
                 neighborhood,
                 city,
@@ -179,9 +209,9 @@ const CadastroScreen = ({ navigation }) => {
             const userRef = ref(DB, 'users/' + user.uid);
             await set(userRef, userData);
             
-            setSuccessMessage('Cadastro realizado e dados salvos! Voc\u00ea ser\u00e1 redirecionado.');
+            setSuccessMessage('Cadastro realizado e dados salvos! Você será redirecionado.');
             
-            // Redireciona para a tela principal e remove as telas de autentica\u00e7\u00e3o do hist\u00f3rico
+            // Redireciona para a tela principal e remove as telas de autenticação do histórico
             setTimeout(() => {
                 navigation.reset({
                     index: 0,
@@ -195,14 +225,14 @@ const CadastroScreen = ({ navigation }) => {
                 case 'auth/email-already-in-use':
                     setError('Este email j\u00e1 est\u00e1 em uso. Tente fazer login.');
                     break;
-                case 'auth/invalid-email':
+                case 'auth/invalid-email': // inválido
                     setError('O formato do email \u00e9 inv\u00e1lido.');
                     break;
                 case 'auth/weak-password':
                     setError('Senha muito fraca. Escolha uma senha com pelo menos 6 caracteres.');
                     break;
                 default:
-                    // Captura e exibe qualquer erro desconhecido, incluindo o de Firebase App n\u00e3o inicializado
+                    // Captura e exibe qualquer erro desconhecido, incluindo o de Firebase App não inicializado
                     setError(`Ocorreu um erro no cadastro: ${e.message}`);
             }
         } finally {
@@ -293,9 +323,9 @@ const CadastroScreen = ({ navigation }) => {
                                         placeholder="(XX) X XXXX-XXXX"
                                         placeholderTextColor="#ccc"
                                         keyboardType="numeric"
-                                        value={maskPhone(phone)}
-                                        onChangeText={text => setPhone(text.replace(/\D/g, ''))} // Armazena apenas d\u00edgitos
-                                        maxLength={15} // Tamanho m\u00e1ximo da m\u00e1scara
+                                        value={maskPhone(phone)} // dígitos
+                                        onChangeText={text => setPhone(text.replace(/\D/g, ''))} // Armazena apenas dígitos
+                                        maxLength={15} // Tamanho máximo da máscara
                                     />
                                 </View>
                                 <View style={styles.inputGroup}>
@@ -343,6 +373,39 @@ const CadastroScreen = ({ navigation }) => {
                         ) : (
                             <View style={styles.formContainer}>
                                 <View style={styles.inputGroup}>
+                                    <Text style={styles.label}>CPF</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder="000.000.000-00"
+                                        placeholderTextColor="#ccc"
+                                        keyboardType="numeric"
+                                        value={maskCpf(cpf)}
+                                        onChangeText={setCpf}
+                                        maxLength={14}
+                                    />
+                                </View>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.label}>RG</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder="00.000.000-0"
+                                        placeholderTextColor="#ccc"
+                                        value={maskRg(rg)}
+                                        onChangeText={setRg}
+                                        maxLength={12}
+                                    />
+                                </View>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.label}>Estado Civil</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder="Solteiro(a), Casado(a), etc."
+                                        placeholderTextColor="#ccc"
+                                        value={estadoCivil}
+                                        onChangeText={setEstadoCivil}
+                                    />
+                                </View>
+                                <View style={styles.inputGroup}>
                                     <Text style={styles.label}>CEP</Text>
                                     <TextInput
                                         style={styles.input}
@@ -350,8 +413,8 @@ const CadastroScreen = ({ navigation }) => {
                                         placeholderTextColor="#ccc"
                                         keyboardType="numeric"
                                         value={maskCep(cep)}
-                                        onChangeText={setCep}
-                                        maxLength={9} // Tamanho m\u00e1ximo da m\u00e1scara
+                                        onChangeText={setCep} // máscara
+                                        maxLength={9} // Tamanho máximo da máscara
                                     />
                                     {isCepLoading && <ActivityIndicator style={styles.loadingCep} size="small" color="#080A6C" />}
                                 </View>
