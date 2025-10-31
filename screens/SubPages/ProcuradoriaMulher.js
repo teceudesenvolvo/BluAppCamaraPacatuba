@@ -30,7 +30,7 @@ const ProcuradoriaMulherScreen = ({ navigation }) => {
                 const unsubscribeProfile = onValue(userProfileRef, (profileSnapshot) => {
                     if (profileSnapshot.exists()) {
                         const profileData = profileSnapshot.val();
-                        setShowFemaleSpecificButtons(profileData.sexo === 'feminino');
+                        setShowFemaleSpecificButtons(profileData.sexo === 'feminino' || profileData.sexo === 'Feminino');
                     } else {
                         setShowFemaleSpecificButtons(false);
                     }

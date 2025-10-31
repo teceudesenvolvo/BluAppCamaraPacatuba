@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // Imports React Native
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native'; 
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator, Alert } from 'react-native'; 
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 // Nota: O caminho da imagem deve ser ajustado para o ambiente de execução
@@ -8,7 +8,7 @@ import Logo from '../assets/logo-pacatuba.png';
 
 // Importando AUTH e o método de login por email/senha
 import { AUTH } from '../firebaseConfig'; 
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 
 const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState('');
@@ -70,6 +70,29 @@ const LoginScreen = ({navigation}) => {
         }
     }
     
+    const handleForgotPassword = async () => {
+        if (!email) {
+            Alert.alert("Campo Obrigatório", "Por favor, insira seu e-mail no campo correspondente para redefinir a senha.");
+            return;
+        }
+
+        setLoading(true);
+        setError('');
+
+        try {
+            await sendPasswordResetEmail(AUTH, email);
+            Alert.alert(
+                "Verifique seu E-mail",
+                "Um link para redefinição de senha foi enviado para o seu e-mail."
+            );
+        } catch (e) {
+            console.error("Erro ao enviar e-mail de redefinição:", e);
+            setError("Falha ao enviar e-mail. Verifique se o e-mail está correto e tente novamente.");
+        } finally {
+            setLoading(false);
+        }
+    };
+    
     return (
         <View style={styles.container}>
             <StatusBar style="light" />
@@ -120,7 +143,7 @@ const LoginScreen = ({navigation}) => {
                             />
                         </View>
 
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={handleForgotPassword}>
                             <Text style={styles.forgotPassword}>Esqueceu a senha?</Text>
                         </TouchableOpacity>
                         

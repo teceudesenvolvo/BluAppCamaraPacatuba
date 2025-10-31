@@ -42,12 +42,16 @@ const maskCep = (value) => {
     return value;
 };
 
+const SEXO_OPTIONS = ['Masculino', 'Feminino', 'Outro', 'Prefiro não informar'];
+
 
 const CadastroScreen = ({ navigation }) => {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [sexo, setSexo] = useState('');
+    const [isSexoDropdownOpen, setIsSexoDropdownOpen] = useState(false);
     
     // Estados para os dados do formul\u00e1rio
     const [name, setName] = useState('');
@@ -121,7 +125,7 @@ const CadastroScreen = ({ navigation }) => {
         
         if (step === 1) {
             // Valida\u00e7\u00e3o b\u00e1sica do Passo 1
-            if (!name || !phone || !email || !password || !confirmPassword) {
+            if (!name || !sexo || !phone || !email || !password || !confirmPassword) {
                 setError('Por favor, preencha todos os campos.');
                 return;
             }
@@ -160,6 +164,7 @@ const CadastroScreen = ({ navigation }) => {
                 id: user.uid,
                 email: user.email,
                 name,
+                sexo,
                 phone: phone.replace(/\D/g, ''), // Salva apenas d\u00edgitos
                 cep: cep.replace(/\D/g, ''),     // Salva apenas d\u00edgitos
                 address,
@@ -253,6 +258,33 @@ const CadastroScreen = ({ navigation }) => {
                                         value={name}
                                         onChangeText={setName}
                                     />
+                                </View>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.label}>Sexo</Text>
+                                    <TouchableOpacity
+                                        style={styles.input}
+                                        onPress={() => setIsSexoDropdownOpen(!isSexoDropdownOpen)}
+                                    >
+                                        <Text style={sexo ? styles.dropdownSelectedText : styles.dropdownPlaceholderText}>
+                                            {sexo || 'Selecione seu sexo'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    {isSexoDropdownOpen && (
+                                        <View style={styles.dropdownOptionsContainer}>
+                                            {SEXO_OPTIONS.map((option, index) => (
+                                                <TouchableOpacity
+                                                    key={index}
+                                                    style={styles.dropdownOption}
+                                                    onPress={() => {
+                                                        setSexo(option);
+                                                        setIsSexoDropdownOpen(false);
+                                                    }}
+                                                >
+                                                    <Text style={styles.dropdownOptionText}>{option}</Text>
+                                                </TouchableOpacity>
+                                            ))}
+                                        </View>
+                                    )}
                                 </View>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.label}>Telefone</Text>
@@ -498,6 +530,34 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
+    },
+    // Estilos para o dropdown de sexo
+    dropdownPlaceholderText: {
+        color: '#ccc',
+        fontSize: 16,
+    },
+    dropdownSelectedText: {
+        marginTop: 15,
+        color: '#333',
+        fontSize: 16,
+    },
+    dropdownOptionsContainer: {
+        marginTop: 5,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        width: '100%',
+    },
+    dropdownOption: {
+        paddingVertical: 15,
+        paddingHorizontal: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+    },
+    dropdownOptionText: {
+        fontSize: 16,
+        color: '#333',
     }
 });
 

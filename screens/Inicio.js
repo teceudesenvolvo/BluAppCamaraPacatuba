@@ -54,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
         const notificationsRef = ref(DB, 'notifications');
         const unsubscribe = onValue(notificationsRef, (snapshot) => {
             const data = snapshot.val();
-            let count = 0;
+            let count = 0; 
             if (data) {
                 Object.keys(data).forEach(notificationId => {
                     const notification = data[notificationId];
@@ -66,7 +66,7 @@ const HomeScreen = ({ navigation }) => {
             setUnreadNotificationCount(count);
         });
         return () => unsubscribe();
-    }, []);
+    }, [AUTH.currentUser]);
 
     const handleNotificationPage = () => {
         navigation.navigate('Notificacoes');
