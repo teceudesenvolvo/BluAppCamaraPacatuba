@@ -3,15 +3,15 @@ const admin = require("firebase-admin");
 
 // Inicializa o app do admin para ter acesso ao Realtime Database
 admin.initializeApp();
-const {getDatabase} = require("firebase-admin/database");
 
 exports.sendPanicNotification = onValueCreated(
     "/notifications/{notificationId}",
     async (event) => {
       // Pega os dados da nova notificação que foi criada
       const snapshot = event.data;
-      const notificationData = snapshot.val();
-      const {targetUserId, userId} = notificationData;
+      const notificationPayload = snapshot.val();
+      const {targetUserId, tituloNotification, descricaoNotification} =
+        notificationPayload;
 
       // Verifica se temos um usuário alvo
       if (!targetUserId) {
@@ -21,38 +21,29 @@ exports.sendPanicNotification = onValueCreated(
 
       console.log(`Nova notificação para o usuário: ${targetUserId}`);
 
-      // Busca o nome do usuário que disparou o alerta
-      let userName = "Um contato";
-      if (userId) {
-        const triggeringUserRef = getDatabase().ref(`/users/${userId}`);
-        const triggeringUserSnapshot = await triggeringUserRef.once("value");
-        const triggeringUserData = triggeringUserSnapshot.val();
-        if (triggeringUserData && triggeringUserData.name) {
-          userName = triggeringUserData.name;
-        }
-      }
+      // Busca o token de notificação do usuário alvo diretamente.
+      const tokenRef = admin.database()
+          .ref(`/users/${targetUserId}/expoPushToken`);
+      const tokenSnapshot = await tokenRef.once("value");
+      const pushToken = tokenSnapshot.val();
 
-      // Busca o token de notificação do usuário alvo no nó /users/{userId}
-      const userRef = admin.database().ref(`/users/${targetUserId}`);
-      const userSnapshot = await userRef.once("value");
-      const userData = userSnapshot.val();
-
-      if (!userData || !userData.expoPushToken) {
+      if (!pushToken) {
         console.log(
             `Usuário ${targetUserId} não tem um expoPushToken. Saindo.`,
         );
         return null;
       }
 
-      const pushToken = userData.expoPushToken;
       console.log(`Encontrado token: ${pushToken}`);
 
       // Monta a mensagem da notificação
       const message = {
         to: pushToken,
         sound: "default",
-        title: `🚨 ${userName.split(" ")[0]} precisa de ajuda!`,
-        body: "Seu contato de confiança acionou o botão do pânico. Toque para ver os detalhes.",
+        // Usa o título e body do payload da notificação
+        title: tituloNotification || "Alerta de Emergência!",
+        body: descricaoNotification ||
+          "Seu contato de confiança precisa de ajuda.",
         data: {notificationId: event.params.notificationId},
       };
 

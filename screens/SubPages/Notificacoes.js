@@ -69,7 +69,7 @@ const NotificacoesScreen = ({ navigation }) => {
                 const allUserNotifications = Object.keys(data)
                     .map(key => ({ id: key, ...data[key] }))
                     .filter(notification => notification.targetUserId === user.uid)
-                    .sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)); // Ordena da mais nova para a mais antiga
+                    .sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)).reverse(); // Ordena da mais nova para a mais antiga e depois inverte
 
                 // Marca todas as notificações exibidas como lidas no Firebase
                 const updates = {};

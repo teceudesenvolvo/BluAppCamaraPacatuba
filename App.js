@@ -73,8 +73,6 @@ async function registerForPushNotificationsAsync(userId) {
     const { ref, update } = await import('firebase/database');
     await update(ref(DB, `users/${userId}`), { expoPushToken: token });
 
-  } else {
-    alert('É necessário um dispositivo físico para testar notificações Push.');
   }
 
   return token;

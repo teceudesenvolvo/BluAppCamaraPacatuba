@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { AUTH, DB } from '../firebaseConfig'; // Importar AUTH e DB
 import { ref, onValue } from 'firebase/database'; // Importar funções do Realtime Database
+import LogoNews from '../assets/logoPacatuba.png'; // Imagem padrão para notícias sem capa
 
 const { width } = Dimensions.get('window');
 

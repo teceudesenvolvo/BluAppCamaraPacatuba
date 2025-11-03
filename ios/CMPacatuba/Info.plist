@@ -27,7 +27,8 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>com.leonarrdoribeiro.BluAppCamaraPacatuba</string>
+          <!-- Seu Bundle Identifier Corrigido -->
+          <string>com.lavoroservicos.cmpacatuba</string>
         </array>
       </dict>
       <dict>
@@ -43,13 +44,19 @@
     <string>12.0</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
+    
+    <!-- Configuração unificada do App Transport Security (ATS) -->
     <key>NSAppTransportSecurity</key>
     <dict>
       <key>NSAllowsArbitraryLoads</key>
-      <false/>
+      <true/>
+      <key>NSAllowsArbitraryLoadsInWebContent</key>
+      <true/>
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+
+    <!-- Descrições de uso de permissões -->
     <key>NSCameraUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your camera</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -62,6 +69,7 @@
     <string>Allow $(PRODUCT_NAME) to access your microphone</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your photos</string>
+    
     <key>RCTNewArchEnabled</key>
     <true/>
     <key>UILaunchStoryboardName</key>
@@ -91,11 +99,4 @@
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
   </dict>
-  <key>NSAppTransportSecurity</key>
-<dict>
-    <key>NSAllowsArbitraryLoadsInWebContent</key>
-    <true/>
-    <key>NSAllowsArbitraryLoads</key>
-    <true/>
-</dict>
 </plist>

@@ -16,6 +16,11 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {      "ios": {
+        "appleId": "leonarrdoribeiro@icloud.com",
+        "ascAppId": "6754844372",
+        "appleTeamId": "KLZVFDM4KH"
+      }
+    }
   }
 }
