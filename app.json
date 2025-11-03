@@ -19,7 +19,8 @@
         "UIBackgroundModes": [
           "audio"
         ],
-        "AVPlayerAllowBackgroundPlayback": true
+        "AVPlayerAllowBackgroundPlayback": true,
+        "buildNumber": "1"
       }
     
   },
