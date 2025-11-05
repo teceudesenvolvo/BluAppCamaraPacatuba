@@ -29,7 +29,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.leonarrdoribeiro.BluAppCamaraPacatuba</string>
+				<string>com.lavoroservicos.conectapacatuba</string>
 			</array>
 		</dict>
 		<dict>
@@ -55,13 +55,13 @@
 	<key>NSCameraUsageDescription</key>
 	<string>O aplicativo precisa de acesso à sua câmera para que você possa anexar fotos como evidência em suas solicitações, como em denúncias na Ouvidoria.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>O aplicativo utiliza sua localização para identificar automaticamente o local de ocorrências em suas solicitações e para rastrear sua posição em tempo real ao acionar o Botão do Pânico.</string>
+	<string>O aplicativo precisa acessar a sua localização.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>O aplicativo precisa de acesso à sua localização em segundo plano para garantir que o Botão do Pânico possa enviar sua posição ao seu contato de confiança, mesmo que o aplicativo não esteja aberto.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>O aplicativo precisa de acesso à sua localização para enviar sua posição ao seu contato de confiança quando o Botão do Pânico for acionado.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>O microfone é usado para permitir que você grave mensagens de voz ou áudios curtos para anexar a relatórios e denúncias na Ouvidoria.</string>
+	<string>O aplicativo precisa acessar seu microfone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>O aplicativo precisa de acesso à sua galeria de fotos para que você possa selecionar e anexar imagens como evidência em suas solicitações, como em denúncias na Ouvidoria.</string>
 	<key>RCTNewArchEnabled</key>
@@ -84,6 +84,14 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
