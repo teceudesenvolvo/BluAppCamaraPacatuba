@@ -17,7 +17,8 @@
       "bundleIdentifier": "com.leonarrdoribeiro.BluAppCamaraPacatuba",
       "infoPlist": {
         "UIBackgroundModes": [
-          "audio"
+          "audio",
+          "remote-notification"
         ],
         "AVPlayerAllowBackgroundPlayback": true,
         "buildNumber": "1",
@@ -26,23 +27,23 @@
         "NSLocationWhenInUseUsageDescription": "O aplicativo precisa de acesso à sua localização para enviar sua posição ao seu contato de confiança quando o Botão do Pânico for acionado.",
         "NSLocationAlwaysUsageDescription": "O aplicativo precisa de acesso à sua localização em segundo plano para garantir que o Botão do Pânico possa enviar sua posição ao seu contato de confiança, mesmo que o aplicativo não esteja aberto."
       }
+    
+  },
+  "android": {
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/adaptive-icon.png",
+      "backgroundColor": "#ffffff"
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true,
-      "package": "com.leonarrdoribeiro.BluAppCamaraPacatuba"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "876c5eb3-85b0-4feb-bbee-5f31981049c2"
-      }
-    },
-    "owner": "leonarrdoribeiro"
+    "edgeToEdgeEnabled": true,
+    "package": "com.leonarrdoribeiro.BluAppCamaraPacatuba"
+  },
+  "web": {
+    "favicon": "./assets/favicon.png"
+  },
+  "extra": {
+    "eas": {
+      "projectId": "876c5eb3-85b0-4feb-bbee-5f31981049c2"
+    }
   }
+}
 }
