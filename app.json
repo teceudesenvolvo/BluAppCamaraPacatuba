@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.lavoroservicos.conectapacatuba",
+      "bundleIdentifier": "com.lavoroservicos.cmpacatuba",
       "infoPlist": {
         "UIBackgroundModes": [
           "audio",
@@ -35,7 +35,7 @@
       "backgroundColor": "#080A6C"
     },
     "edgeToEdgeEnabled": true,
-    "package": "com.lavoroservicos.ConectaPacatuba"
+    "package": "com.lavoroservicos.cmpacatuba"
   },
   "web": {
     "favicon": "./assets/icon.png"
