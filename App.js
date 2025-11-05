@@ -5,6 +5,8 @@ import { View, Text, ActivityIndicator, StyleSheet, Platform } from 'react-nativ
 import * as ImagePicker from 'expo-image-picker';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import registerNNPushToken from 'native-notify';
+
 
 // MUDANÇA CRÍTICA: Importa os serviços JÁ INICIALIZADOS e estáveis
 // Certifique-se de que AUTH e DB são exportados com "export { AUTH, DB }" em firebaseService.js
@@ -12,7 +14,7 @@ import { AUTH, DB } from './firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 
 // Importação dos Componentes de Tela
-import LoginScreen from './screens/Login';
+import LoginScreen from './screens/Login'; // Mantém esta linha
 import CadastroScreen from './screens/Cadastro';
 import MainApp from './MainApp';
 
@@ -33,6 +35,7 @@ import AgendamentosScreen from './screens/SubPages/Agendamento'
 import RealizarDenunciaScreen from './screens/SubPages/RealizarDenuncia'; 
 import DenunciaScreen from './screens/SubPages/Denuncia'; 
 
+import { ref, update } from 'firebase/database'; // Adicione esta importação
 const Stack = createNativeStackNavigator();
 
 // Configura o comportamento da notificação quando o app está aberto
@@ -71,11 +74,8 @@ async function registerForPushNotificationsAsync(userId) {
     console.log("Expo Push Token:", token);
 
     // Salva o token no perfil do usuário no Realtime Database
-    const { ref, update } = await import('firebase/database');
     await update(ref(DB, `users/${userId}`), { expoPushToken: token });
-
   }
-
   return token;
 }
 
@@ -86,11 +86,19 @@ const AppWrapper = () => {
 
   useEffect(() => {
     // 1. O Listener usa a instância AUTH estável importada
-    const unsubscribe = onAuthStateChanged(AUTH, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(AUTH, async (currentUser) => {
         // Se houver um usuário (e não for anônimo, se essa for a regra)
         if (currentUser && currentUser.isAnonymous === false) { 
             setUser(currentUser);
-            registerForPushNotificationsAsync(currentUser.uid); // Registra para notificações
+            console.log(`Usuário autenticado: ${currentUser.uid}`);
+
+            // 1. Registra para notificações Expo e obtém o token
+            const expoPushToken = await registerForPushNotificationsAsync(currentUser.uid); 
+            
+            // 2. Registra com native-notify usando o token Expo obtido
+            if (expoPushToken) {
+                registerNNPushToken(32612, 'tdD9VsSEd7UWwSRYcdrPSo', expoPushToken);
+            }
             console.log(`Usuário autenticado: ${currentUser.uid}`);
         } else {
              setUser(null); 
