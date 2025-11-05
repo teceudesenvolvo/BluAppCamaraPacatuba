@@ -20,7 +20,7 @@
 		13B07F961A680F5B00A75B9A /* ConectaPacatuba.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConectaPacatuba.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ConectaPacatuba/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ConectaPacatuba/Info.plist; sourceTree = "<group>"; };
-		35739EFBA3FB023A618FD856 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = ConectaPacatuba/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		35739EFBA3FB023A618FD856 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = ConectaPacatuba/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		62AAA54227EC4450DB85D1A3 /* Pods-ConectaPacatuba.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConectaPacatuba.debug.xcconfig"; path = "Target Support Files/Pods-ConectaPacatuba/Pods-ConectaPacatuba.debug.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = ConectaPacatuba/SplashScreen.storyboard; sourceTree = "<group>"; };
 		ACD9946A5EA88F1E5ACD7D58 /* Pods-ConectaPacatuba.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConectaPacatuba.release.xcconfig"; path = "Target Support Files/Pods-ConectaPacatuba/Pods-ConectaPacatuba.release.xcconfig"; sourceTree = "<group>"; };
@@ -120,7 +120,6 @@
 				62AAA54227EC4450DB85D1A3 /* Pods-ConectaPacatuba.debug.xcconfig */,
 				ACD9946A5EA88F1E5ACD7D58 /* Pods-ConectaPacatuba.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -385,12 +384,15 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ConectaPacatuba/ConectaPacatuba.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KLZVFDM4KH;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
 				INFOPLIST_FILE = ConectaPacatuba/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Conecta Pacatuba";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -403,7 +405,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.leonarrdoribeiro.BluAppCamaraPacatuba;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lavoroservicos.conectapacatuba;
 				PRODUCT_NAME = ConectaPacatuba;
 				SWIFT_OBJC_BRIDGING_HEADER = "ConectaPacatuba/ConectaPacatuba-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -421,7 +423,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ConectaPacatuba/ConectaPacatuba.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KLZVFDM4KH;
 				INFOPLIST_FILE = ConectaPacatuba/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Conecta Pacatuba";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -434,7 +439,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = com.leonarrdoribeiro.BluAppCamaraPacatuba;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lavoroservicos.conectapacatuba;
 				PRODUCT_NAME = ConectaPacatuba;
 				SWIFT_OBJC_BRIDGING_HEADER = "ConectaPacatuba/ConectaPacatuba-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
