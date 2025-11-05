@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/logo-sf-branco-app.png",
       "resizeMode": "contain",
-      "backgroundColor": "#00128a"
+      "backgroundColor": "#080A6C"
     },
     "ios": {
       "supportsTablet": true,
@@ -31,11 +31,11 @@
   },
   "android": {
     "adaptiveIcon": {
-      "foregroundImage": "./assets/adaptive-icon.png",
-      "backgroundColor": "#00128a"
+      "foregroundImage": "./assets/icon.png",
+      "backgroundColor": "#080A6C"
     },
     "edgeToEdgeEnabled": true,
-    "package": "com.leonarrdoribeiro.BluAppCamaraPacatuba"
+    "package": "com.lavoroservicos.ConectaPacatuba"
   },
   "web": {
     "favicon": "./assets/icon.png"

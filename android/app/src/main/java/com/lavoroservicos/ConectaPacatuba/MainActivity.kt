@@ -1,4 +1,4 @@
-package com.leonarrdoribeiro.BluAppCamaraPacatuba
+package com.lavoroservicos.ConectaPacatuba
 
 import android.os.Build
 import android.os.Bundle
