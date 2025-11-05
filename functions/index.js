@@ -37,14 +37,19 @@ exports.sendPanicNotification = onValueCreated(
       console.log(`Encontrado token: ${pushToken}`);
 
       // Monta a mensagem da notificação
-      const message = {
-        to: pushToken,
-        sound: "default",
+      const message = {        
+        to: pushToken,        
+        sound: "default",        
+        priority: "high", // Prioridade alta para Android e iOS        
+        _displayInForeground: true, // Garante a exibição no iOS quando app aberto
         // Usa o título e body do payload da notificação
-        title: tituloNotification || "Alerta de Emergência!",
+        title: tituloNotification || "Alerta de Emergência!",        
         body: descricaoNotification ||
           "Seu contato de confiança precisa de ajuda.",
-        data: {notificationId: event.params.notificationId},
+        // Dados para usar no app
+        data: {notificationId: event.params.notificationId}, // Dados para usar no app
+        "content-available": 1, // Para iOS, ajuda a "acordar" o app em background
+        channelId: "default", // Garante que o canal correto seja usado no Android
       };
 
       // Envia a notificação usando a API da Expo

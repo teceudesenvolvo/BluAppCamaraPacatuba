@@ -51,6 +51,7 @@ async function registerForPushNotificationsAsync(userId) {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
+      bypassDnd: true, // Importante para alertas de emergência
       lightColor: '#FF231F7C',
     });
   }
