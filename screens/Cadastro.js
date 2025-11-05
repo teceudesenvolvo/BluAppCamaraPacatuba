@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 
-import Logo  from '../assets/logo-pacatuba.png';
+import Logo  from '../assets/logo-sf-branco-app.png';
 
 // CORREÇÃO CRÍTICA: Mudança de 'auth' e 'db' (minúsculas) para 'AUTH' e 'DB' (maiúsculas) 
 // para corresponder ao que é exportado em firebaseConfig.js.
@@ -509,12 +509,15 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
     },
     logo: {
-        width: 100,
-        height: 150,
-        marginTop: 20,
+        width: 500,
+        height: 350,
+        top: 0,
         borderRadius: 20,
+        zIndex: -1,
+        position: 'absolute',
     },
     bottomContainer: {
+        marginTop: `50%`,
         width: '100%',
         backgroundColor: '#fff',
         borderTopLeftRadius: 50,

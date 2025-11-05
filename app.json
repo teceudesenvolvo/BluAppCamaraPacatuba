@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "CM Pacatuba",
+    "name": "Conecta Pacatuba",
     "slug": "BluAppCamaraPacatuba",
     "version": "1.0.1",
     "orientation": "portrait",
@@ -20,7 +20,11 @@
           "audio"
         ],
         "AVPlayerAllowBackgroundPlayback": true,
-        "buildNumber": "1"
+        "buildNumber": "1",
+        "NSCameraUsageDescription": "O aplicativo precisa de acesso à sua câmera para que você possa anexar fotos como evidência em suas solicitações, como em denúncias na Ouvidoria.",
+        "NSPhotoLibraryUsageDescription": "O aplicativo precisa de acesso à sua galeria de fotos para que você possa selecionar e anexar imagens como evidência em suas solicitações, como em denúncias na Ouvidoria.",
+        "NSLocationWhenInUseUsageDescription": "O aplicativo precisa de acesso à sua localização para enviar sua posição ao seu contato de confiança quando o Botão do Pânico for acionado.",
+        "NSLocationAlwaysUsageDescription": "O aplicativo precisa de acesso à sua localização em segundo plano para garantir que o Botão do Pânico possa enviar sua posição ao seu contato de confiança, mesmo que o aplicativo não esteja aberto."
       }
     
   },

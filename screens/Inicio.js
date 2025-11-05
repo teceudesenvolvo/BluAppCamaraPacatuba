@@ -5,7 +5,6 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { AUTH, DB } from '../firebaseConfig'; // Importar AUTH e DB
 import { ref, onValue } from 'firebase/database'; // Importar funções do Realtime Database
-import LogoNews from '../assets/logoPacatuba.png'; // Imagem padrão para notícias sem capa
 
 const { width } = Dimensions.get('window');
 
@@ -124,7 +123,7 @@ const HomeScreen = ({ navigation }) => {
                             // estiver em 'screens/Inicio.js'.
                             // Se a imagem estiver em 'assets/logo-pacatuba-azul.png', o caminho é correto.
                             // Mantendo o caminho original, mas adicionando este comentário para clareza.
-                            source={require('../assets/logo-pacatuba-azul.png')}
+                            source={require('../assets/logo-vertical.png')}
                             style={styles.logoHeader}
                             resizeMode="contain"
                         />
@@ -141,8 +140,8 @@ const HomeScreen = ({ navigation }) => {
                     </View>
                 </View>
                 {/* Boas-vindas e Título */}
-                <Text style={styles.welcomeText}>Bem-vindo, Nome!</Text>
-                <Text style={styles.pageTitle}>Câmara Municipal de Pacatuba - CE</Text>
+                <Text style={styles.welcomeText}>Olá, seja</Text>
+                <Text style={styles.pageTitle}>Bem-vindo</Text>
 
                 <View style={styles.iconMenu}>
                     <TouchableOpacity style={styles.menuItem} onPress={onVereadores}>
@@ -253,7 +252,7 @@ const styles = StyleSheet.create({
     },
     logoHeader: {
         width: 120,
-        height: 60,
+        height: 50,
         marginLeft: 0,
     },
     headerRight: {
