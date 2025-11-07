@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Conecta Pacatuba",
+    "name": "CM Pacatuba",
     "slug": "BluAppCamaraPacatuba",
     "version": "1.0.1",
     "orientation": "portrait",
@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/logo-sf-branco-app.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#080A6C"
     },
@@ -17,7 +17,6 @@
       "bundleIdentifier": "com.lavoroservicos.cmpacatuba",
       "infoPlist": {
         "UIBackgroundModes": [
-          "audio",
           "remote-notification"
         ],
         "AVPlayerAllowBackgroundPlayback": true,
