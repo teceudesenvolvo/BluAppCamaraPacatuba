@@ -1,102 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-
 <plist version="1.0">
-	<dict>
-		<key>AVPlayerAllowBackgroundPlayback</key>
-		<true />
-		<key>CADisableMinimumFrameDurationOnPhone</key>
-		<true />
-		<key>CFBundleDevelopmentRegion</key>
-		<string>$(DEVELOPMENT_LANGUAGE)&lt;/string&gt; &lt;key&gt;CFBundleDisplayName&lt;/key&gt;
-			&lt;string&gt;CM Pacatuba&lt;/string&gt; &lt;key&gt;CFBundleExecutable&lt;/key&gt;
-			&lt;string&gt;$(EXECUTABLE_NAME)</string>
-		<key>CFBundleIdentifier</key>
-		<string>$(PRODUCT_BUNDLE_IDENTIFIER)&lt;/string&gt;
-			&lt;key&gt;CFBundleInfoDictionaryVersion&lt;/key&gt; &lt;string&gt;6.0&lt;/string&gt;
-			&lt;key&gt;CFBundleName&lt;/key&gt; &lt;string&gt;$(PRODUCT_NAME)</string>
-		<key>CFBundlePackageType</key>
-		<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
-		<key>CFBundleShortVersionString</key>
-		<string>1.0.1</string>
-		<key>CFBundleSignature</key>
-		<string>????</string>
-		<key>CFBundleURLTypes</key>
-		<array>
-			<dict>
-				<key>CFBundleURLSchemes</key>
-				<array>
-					<string>com.lavoroservicos.cmpacatuba</string>
-				</array>
-			</dict>
-			<dict>
-				<key>CFBundleURLSchemes</key>
-				<array>
-					<string>exp+bluappcamarapacatuba</string>
-				</array>
-			</dict>
-		</array>
-		<key>CFBundleVersion</key>
-		<string>1</string>
-		<key>LSMinimumSystemVersion</key>
-		<string>12.0</string>
-		<key>LSRequiresIPhoneOS</key>
-		<true />
-		<key>NSAppTransportSecurity</key>
-		<dict>
-			<key>NSAllowsArbitraryLoads</key>
-			<false />
-			<key>NSAllowsLocalNetworking</key>
-			<true />
-		</dict>
-		<key>NSCameraUsageDescription</key>
-		<string>A Câmara de Pacatuba precisa de acesso à sua câmera para que você possa tirar fotos
-			e anexá-las aos protocolos de Ouvidoria ou de Denúncias, fornecendo evidências visuais
-			em suas solicitações.</string>
-		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-		<string>Sua localização é utilizada para que o Botão do Pânico possa enviar sua posição a um
-			contato de emergência em casos de risco, e opcionalmente para anexar coordenadas em
-			protocolos de Ouvidoria.</string>
-		<key>NSLocationAlwaysUsageDescription</key>
-		<string>O aplicativo precisa de acesso à sua localização em segundo plano para garantir que
-			o Botão do Pânico possa enviar sua posição ao seu contato de confiança, mesmo que o
-			aplicativo não esteja aberto.</string>
-		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>Sua localização é usada para que você possa, opcionalmente, anexar coordenadas
-			geográficas aos protocolos de Ouvidoria ou para enviar sua posição quando o Botão do
-			Pânico for acionado.</string>
-		<key>NSMicrophoneUsageDescription</key>
-		<string>Acesso ao microfone é necessário para que você possa anexar gravações de áudio como
-			evidência em suas solicitações (ex: denúncias na Ouvidoria).</string>
-		<key>NSPhotoLibraryUsageDescription</key>
-		<string>Acesso à sua biblioteca de fotos é necessário para que você possa selecionar e
-			anexar imagens ou documentos existentes (ex: comprovantes ou fotos de problemas) aos
-			seus protocolos de Ouvidoria ou de Denúncias.</string>
-		<key>RCTNewArchEnabled</key>
-		<true />
-		<key>UIBackgroundModes</key>
-		<array>
-			<string>remote-notification</string>
-		</array>
-		<key>UILaunchStoryboardName</key>
-		<string>SplashScreen</string>
-		<key>UIRequiredDeviceCapabilities</key>
-		<array>
-			<string>arm64</string>
-		</array>
-		<key>UIRequiresFullScreen</key>
-		<false />
-		<key>UIStatusBarStyle</key>
-		<string></string>
-		<key>UISupportedInterfaceOrientations</key>
-		<array>
-			<string>UIInterfaceOrientationPortrait</string>
-		</array>
-		<key>UIUserInterfaceStyle</key>
-		<string>Light</string>
-		<key>UIViewControllerBasedStatusBarAppearance</key>
-		<false />
-		<key>buildNumber</key>
-		<string>1</string>
-	</dict>
+<dict>
+  <key>CADisableMinimumFrameDurationOnPhone</key>
+  <true/>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>$(DEVELOPMENT_LANGUAGE)</string>
+  <key>CFBundleDisplayName</key>
+  <string>CM Pacatuba</string>
+  <key>CFBundleExecutable</key>
+  <string>$(EXECUTABLE_NAME)</string>
+  <key>CFBundleIdentifier</key>
+  <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
+  <key>CFBundleName</key>
+  <string>$(PRODUCT_NAME)</string>
+  <key>CFBundlePackageType</key>
+  <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+  <key>CFBundleShortVersionString</key>
+  <string>1.0.1</string>
+  <key>CFBundleSignature</key>
+  <string>????</string>
+  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>com.lavoroservicos.cmpacatuba</string>
+      </array>
+    </dict>
+    <dict>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>exp+bluappcamarapacatuba</string>
+      </array>
+    </dict>
+  </array>
+  <key>CFBundleVersion</key>
+  <string>1</string>
+  <key>LSRequiresIPhoneOS</key>
+  <true/>
+  <key>NSAppTransportSecurity</key>
+  <dict>
+    <key>NSAllowsLocalNetworking</key>
+    <true/>
+  </dict>
+  <key>UILaunchStoryboardName</key>
+  <string>SplashScreen</string>
+  <key>UIRequiredDeviceCapabilities</key>
+  <array>
+    <string>armv7</string>
+  </array>
+  <key>UIRequiresFullScreen</key>
+  <false/>
+  <key>UISupportedInterfaceOrientations</key>
+  <array>
+    <string>UIInterfaceOrientationPortrait</string>
+    <string>UIInterfaceOrientationPortraitUpsideDown</string>
+    <string>UIInterfaceOrientationLandscapeLeft</string>
+    <string>UIInterfaceOrientationLandscapeRight</string>
+  </array>
+  <key>UIUserInterfaceStyle</key>
+  <string>Light</string>
+  <key>UIViewControllerBasedStatusBarAppearance</key>
+  <false/>
+</dict>
 </plist>

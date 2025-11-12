@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -19,8 +18,7 @@
         "UIBackgroundModes": [
           "remote-notification"
         ],
-        "AVPlayerAllowBackgroundPlayback": true,
-        "buildNumber": "1",
+        "AVPlayerAllowBackgroundPlayback": true, 
         "NSCameraUsageDescription": "O aplicativo precisa de acesso à sua câmera para que você possa anexar fotos como evidência em suas solicitações, como em denúncias na Ouvidoria.",
         "NSPhotoLibraryUsageDescription": "O aplicativo precisa de acesso à sua galeria de fotos para que você possa selecionar e anexar imagens como evidência em suas solicitações, como em denúncias na Ouvidoria.",
         "NSLocationWhenInUseUsageDescription": "O aplicativo precisa de acesso à sua localização para enviar sua posição ao seu contato de confiança quando o Botão do Pânico for acionado.",
@@ -28,7 +26,8 @@
       }
     
   },
-  "android": {
+  "android": { 
+    "buildNumber": 1,
     "adaptiveIcon": {
       "foregroundImage": "./assets/icon.png",
       "backgroundColor": "#080A6C"
@@ -39,6 +38,7 @@
   "web": {
     "favicon": "./assets/icon.png"
   },
+  "plugins": [],
   "extra": {
     "eas": {
       "projectId": "876c5eb3-85b0-4feb-bbee-5f31981049c2"

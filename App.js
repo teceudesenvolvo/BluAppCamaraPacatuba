@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, Text, ActivityIndicator, StyleSheet, Platform } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import registerNNPushToken from 'native-notify';
-
+// Importa o Notifee
+import notifee, { EventType } from '@notifee/react-native';
 
 // MUDANÇA CRÍTICA: Importa os serviços JÁ INICIALIZADOS e estáveis
 // Certifique-se de que AUTH e DB são exportados com "export { AUTH, DB }" em firebaseService.js
@@ -38,13 +37,37 @@ import DenunciaScreen from './screens/SubPages/Denuncia';
 import { ref, update } from 'firebase/database'; // Adicione esta importação
 const Stack = createNativeStackNavigator();
 
-// Configura o comportamento da notificação quando o app está aberto
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
+// --- LÓGICA NOTIFEE ---
+
+// Listener para quando o app está em primeiro plano
+notifee.onForegroundEvent(async ({ type, detail }) => {
+  if (type === EventType.PRESS) {
+    console.log('Usuário pressionou a notificação em primeiro plano:', detail.notification);
+  } else if (type === EventType.DISMISSED) {
+    console.log('Usuário dispensou a notificação em primeiro plano:', detail.notification);
+  } else if (type === EventType.DELIVERED) {
+    // Exibe a notificação recebida via 'data'
+    const { notification } = detail;
+    if (notification && notification.data) {
+      await notifee.displayNotification({
+        title: notification.data.title,
+        body: notification.data.body,
+        android: {
+          channelId: 'default',
+          pressAction: {
+            id: 'default',
+          },
+        },
+      });
+    }
+  }
+});
+
+// Listener para quando o app está em segundo plano ou fechado
+notifee.onBackgroundEvent(async ({ type, detail }) => {
+  if (type === EventType.PRESS) {
+    console.log('Usuário abriu o app a partir de uma notificação em segundo plano:', detail.notification);
+  }
 });
 
 async function registerForPushNotificationsAsync(userId) {
@@ -54,7 +77,6 @@ async function registerForPushNotificationsAsync(userId) {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      bypassDnd: true, // Importante para alertas de emergência
       lightColor: '#FF231F7C',
     });
   }
@@ -94,12 +116,7 @@ const AppWrapper = () => {
 
             // 1. Registra para notificações Expo e obtém o token
             const expoPushToken = await registerForPushNotificationsAsync(currentUser.uid); 
-            
-            // 2. Registra com native-notify usando o token Expo obtido
-            if (expoPushToken) {
-                registerNNPushToken(32612, 'tdD9VsSEd7UWwSRYcdrPSo', expoPushToken);
-            }
-            console.log(`Usuário autenticado: ${currentUser.uid}`);
+
         } else {
              setUser(null); 
              console.log("Nenhum usuário autenticado via e-mail/senha. Redirecionando para Login.");

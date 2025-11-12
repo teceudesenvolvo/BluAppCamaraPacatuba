@@ -36,19 +36,18 @@ exports.sendPanicNotification = onValueCreated(
 
       console.log(`Encontrado token: ${pushToken}`);
 
-      // Monta a mensagem da notificação
-      const message = {        
-        to: pushToken,        
-        sound: "default",        
-        priority: "high", // Prioridade alta para Android e iOS        
-        _displayInForeground: true, // Garante a exibição no iOS quando app aberto
-        // Usa o título e body do payload da notificação
-        title: tituloNotification || "Alerta de Emergência!",        
-        body: descricaoNotification ||
-          "Seu contato de confiança precisa de ajuda.",
-        // Dados para usar no app
-        data: {notificationId: event.params.notificationId}, // Dados para usar no app
-        "content-available": 1, // Para iOS, ajuda a "acordar" o app em background
+      // Monta a mensagem "data-only" para ser processada pelo Notifee no app
+      const message = {
+        to: pushToken,
+        sound: "default",
+        priority: "high",
+        channelId: "default", // Canal para Android
+        data: {
+          // O Notifee usará estes dados para exibir a notificação
+          title: tituloNotification || "Alerta de Emergência!",
+          body: descricaoNotification || "Seu contato de confiança precisa de ajuda.",
+          notificationId: event.params.notificationId,
+        },
         channelId: "default", // Garante que o canal correto seja usado no Android
       };
 

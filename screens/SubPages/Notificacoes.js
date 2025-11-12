@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AUTH, DB } from '../../firebaseConfig';
-import { ref, onValue, update } from 'firebase/database';
+import { ref, onValue, update } from 'firebase/database'; 
 
 const formatDate = (isoString) => {
     if (!isoString) return '';
