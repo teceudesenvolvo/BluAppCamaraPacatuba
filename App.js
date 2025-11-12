@@ -92,11 +92,12 @@ async function registerForPushNotificationsAsync(userId) {
       alert('Falha ao obter o token para notificações push!');
       return;
     }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log("Expo Push Token:", token);
+    // MUDANÇA: Obter o token nativo do dispositivo (FCM/APNs)
+    token = (await Notifications.getDevicePushTokenAsync()).data;
+    console.log("Token Nativo (FCM/APNs):", token);
 
-    // Salva o token no perfil do usuário no Realtime Database
-    await update(ref(DB, `users/${userId}`), { expoPushToken: token });
+    // Salva o token nativo no perfil do usuário no Realtime Database
+    await update(ref(DB, `users/${userId}`), { devicePushToken: token });
   }
   return token;
 }
