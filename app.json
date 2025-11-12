@@ -12,6 +12,7 @@
       "backgroundColor": "#080A6C"
     },
     "ios": {
+      "deploymentTarget": "15.1",
       "supportsTablet": true,
       "bundleIdentifier": "com.lavoroservicos.cmpacatuba",
       "infoPlist": {
