@@ -22,8 +22,8 @@ exports.sendPanicNotification = onValueCreated(
       console.log(`Nova notificação para o usuário: ${targetUserId}`);
 
       // Busca o token de notificação do usuário alvo diretamente.
-      const tokenRef = admin.database()
-          .ref(`/users/${targetUserId}/expoPushToken`);
+      // MUDANÇA: Buscar o token nativo do dispositivo
+      const tokenRef = admin.database().ref(`/users/${targetUserId}/devicePushToken`);
       const tokenSnapshot = await tokenRef.once("value");
       const pushToken = tokenSnapshot.val();
 
@@ -36,46 +36,33 @@ exports.sendPanicNotification = onValueCreated(
 
       console.log(`Encontrado token: ${pushToken}`);
 
-      // Monta a mensagem "data-only" para ser processada pelo Notifee no app
-      const message = {
-        to: pushToken,
-        sound: "default",
-        priority: "high",
-        channelId: "default", // Canal para Android
+      // Monta a mensagem "data-only" para ser processada pelo Notifee no app,
+      // usando o formato do Firebase Admin SDK.
+      const payload = {
         data: {
           // O Notifee usará estes dados para exibir a notificação
           title: tituloNotification || "Alerta de Emergência!",
           body: descricaoNotification || "Seu contato de confiança precisa de ajuda.",
           notificationId: event.params.notificationId,
+
+          // Adiciona campos específicos para Notifee no Android
+          "notifee_android_channel_id": "default",
+          "notifee_android_press_action_id": "default",
         },
-        channelId: "default", // Garante que o canal correto seja usado no Android
       };
 
-      // Envia a notificação usando a API da Expo
+      // Opções de envio, como prioridade alta para emergências.
+      const options = {
+        priority: "high",
+        contentAvailable: true, // Para iOS, ajuda a "acordar" o app.
+      };
+
+      // Envia a notificação usando o Firebase Admin SDK
       try {
-        const response = await fetch("https://exp.host/--/api/v2/push/send", {
-          method: "POST",
-          headers: {
-            "Accept": "application/json",
-            "Accept-encoding": "gzip, deflate",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(message),
-        });
-
-        const responseData = await response.json();
-        console.log("Resposta da API da Expo:", responseData);
-
-        if (responseData.data.status === "error") {
-          console.error(
-              `Erro ao enviar notificação para ${pushToken}:`,
-              responseData.data.message,
-          );
-        } else {
-          console.log(`Notificação enviada com sucesso para ${pushToken}`);
-        }
+        const response = await admin.messaging().sendToDevice(pushToken, payload, options);
+        console.log("Notificação enviada com sucesso:", response);
       } catch (error) {
-        console.error("Erro ao fazer a requisição para a API da Expo:", error);
+        console.error("Erro ao enviar notificação via FCM:", error);
       }
 
       return null;
