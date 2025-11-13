@@ -1,6 +1,3 @@
-source 'https://github.com/CocoaPods/Specs.git'
-source 'https://github.com/expo/expo.git'
-
 require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
 require File.join(File.dirname(`node --print "require.resolve('react-native/package.json')"`), "scripts/react_native_pods")
 
@@ -31,9 +28,7 @@ self.define_singleton_method(use_autolinking_method_symbol) do |*args|
   end
 end
 
-# Ensure a high enough deployment target for some pods (RNScreens etc).
-# Use ios.deploymentTarget from Podfile.properties.json when present, otherwise fall back to 14.0
-platform :ios, podfile_properties['ios.deploymentTarget'] || '16.0'
+platform :ios, podfile_properties['ios.deploymentTarget'] || '13.4'
 install! 'cocoapods',
   :deterministic_uuids => false
 
@@ -42,11 +37,6 @@ prepare_react_native_project!
 target 'CMPacatuba' do
   use_expo_modules!
   config = use_native_modules!
-
-  # Local override for generated app dependency provider so CocoaPods finds it during resolution
-  # This points to a directory containing a ReactAppDependencyProvider.podspec that references
-  # the codegen output in ios/build/generated/ios.
-  pod 'ReactAppDependencyProvider', :path => 'ReactAppDependencyProvider'
 
   use_frameworks! :linkage => podfile_properties['ios.useFrameworks'].to_sym if podfile_properties['ios.useFrameworks']
   use_frameworks! :linkage => ENV['USE_FRAMEWORKS'].to_sym if ENV['USE_FRAMEWORKS']
@@ -66,15 +56,6 @@ target 'CMPacatuba' do
       :mac_catalyst_enabled => false,
       :ccache_enabled => podfile_properties['apple.ccacheEnabled'] == 'true',
     )
-
-    # Ensure a modern Swift version for all pods so Expo Modules DSL symbols (Constant, Name, AsyncFunction)
-    # are available to Swift sources coming from expo-* packages.
-    swift_version = '5.7'
-    installer.pods_project.targets.each do |target|
-      target.build_configurations.each do |config|
-        config.build_settings['SWIFT_VERSION'] = swift_version
-      end
-    end
 
     # This is necessary for Xcode 14, because it signs resource bundles by default
     # when building for devices.

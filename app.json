@@ -14,7 +14,7 @@
     "ios": {
       "deploymentTarget": "15.1",
       "supportsTablet": true,
-      "bundleIdentifier": "com.camaramunicipaldepacatuba.cmpacatuba",
+      "bundleIdentifier": "com.cmpacatuba.cmpacatuba",
       "infoPlist": {
         "UIBackgroundModes": [
           "remote-notification"
