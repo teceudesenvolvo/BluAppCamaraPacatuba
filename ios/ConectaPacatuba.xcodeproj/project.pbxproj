@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -35,6 +36,31 @@
 		CAF7335CCFF345949A9D3C9B /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "CMPacatuba/noop-file.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-CMPacatuba/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+=======
+		130131530C6C63B99D8B5B50 /* libPods-ConectaPacatuba.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E92525C4AEEC0F56B61E667 /* libPods-ConectaPacatuba.a */; };
+		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
+		7A11F169A3B6C02371AA70F6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DF5373FA474BAF0E15B854F0 /* PrivacyInfo.xcprivacy */; };
+		8FB7938DF1711B29C56A47AB /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6F925A256EE499248960DC /* ExpoModulesProvider.swift */; };
+		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		13B07F961A680F5B00A75B9A /* ConectaPacatuba.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConectaPacatuba.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ConectaPacatuba/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ConectaPacatuba/Info.plist; sourceTree = "<group>"; };
+		3CCB5BE8F6E7FB7723456AA5 /* Pods-ConectaPacatuba.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConectaPacatuba.debug.xcconfig"; path = "Target Support Files/Pods-ConectaPacatuba/Pods-ConectaPacatuba.debug.xcconfig"; sourceTree = "<group>"; };
+		5E92525C4AEEC0F56B61E667 /* libPods-ConectaPacatuba.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ConectaPacatuba.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E891915171917C3EE4B5CE3 /* Pods-ConectaPacatuba.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConectaPacatuba.release.xcconfig"; path = "Target Support Files/Pods-ConectaPacatuba/Pods-ConectaPacatuba.release.xcconfig"; sourceTree = "<group>"; };
+		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = ConectaPacatuba/SplashScreen.storyboard; sourceTree = "<group>"; };
+		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		DB6F925A256EE499248960DC /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ConectaPacatuba/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		DF5373FA474BAF0E15B854F0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = ConectaPacatuba/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ConectaPacatuba/AppDelegate.swift; sourceTree = "<group>"; };
+		F11748442D0722820044C1D9 /* ConectaPacatuba-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ConectaPacatuba-Bridging-Header.h"; path = "ConectaPacatuba/ConectaPacatuba-Bridging-Header.h"; sourceTree = "<group>"; };
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,16 +68,25 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 				96905EF65AED1B983A6B3ABC /* libPods-CMPacatuba.a in Frameworks */,
+=======
+				130131530C6C63B99D8B5B50 /* libPods-ConectaPacatuba.a in Frameworks */,
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* CMPacatuba */ = {
+		13B07FAE1A68108700A75B9A /* ConectaPacatuba */ = {
 			isa = PBXGroup;
 			children = (
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
+=======
+				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
+				F11748442D0722820044C1D9 /* ConectaPacatuba-Bridging-Header.h */,
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -59,20 +94,55 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 				CAF7335CCFF345949A9D3C9B /* noop-file.swift */,
 				4659B39B116142C7AD649897 /* CMPacatuba-Bridging-Header.h */,
 				56A3527FC0CDA5E78FE6C454 /* PrivacyInfo.xcprivacy */,
 			);
 			name = CMPacatuba;
+=======
+				DF5373FA474BAF0E15B854F0 /* PrivacyInfo.xcprivacy */,
+			);
+			name = ConectaPacatuba;
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 				58EEBF8E8E6FB1BC6CAF49B5 /* libPods-CMPacatuba.a */,
+=======
+				5E92525C4AEEC0F56B61E667 /* libPods-ConectaPacatuba.a */,
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2D6913D38BE7320A5B85E05F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3CCB5BE8F6E7FB7723456AA5 /* Pods-ConectaPacatuba.debug.xcconfig */,
+				8E891915171917C3EE4B5CE3 /* Pods-ConectaPacatuba.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		46ABBBD58CFE8F16CDFABEDB /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				56037D3B686503C6D39A0E7D /* ConectaPacatuba */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		56037D3B686503C6D39A0E7D /* ConectaPacatuba */ = {
+			isa = PBXGroup;
+			children = (
+				DB6F925A256EE499248960DC /* ExpoModulesProvider.swift */,
+			);
+			name = ConectaPacatuba;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -85,12 +155,17 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* CMPacatuba */,
+				13B07FAE1A68108700A75B9A /* ConectaPacatuba */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 				D65327D7A22EEC0BE12398D9 /* Pods */,
 				D7E4C46ADA2E9064B798F356 /* ExpoModulesProviders */,
+=======
+				2D6913D38BE7320A5B85E05F /* Pods */,
+				46ABBBD58CFE8F16CDFABEDB /* ExpoModulesProviders */,
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -100,11 +175,12 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* CMPacatuba.app */,
+				13B07F961A680F5B00A75B9A /* ConectaPacatuba.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 		92DBD88DE9BF7D494EA9DA96 /* CMPacatuba */ = {
 			isa = PBXGroup;
 			children = (
@@ -113,13 +189,15 @@
 			name = CMPacatuba;
 			sourceTree = "<group>";
 		};
+=======
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
 			isa = PBXGroup;
 			children = (
 				BB2F792C24A3F905000567C9 /* Expo.plist */,
 			);
 			name = Supporting;
-			path = CMPacatuba/Supporting;
+			path = ConectaPacatuba/Supporting;
 			sourceTree = "<group>";
 		};
 		D65327D7A22EEC0BE12398D9 /* Pods */ = {
@@ -142,26 +220,34 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* CMPacatuba */ = {
+		13B07F861A680F5B00A75B9A /* ConectaPacatuba */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CMPacatuba" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ConectaPacatuba" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 				39264FC3680731C7FA6B478E /* [Expo] Configure project */,
+=======
+				3EB177948C8B000F597592A3 /* [Expo] Configure project */,
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 				1F2613A60EBD6C787F50BCDD /* [CP] Embed Pods Frameworks */,
+=======
+				74886DD8DEE97A64AE86C5BD /* [CP] Embed Pods Frameworks */,
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = CMPacatuba;
-			productName = CMPacatuba;
-			productReference = 13B07F961A680F5B00A75B9A /* CMPacatuba.app */;
+			name = ConectaPacatuba;
+			productName = ConectaPacatuba;
+			productReference = 13B07F961A680F5B00A75B9A /* ConectaPacatuba.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -177,7 +263,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CMPacatuba" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ConectaPacatuba" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -190,7 +276,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* CMPacatuba */,
+				13B07F861A680F5B00A75B9A /* ConectaPacatuba */,
 			);
 		};
 /* End PBXProject section */
@@ -203,7 +289,11 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 				377948D11938242C53F00B87 /* PrivacyInfo.xcprivacy in Resources */,
+=======
+				7A11F169A3B6C02371AA70F6 /* PrivacyInfo.xcprivacy in Resources */,
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,13 +330,14 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CMPacatuba-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-ConectaPacatuba-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 		1F2613A60EBD6C787F50BCDD /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -266,6 +357,9 @@
 			showEnvVarsInLog = 0;
 		};
 		39264FC3680731C7FA6B478E /* [Expo] Configure project */ = {
+=======
+		3EB177948C8B000F597592A3 /* [Expo] Configure project */ = {
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -274,23 +368,59 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
+=======
+				"$(SRCROOT)/.xcode.env",
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/ConectaPacatuba/ConectaPacatuba.entitlements",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-ConectaPacatuba/expo-configure-project.sh",
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 			);
 			name = "[Expo] Configure project";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
+=======
+				"$(SRCROOT)/Pods/Target Support Files/Pods-ConectaPacatuba/ExpoModulesProvider.swift",
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-CMPacatuba/expo-configure-project.sh\"\n";
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ConectaPacatuba/expo-configure-project.sh\"\n";
 		};
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
+=======
+		74886DD8DEE97A64AE86C5BD /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ConectaPacatuba/Pods-ConectaPacatuba-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ConectaPacatuba/Pods-ConectaPacatuba-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CMPacatuba/Pods-CMPacatuba-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-ConectaPacatuba/Pods-ConectaPacatuba-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXApplication/ExpoApplication_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
@@ -355,7 +485,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CMPacatuba/Pods-CMPacatuba-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ConectaPacatuba/Pods-ConectaPacatuba-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -365,10 +495,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
 				4C77BB1F42494283931DBF44 /* noop-file.swift in Sources */,
+=======
+				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
+				8FB7938DF1711B29C56A47AB /* ExpoModulesProvider.swift in Sources */,
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -377,20 +512,33 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 			baseConfigurationReference = 6C2E3173556A471DD304B334 /* Pods-CMPacatuba.debug.xcconfig */;
+=======
+			baseConfigurationReference = 3CCB5BE8F6E7FB7723456AA5 /* Pods-ConectaPacatuba.debug.xcconfig */;
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = CMPacatuba/CMPacatuba.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ConectaPacatuba/ConectaPacatuba.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 				INFOPLIST_FILE = CMPacatuba/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+=======
+				INFOPLIST_FILE = ConectaPacatuba/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -398,9 +546,19 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 				PRODUCT_BUNDLE_IDENTIFIER = com.cmpacatuba.cmpacatuba;
 				PRODUCT_NAME = "CMPacatuba";
 				SWIFT_OBJC_BRIDGING_HEADER = "CMPacatuba/CMPacatuba-Bridging-Header.h";
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.lavoroservicos.cmpacatuba;
+				PRODUCT_NAME = ConectaPacatuba;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "ConectaPacatuba/ConectaPacatuba-Bridging-Header.h";
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -410,15 +568,29 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 			baseConfigurationReference = 7A4D352CD337FB3A3BF06240 /* Pods-CMPacatuba.release.xcconfig */;
+=======
+			baseConfigurationReference = 8E891915171917C3EE4B5CE3 /* Pods-ConectaPacatuba.release.xcconfig */;
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = CMPacatuba/CMPacatuba.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ConectaPacatuba/ConectaPacatuba.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 				INFOPLIST_FILE = CMPacatuba/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+=======
+				DEVELOPMENT_TEAM = KLZVFDM4KH;
+				INFOPLIST_FILE = ConectaPacatuba/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -426,9 +598,19 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
+<<<<<<< HEAD:ios/CMPacatuba.xcodeproj/project.pbxproj
 				PRODUCT_BUNDLE_IDENTIFIER = com.cmpacatuba.cmpacatuba;
 				PRODUCT_NAME = "CMPacatuba";
 				SWIFT_OBJC_BRIDGING_HEADER = "CMPacatuba/CMPacatuba-Bridging-Header.h";
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.lavoroservicos.cmpacatuba;
+				PRODUCT_NAME = ConectaPacatuba;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "ConectaPacatuba/ConectaPacatuba-Bridging-Header.h";
+>>>>>>> parent of ad86298 (novoIos):ios/ConectaPacatuba.xcodeproj/project.pbxproj
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -563,7 +745,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CMPacatuba" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ConectaPacatuba" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -572,7 +754,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CMPacatuba" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ConectaPacatuba" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
