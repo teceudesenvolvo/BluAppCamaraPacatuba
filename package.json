@@ -10,7 +10,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~6.1.2",
+    "@expo/cli": "^0.18.31",
+    "@expo/metro-config": "^54.0.9",
     "@notifee/react-native": "^7.8.0",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-community/netinfo": "^11.4.1",
@@ -29,7 +30,7 @@
     "expo-notifications": "~0.32.12",
     "expo-status-bar": "~3.0.8",
     "firebase": "^12.3.0",
-    "metro": "^0.83.3",
+    "metro-source-map": "^0.83.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.3",
