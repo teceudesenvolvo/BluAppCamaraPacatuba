@@ -123,7 +123,7 @@ const HomeScreen = ({ navigation }) => {
                             // estiver em 'screens/Inicio.js'.
                             // Se a imagem estiver em 'assets/logo-pacatuba-azul.png', o caminho é correto.
                             // Mantendo o caminho original, mas adicionando este comentário para clareza.
-                            source={require('../assets/logo-pacatuba-azul.png')}
+                            source={require('../assets/logo-vertical.png')}
                             style={styles.logoHeader}
                             resizeMode="contain"
                         />

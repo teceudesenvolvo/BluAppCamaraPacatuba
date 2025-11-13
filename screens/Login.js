@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, KeyboardAvo
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 // Nota: O caminho da imagem deve ser ajustado para o ambiente de execução
-import Logo from '../assets/logo-pacatuba.png'; 
+import Logo from '../assets/logo-sf-branco-app.png'; 
 
 // Importando AUTH e o método de login por email/senha
 import { AUTH } from '../firebaseConfig'; 
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
         paddingTop: 50,
     },
     logo: {
-        height: 120,
+        height: 350,
         marginTop: 40,
     },
     // *** OTIMIZAÇÃO CRÍTICA: KAV CONTAINER COM FLEX: 1 E BG BRANCO ***
