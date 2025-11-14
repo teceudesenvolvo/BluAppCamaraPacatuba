@@ -205,11 +205,11 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     playerContainer: {
-        height: 230,
+        height: 210,
         marginHorizontal: 10,
         borderRadius: 15,
         overflow: 'hidden',
-        backgroundColor: '#000',
+        backgroundColor: 'transparent',
     },
     // Removido styles.youtubePlayer, pois YoutubeIframe gerencia isso
     videoItem: {

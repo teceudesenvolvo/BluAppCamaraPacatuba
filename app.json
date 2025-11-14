@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "CM Pacatuba",
-    "slug": "bluappcamarapacatuba",
+    "slug": "camaraMunicipalPacatuba",
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -35,7 +35,7 @@
         "backgroundColor": "#080A6C"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.lavoroservicos.cmpacatuba"
+      "package": "com.cmpacatuba.cmpacatuba"
     },
     "web": {
       "favicon": "./assets/icon.png"

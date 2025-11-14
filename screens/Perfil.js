@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     },
     scrollContent: {
         alignItems: 'center',
-        paddingBottom: 50,
+        paddingBottom: 120, // Aumentado para não sobrepor a TabBar
     },
     profileSection: {
         alignItems: 'center',

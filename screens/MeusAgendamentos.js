@@ -247,6 +247,7 @@ const styles = StyleSheet.create({
 	scrollContent: {
 		padding: 20,
 		alignItems: 'center',
+		paddingBottom: 120, // Adicionado para não sobrepor a TabBar
 	},
 	section: {
 		width: '100%',

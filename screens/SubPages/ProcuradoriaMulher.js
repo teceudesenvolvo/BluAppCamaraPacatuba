@@ -250,6 +250,7 @@ const styles = StyleSheet.create({
     },
     scrollContent: {
         padding: 20,
+        paddingBottom: 120, // Adicionado para não sobrepor a TabBar
     },
     card: {
         backgroundColor: '#fff',
