@@ -41,6 +41,8 @@
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>
@@ -64,6 +66,7 @@
     <string>O aplicativo precisa de acesso à sua galeria de fotos para que você possa selecionar e anexar imagens como evidência em suas solicitações, como em denúncias na Ouvidoria.</string>
     <key>UIBackgroundModes</key>
     <array>
+      <string>remote-notification</string>
       <string>remote-notification</string>
     </array>
     <key>UILaunchStoryboardName</key>
