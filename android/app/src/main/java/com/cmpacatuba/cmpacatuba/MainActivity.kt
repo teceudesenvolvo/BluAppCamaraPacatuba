@@ -1,4 +1,4 @@
-package com.lavoroservicos.cmpacatuba
+package com.cmpacatuba.cmpacatuba
 
 import android.os.Build
 import android.os.Bundle

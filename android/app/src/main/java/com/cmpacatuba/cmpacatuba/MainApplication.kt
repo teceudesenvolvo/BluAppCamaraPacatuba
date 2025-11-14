@@ -1,4 +1,4 @@
-package com.lavoroservicos.cmpacatuba
+package com.cmpacatuba.cmpacatuba
 
 import android.app.Application
 import android.content.res.Configuration

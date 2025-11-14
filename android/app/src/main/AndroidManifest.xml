@@ -29,6 +29,8 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.lavoroservicos.cmpacatuba"/>
         <data android:scheme="exp+bluappcamarapacatuba"/>
+        <data android:scheme="com.cmpacatuba.cmpacatuba"/>
+        <data android:scheme="exp+camaramunicipalpacatuba"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>
