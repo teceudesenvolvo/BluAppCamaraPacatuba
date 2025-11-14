@@ -4,8 +4,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, Text, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-// Importa o Notifee
-import notifee, { EventType } from '@notifee/react-native';
 
 // MUDANÇA CRÍTICA: Importa os serviços JÁ INICIALIZADOS e estáveis
 // Certifique-se de que AUTH e DB são exportados com "export { AUTH, DB }" em firebaseService.js
@@ -37,38 +35,6 @@ import DenunciaScreen from './screens/SubPages/Denuncia';
 import { ref, update } from 'firebase/database'; // Adicione esta importação
 const Stack = createNativeStackNavigator();
 
-// --- LÓGICA NOTIFEE ---
-
-// Listener para quando o app está em primeiro plano
-notifee.onForegroundEvent(async ({ type, detail }) => {
-  if (type === EventType.PRESS) {
-    console.log('Usuário pressionou a notificação em primeiro plano:', detail.notification);
-  } else if (type === EventType.DISMISSED) {
-    console.log('Usuário dispensou a notificação em primeiro plano:', detail.notification);
-  } else if (type === EventType.DELIVERED) {
-    // Exibe a notificação recebida via 'data'
-    const { notification } = detail;
-    if (notification && notification.data) {
-      await notifee.displayNotification({
-        title: notification.data.title,
-        body: notification.data.body,
-        android: {
-          channelId: 'default',
-          pressAction: {
-            id: 'default',
-          },
-        },
-      });
-    }
-  }
-});
-
-// Listener para quando o app está em segundo plano ou fechado
-notifee.onBackgroundEvent(async ({ type, detail }) => {
-  if (type === EventType.PRESS) {
-    console.log('Usuário abriu o app a partir de uma notificação em segundo plano:', detail.notification);
-  }
-});
 
 async function registerForPushNotificationsAsync(userId) {
   let token;
