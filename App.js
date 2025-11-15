@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, Text, ActivityIndicator, StyleSheet, Platform } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
@@ -11,7 +12,7 @@ import { AUTH, DB } from './firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 
 // Importação dos Componentes de Tela
-import LoginScreen from './screens/Login'; // Mantém esta linha
+import LoginScreen from './screens/Login';
 import CadastroScreen from './screens/Cadastro';
 import MainApp from './MainApp';
 
@@ -32,9 +33,16 @@ import AgendamentosScreen from './screens/SubPages/Agendamento'
 import RealizarDenunciaScreen from './screens/SubPages/RealizarDenuncia'; 
 import DenunciaScreen from './screens/SubPages/Denuncia'; 
 
-import { ref, update } from 'firebase/database'; // Adicione esta importação
 const Stack = createNativeStackNavigator();
 
+// Configura o comportamento da notificação quando o app está aberto
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 async function registerForPushNotificationsAsync(userId) {
   let token;
@@ -58,13 +66,15 @@ async function registerForPushNotificationsAsync(userId) {
       alert('Falha ao obter o token para notificações push!');
       return;
     }
-    // MUDANÇA: Obter o token nativo do dispositivo (FCM/APNs)
-    token = (await Notifications.getDevicePushTokenAsync()).data;
-    console.log("Token Nativo (FCM/APNs):", token);
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log("Expo Push Token:", token);
 
-    // Salva o token nativo no perfil do usuário no Realtime Database
-    await update(ref(DB, `users/${userId}`), { devicePushToken: token });
+    // Salva o token no perfil do usuário no Realtime Database
+    const { ref, update } = await import('firebase/database');
+    await update(ref(DB, `users/${userId}`), { expoPushToken: token });
+
   }
+
   return token;
 }
 
@@ -75,15 +85,12 @@ const AppWrapper = () => {
 
   useEffect(() => {
     // 1. O Listener usa a instância AUTH estável importada
-    const unsubscribe = onAuthStateChanged(AUTH, async (currentUser) => {
+    const unsubscribe = onAuthStateChanged(AUTH, (currentUser) => {
         // Se houver um usuário (e não for anônimo, se essa for a regra)
         if (currentUser && currentUser.isAnonymous === false) { 
             setUser(currentUser);
+            registerForPushNotificationsAsync(currentUser.uid); // Registra para notificações
             console.log(`Usuário autenticado: ${currentUser.uid}`);
-
-            // 1. Registra para notificações Expo e obtém o token
-            const expoPushToken = await registerForPushNotificationsAsync(currentUser.uid); 
-
         } else {
              setUser(null); 
              console.log("Nenhum usuário autenticado via e-mail/senha. Redirecionando para Login.");

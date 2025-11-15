@@ -1,50 +1,44 @@
 {
   "expo": {
     "name": "CM Pacatuba",
-    "slug": "camaraMunicipalPacatuba",
+    "slug": "BluAppCamaraPacatuba",
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#080A6C"
+      "backgroundColor": "#ffffff"
     },
     "ios": {
-      "deploymentTarget": "15.1",
       "supportsTablet": true,
-      "bundleIdentifier": "com.cmpacatuba.cmpacatuba",
+      "bundleIdentifier": "com.leonarrdoribeiro.BluAppCamaraPacatuba",
       "infoPlist": {
         "UIBackgroundModes": [
-          "remote-notification",
-          "remote-notification"
+          "audio"
         ],
         "AVPlayerAllowBackgroundPlayback": true,
-        "NSCameraUsageDescription": "O aplicativo precisa de acesso à sua câmera para que você possa anexar fotos como evidência em suas solicitações, como em denúncias na Ouvidoria.",
-        "NSPhotoLibraryUsageDescription": "O aplicativo precisa de acesso à sua galeria de fotos para que você possa selecionar e anexar imagens como evidência em suas solicitações, como em denúncias na Ouvidoria.",
-        "NSLocationWhenInUseUsageDescription": "O aplicativo precisa de acesso à sua localização para enviar sua posição ao seu contato de confiança quando o Botão do Pânico for acionado.",
-        "NSLocationAlwaysUsageDescription": "O aplicativo precisa de acesso à sua localização em segundo plano para garantir que o Botão do Pânico possa enviar sua posição ao seu contato de confiança, mesmo que o aplicativo não esteja aberto.",
-        "ITSAppUsesNonExemptEncryption": false
+        "buildNumber": "1"
       }
+    
+  },
+  "android": {
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/adaptive-icon.png",
+      "backgroundColor": "#ffffff"
     },
-    "android": {
-      "buildNumber": 1,
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#080A6C"
-      },
-      "edgeToEdgeEnabled": true,
-      "package": "com.cmpacatuba.cmpacatuba"
-    },
-    "web": {
-      "favicon": "./assets/icon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "1d47ac3a-2c19-428b-b0a9-7353aa405c63"
-      }
-    },
-    "owner": "leonarrdoribeiro32"
+    "edgeToEdgeEnabled": true,
+    "package": "com.leonarrdoribeiro.BluAppCamaraPacatuba"
+  },
+  "web": {
+    "favicon": "./assets/favicon.png"
+  },
+  "extra": {
+    "eas": {
+      "projectId": "876c5eb3-85b0-4feb-bbee-5f31981049c2"
+    }
   }
+}
 }
