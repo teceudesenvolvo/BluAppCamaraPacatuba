@@ -1531,7 +1531,7 @@ PODS:
     - ReactNativeDependencies
   - react-native-netinfo (11.4.1):
     - React-Core
-  - react-native-safe-area-context (5.6.2):
+  - react-native-safe-area-context (5.6.0):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1543,8 +1543,8 @@ PODS:
     - React-graphics
     - React-ImageManager
     - React-jsi
-    - react-native-safe-area-context/common (= 5.6.2)
-    - react-native-safe-area-context/fabric (= 5.6.2)
+    - react-native-safe-area-context/common (= 5.6.0)
+    - react-native-safe-area-context/fabric (= 5.6.0)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -1555,7 +1555,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - react-native-safe-area-context/common (5.6.2):
+  - react-native-safe-area-context/common (5.6.0):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1577,7 +1577,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - react-native-safe-area-context/fabric (5.6.2):
+  - react-native-safe-area-context/fabric (5.6.0):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1994,7 +1994,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - RNCPicker (2.11.4):
+  - RNCPicker (2.11.2):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2457,7 +2457,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: fbe1da882a187e5898bdf125e1cc6e603d27ecae
   React-microtasksnativemodule: 76905804171d8ccbe69329fc84c57eb7934add7f
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
-  react-native-safe-area-context: 37e680fc4cace3c0030ee46e8987d24f5d3bdab2
+  react-native-safe-area-context: eb2fb5c796f18a08959ee5400bb1c65e4c1b4833
   react-native-webview: b29007f4723bca10872028067b07abacfa1cb35a
   React-NativeModulesApple: a9464983ccc0f66f45e93558671f60fc7536e438
   React-oscompat: 73db7dbc80edef36a9d6ed3c6c4e1724ead4236d
@@ -2491,7 +2491,7 @@ SPEC CHECKSUMS:
   ReactCommon: 149b6c05126f2e99f2ed0d3c63539369546f8cae
   ReactNativeDependencies: ed6d1e64802b150399f04f1d5728ec16b437251e
   RNCAsyncStorage: 7a5a6094f9f6b9158e72f1855cd86e769413d851
-  RNCPicker: c8a3584b74133464ee926224463fcc54dfdaebca
+  RNCPicker: ddce382c4b42ea2ee36dd588066f0c6d5a240707
   RNGestureHandler: 2914750df066d89bf9d8f48a10ad5f0051108ac3
   RNScreens: d8d6f1792f6e7ac12b0190d33d8d390efc0c1845
   RNVectorIcons: 4351544f100d4f12cac156a7c13399e60bab3e26

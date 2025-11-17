@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "CM Pacatuba",
-    "slug": "BluAppCamaraPacatuba",
+    "slug": "bluappcamarapacatuba",
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,14 +10,14 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#080A6C"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.leonarrdoribeiro.BluAppCamaraPacatuba",
+      "bundleIdentifier": "com.cmpacatuba.cmpacatuba",
       "infoPlist": {
         "UIBackgroundModes": [
-          "audio"
+          "remote-notification"
         ],
         "AVPlayerAllowBackgroundPlayback": true,
         "buildNumber": "1"
@@ -30,14 +30,14 @@
       "backgroundColor": "#ffffff"
     },
     "edgeToEdgeEnabled": true,
-    "package": "com.leonarrdoribeiro.BluAppCamaraPacatuba"
+    "package": "com.cmpacatuba.cmpacatuba"
   },
   "web": {
     "favicon": "./assets/favicon.png"
   },
   "extra": {
     "eas": {
-      "projectId": "876c5eb3-85b0-4feb-bbee-5f31981049c2"
+      "projectId": "1d47ac3a-2c19-428b-b0a9-7353aa405c63"
     }
   }
 }
