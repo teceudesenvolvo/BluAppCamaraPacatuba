@@ -67,6 +67,7 @@ const maskRg = (value) => {
 };
 
 const SEXO_OPTIONS = ['Masculino', 'Feminino', 'Outro', 'Prefiro não informar'];
+const ESTADO_CIVIL_OPTIONS = ['Solteiro(a)', 'Casado(a)', 'Separado(a)', 'Divorciado(a)', 'Viúvo(a)'];
 
 
 const CadastroScreen = ({ navigation }) => {
@@ -86,6 +87,7 @@ const CadastroScreen = ({ navigation }) => {
     
     const [cpf, setCpf] = useState('');
     const [rg, setRg] = useState('');
+    const [isEstadoCivilDropdownOpen, setIsEstadoCivilDropdownOpen] = useState(false);
     const [estadoCivil, setEstadoCivil] = useState('');
 
     const [cep, setCep] = useState('');
@@ -397,15 +399,32 @@ const CadastroScreen = ({ navigation }) => {
                                 </View>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.label}>Estado Civil</Text>
-                                    <TextInput
+                                    <TouchableOpacity
                                         style={styles.input}
-                                        placeholder="Solteiro(a), Casado(a), etc."
-                                        placeholderTextColor="#ccc"
-                                        value={estadoCivil}
-                                        onChangeText={setEstadoCivil}
-                                    />
+                                        onPress={() => setIsEstadoCivilDropdownOpen(!isEstadoCivilDropdownOpen)}
+                                    >
+                                        <Text style={estadoCivil ? styles.dropdownSelectedText : styles.dropdownPlaceholderText}>
+                                            {estadoCivil || 'Selecione seu estado civil'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    {isEstadoCivilDropdownOpen && (
+                                        <View style={styles.dropdownOptionsContainer}>
+                                            {ESTADO_CIVIL_OPTIONS.map((option, index) => (
+                                                <TouchableOpacity
+                                                    key={index}
+                                                    style={styles.dropdownOption}
+                                                    onPress={() => {
+                                                        setEstadoCivil(option);
+                                                        setIsEstadoCivilDropdownOpen(false);
+                                                    }}
+                                                >
+                                                    <Text style={styles.dropdownOptionText}>{option}</Text>
+                                                </TouchableOpacity>
+                                            ))}
+                                        </View>
+                                    )}
                                 </View>
-                                <View style={styles.inputGroup}>
+                                <View style={[styles.inputGroup, { zIndex: -1 }]}>
                                     <Text style={styles.label}>CEP</Text>
                                     <TextInput
                                         style={styles.input}

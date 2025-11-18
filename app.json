@@ -2,7 +2,7 @@
   "expo": {
     "name": "CM Pacatuba",
     "slug": "bluappcamarapacatuba",
-    "version": "1.0.1",
+    "version": "1.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -19,10 +19,10 @@
         "UIBackgroundModes": [
           "remote-notification"
         ],
-        "AVPlayerAllowBackgroundPlayback": true,
-        "buildNumber": "1"
-      }
-    
+        "AVPlayerAllowBackgroundPlayback": true
+      },
+      "buildNumber": "1",
+      "deploymentTarget": "15.1"
   },
   "android": {
     "adaptiveIcon": {

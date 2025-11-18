@@ -5,14 +5,23 @@
   },
   "build": {
     "development": {
+      "extends": "base",
       "developmentClient": true,
       "distribution": "internal"
     },
     "preview": {
+      "extends": "base",
       "distribution": "internal"
     },
     "production": {
+      "extends": "base",
       "autoIncrement": true
+    },
+    "base": {
+      "node": "20.19.4",
+      "ios": {
+        "cocoapods": "1.16.2"
+      }
     }
   },
   "submit": {
