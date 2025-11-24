@@ -7,7 +7,10 @@
     "development": {
       "extends": "base",
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "ANDROID_HOME": "/Users/leonardoribeiro/Library/Android/sdk"
+      }
     },
     "preview": {
       "extends": "base",
@@ -25,7 +28,7 @@
     }
   },
   "submit": {
-    "production": {      
+    "production": {
       "ios": {
         "appleId": "leonarrdoribeiro@yahoo.com.br",
         "ascAppId": "6755323399",
