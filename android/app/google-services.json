@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "505753867545",
+    "firebase_url": "https://cm-pacatuba-default-rtdb.firebaseio.com",
+    "project_id": "cm-pacatuba",
+    "storage_bucket": "cm-pacatuba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505753867545:android:74ed46e034047c7d6f6188",
+        "android_client_info": {
+          "package_name": "com.cmpacatuba.cmpacatuba"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5KcFrQRsGJSClouZhv6pPi2--B-Rqba8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
