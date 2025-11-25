@@ -57,6 +57,8 @@ const requestUserPermissions = async () => {
     } else {
       console.log('Permissões de notificação negadas');
     }
+    // CORREÇÃO: Retorna o status da permissão
+    return enabled;
 };
 
 async function registerForPushNotificationsAsync(userId) {
@@ -105,63 +107,61 @@ const AppWrapper = () => {
   const [user, setUser] = useState(null); 
 
   useEffect(() => {
-    if(requestUserPermissions()){
-      messaging()
-      .getToken()
-      .then(token => {
-        console.log("Token FCM obtido:", token);
-      });
-    }else{
-      console.log("Permissões de notificação não concedidas.");
-    }
+    // Função assíncrona para lidar com a configuração das notificações
+    const setupNotifications = async (userId) => {
+      const permissionsGranted = await requestUserPermissions();
+      if (permissionsGranted) {
+        console.log("Permissões de notificação concedidas.");
+        // Registra o dispositivo para receber notificações push
+        registerForPushNotificationsAsync(userId);
 
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            'Notificação que abriu o app a partir do estado fechado:',
-            remoteMessage.notification,
-          );
-        }
-      });
+        // Listener para quando o app é aberto a partir de uma notificação (estado fechado)
+        messaging().getInitialNotification().then(remoteMessage => {
+          if (remoteMessage) {
+            console.log('Notificação abriu o app (fechado):', remoteMessage.notification);
+          }
+        });
 
-    messaging().onNotificationOpenedApp((remoteMessage) => {
-      console.log(
-        'Notificação que abriu o app a partir do estado em segundo plano:',
-        remoteMessage.notification,
-      );
-    });
+        // Listener para quando o app é aberto a partir de uma notificação (segundo plano)
+        messaging().onNotificationOpenedApp((remoteMessage) => {
+          console.log('Notificação abriu o app (segundo plano):', remoteMessage.notification);
+        });
+      } else {
+        console.log("Permissões de notificação não concedidas.");
+      }
+    };
 
+    // Configura o handler para notificações em background
     messaging().setBackgroundMessageHandler(async remoteMessage => {
       console.log('CM Pacatuba:', remoteMessage);
     });
 
+    // Listener para notificações recebidas com o app em primeiro plano
     const unsubscribeNotification = messaging().onMessage(async (remoteMessage) => {
       Alert.alert('Notificação recebida no foreground:', JSON.stringify(remoteMessage));
     });
 
-    return unsubscribeNotification;
-
-
-
-    // 1. O Listener usa a instância AUTH estável importada
-    const unsubscribe = onAuthStateChanged(AUTH, (currentUser) => {
-        // Se houver um usuário (e não for anônimo, se essa for a regra)
+    // Listener principal para o estado de autenticação
+    const unsubscribeAuth = onAuthStateChanged(AUTH, (currentUser) => {
         if (currentUser && currentUser.isAnonymous === false) { 
             setUser(currentUser);
-            registerForPushNotificationsAsync(currentUser.uid); // Registra para notificações
+            // Configura as notificações APÓS saber quem é o usuário
+            setupNotifications(currentUser.uid);
             console.log(`Usuário autenticado: ${currentUser.uid}`);
         } else {
              setUser(null); 
              console.log("Nenhum usuário autenticado via e-mail/senha. Redirecionando para Login.");
         }
-        
+        // Esta é a chamada crucial que remove a tela de loading
         setIsLoading(false);
     });
 
-    // Cleanup do listener
-    return () => unsubscribe();
+    // Função de cleanup: será chamada quando o componente for desmontado.
+    // Ela remove os dois listeners para evitar vazamentos de memória.
+    return () => {
+      unsubscribeAuth();
+      unsubscribeNotification();
+    };
   }, []); // Dependência vazia: roda apenas na montagem
 
   if (isLoading) {

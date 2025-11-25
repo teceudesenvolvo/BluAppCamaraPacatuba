@@ -14,10 +14,13 @@ if (typeof __firebase_config !== 'undefined') {
 } else {
     // Sua configuração como fallback se não estiver no ambiente Canvas
     firebaseConfig = {
-        apiKey: "AIzaSyDZCsp-Z_VsEsFA_3JcRC0lyFMSr3ETGUY",
+        apiKey: "AIzaSyA5KcFrQRsGJSClouZhv6pPi2--B-Rqba8",
         authDomain: "cm-pacatuba.firebaseapp.com", 
         projectId: "cm-pacatuba",
-        databaseURL: "https://cm-pacatuba-default-rtdb.firebaseio.com", 
+        databaseURL: "https://cm-pacatuba-default-rtdb.firebaseio.com",
+        storageBucket: "cm-pacatuba.firebasestorage.app",
+        messagingSenderId: "505753867545",
+        appId: "1:505753867545:android:74ed46e034047c7d6f6188"
     };
 }
 

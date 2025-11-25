@@ -23,23 +23,35 @@
       },
       "buildNumber": "1",
       "deploymentTarget": "15.1"
-  },
-  "android": {
-     "googleServicesFile": "./google-services.json",
-    "adaptiveIcon": {
-      "foregroundImage": "./assets/adaptive-icon.png",
-      "backgroundColor": "#ffffff"
     },
-    "edgeToEdgeEnabled": true,
-    "package": "com.cmpacatuba.cmpacatuba"
-  },
-  "web": {
-    "favicon": "./assets/favicon.png"
-  },
-  "extra": {
-    "eas": {
-      "projectId": "1d47ac3a-2c19-428b-b0a9-7353aa405c63"
+    "android": {
+      "googleServicesFile": "./google-services.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.cmpacatuba.cmpacatuba"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "podfileProperties": {
+              "use_modular_headers": true
+            }
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "1d47ac3a-2c19-428b-b0a9-7353aa405c63"
+      }
     }
   }
-}
 }
