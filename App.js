@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { View, Text, ActivityIndicator, StyleSheet, Platform } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, Platform, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import messaging from '@react-native-firebase/messaging';
 
 // MUDANÇA CRÍTICA: Importa os serviços JÁ INICIALIZADOS e estáveis
-// Certifique-se de que AUTH e DB são exportados com "export { AUTH, DB }" em firebaseService.js
-import { AUTH, DB } from './firebaseConfig'; 
+// Certifique-se de que AUTH, DB e app são exportados de firebaseConfig.js
+import { app, AUTH, DB } from './firebaseConfig'; 
 import { onAuthStateChanged } from 'firebase/auth';
 import { ref, update } from 'firebase/database';
 
@@ -72,22 +72,28 @@ async function registerForPushNotificationsAsync(userId) {
     }
 
     if (finalStatus !== 'granted') {
-      alert('Falha ao obter o token para notificações push!');
+      Alert.alert('Permissão de Notificação', 'Falha ao obter o token para notificações push! Por favor, habilite nas configurações do seu dispositivo.');
+      console.warn('Permissões de notificação não concedidas. Não será possível obter o token.');
       return;
     }
 
     try {
-      // MUDANÇA: Obter o token NATIVO do dispositivo (FCM/APNs) em vez do token do Expo.
-      // Este é o token que a sua Firebase Function (admin.messaging().sendToDevice) espera.
-      const tokenData = await Notifications.getDevicePushTokenAsync();
-      const token = tokenData.data;
-      console.log("Token Nativo do Dispositivo (FCM/APNs):", token);
+      // CRÍTICO: Obter o token FCM diretamente do @react-native-firebase/messaging
+      // Este é o token que o Firebase Admin SDK espera para enviar notificações diretas.
+      const fcmToken = await messaging().getToken();
+      
+      if (fcmToken) {
+        console.log("FCM Token do Dispositivo:", fcmToken);
 
-      // MUDANÇA: Salvar o token no caminho que a sua Firebase Function está lendo.
-      // A função busca por 'devicePushToken', então vamos salvar com esse nome.
-      const userRef = ref(DB, `users/${userId}`);
-      await update(userRef, { devicePushToken: token });
-      console.log('Token de notificação salvo para o usuário:', userId);
+        // Salvar o token no Realtime Database.
+        // Certifique-se de que o caminho 'users/${userId}/devicePushToken' é o que seu backend espera.
+        const userRef = ref(DB, `users/${userId}`);
+        await update(userRef, { devicePushToken: fcmToken });
+        console.log('FCM Token de notificação salvo para o usuário:', userId);
+        return fcmToken; // Retorna o token para uso posterior, se necessário
+      } else {
+        console.warn('Não foi possível obter o FCM Token.');
+      }
 
     } catch (e) {
       console.error("Erro ao obter e salvar o token de notificação:", e);
@@ -103,6 +109,7 @@ async function registerForPushNotificationsAsync(userId) {
 
 // O AppWrapper agora só lida com o estado de autenticação, não mais com a inicialização do Firebase
 const AppWrapper = () => {
+  console.log("AppWrapper: Iniciando componente.");
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null); 
 
@@ -113,7 +120,7 @@ const AppWrapper = () => {
       if (permissionsGranted) {
         console.log("Permissões de notificação concedidas.");
         // Registra o dispositivo para receber notificações push
-        registerForPushNotificationsAsync(userId);
+        await registerForPushNotificationsAsync(userId);
 
         // Listener para quando o app é aberto a partir de uma notificação (estado fechado)
         messaging().getInitialNotification().then(remoteMessage => {
@@ -131,18 +138,19 @@ const AppWrapper = () => {
       }
     };
 
-    // Configura o handler para notificações em background
+    // Configura o handler para notificações em background (requer que o app esteja em segundo plano ou fechado)
     messaging().setBackgroundMessageHandler(async remoteMessage => {
       console.log('CM Pacatuba:', remoteMessage);
     });
 
-    // Listener para notificações recebidas com o app em primeiro plano
+    // Listener para notificações recebidas com o app em primeiro plano (foreground)
     const unsubscribeNotification = messaging().onMessage(async (remoteMessage) => {
       Alert.alert('Notificação recebida no foreground:', JSON.stringify(remoteMessage));
     });
 
     // Listener principal para o estado de autenticação
     const unsubscribeAuth = onAuthStateChanged(AUTH, (currentUser) => {
+        console.log("onAuthStateChanged: Callback disparado.");
         if (currentUser && currentUser.isAnonymous === false) { 
             setUser(currentUser);
             // Configura as notificações APÓS saber quem é o usuário
@@ -150,21 +158,24 @@ const AppWrapper = () => {
             console.log(`Usuário autenticado: ${currentUser.uid}`);
         } else {
              setUser(null); 
-             console.log("Nenhum usuário autenticado via e-mail/senha. Redirecionando para Login.");
+             console.log("onAuthStateChanged: Nenhum usuário autenticado via e-mail/senha ou usuário anônimo. Redirecionando para Login.");
         }
         // Esta é a chamada crucial que remove a tela de loading
+        console.log("onAuthStateChanged: Definindo isLoading para false.");
         setIsLoading(false);
     });
 
     // Função de cleanup: será chamada quando o componente for desmontado.
     // Ela remove os dois listeners para evitar vazamentos de memória.
     return () => {
+      console.log("useEffect cleanup: Desinscrevendo listeners.");
       unsubscribeAuth();
       unsubscribeNotification();
     };
   }, []); // Dependência vazia: roda apenas na montagem
 
   if (isLoading) {
+    console.log("AppWrapper: Renderizando tela de carregamento.");
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#080A6C" />
@@ -173,6 +184,7 @@ const AppWrapper = () => {
     );
   }
   
+  console.log("AppWrapper: Renderizando navegação principal.");
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={user ? "MainApp" : "Login"}> 

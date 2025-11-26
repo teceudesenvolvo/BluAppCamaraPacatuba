@@ -13,6 +13,7 @@
       "backgroundColor": "#080A6C"
     },
     "ios": {
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "bundleIdentifier": "com.cmpacatuba.cmpacatuba",
       "infoPlist": {

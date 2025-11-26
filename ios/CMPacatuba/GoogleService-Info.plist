@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyC3KshokW46ARSGsb9_Xu9w2oE9qJhyODE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>505753867545</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.cmpacatuba.cmpacatuba</string>
+	<key>PROJECT_ID</key>
+	<string>cm-pacatuba</string>
+	<key>STORAGE_BUCKET</key>
+	<string>cm-pacatuba.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:505753867545:ios:08402360992b17386f6188</string>
+	<key>DATABASE_URL</key>
+	<string>https://cm-pacatuba-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
