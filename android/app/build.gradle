@@ -99,10 +99,10 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('release-key.jks')
-            storePassword '13041997'
-            keyAlias 'androiddebugkey'
-            keyPassword '13041997'
+            storeFile file(MYAPP_RELEASE_STORE_FILE)
+            storePassword MYAPP_RELEASE_STORE_PASSWORD
+            keyAlias MYAPP_RELEASE_KEY_ALIAS
+            keyPassword MYAPP_RELEASE_KEY_PASSWORD
         }
     }
     buildTypes {
