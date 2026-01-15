@@ -31,4 +31,4 @@ yarn-error.*
 *.pem
 
 # typescript
-*.tsbuildinfo
+*.tsbuildinfoandroid/fastlane/google-key.json
