@@ -447,7 +447,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cmpacatuba.cmpacatuba;
-				PRODUCT_NAME = CMPacatuba;
+				PRODUCT_NAME = "CMPacatuba";
 				SWIFT_OBJC_BRIDGING_HEADER = "CMPacatuba/CMPacatuba-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -479,7 +479,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cmpacatuba.cmpacatuba;
-				PRODUCT_NAME = CMPacatuba;
+				PRODUCT_NAME = "CMPacatuba";
 				SWIFT_OBJC_BRIDGING_HEADER = "CMPacatuba/CMPacatuba-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

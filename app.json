@@ -28,8 +28,8 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#080A6C"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.cmpacatuba.cmpacatuba"
