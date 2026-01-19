@@ -28,10 +28,7 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/        git add android/app/build.gradle
-        git commit -m "chore: atualizar build.gradle (ícones/android)"; \
-        git checkout -b feat/atualizacao-android-icons; \
-        git push origin feat/atualizacao-android-icons.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#080A6C"
       },
       "edgeToEdgeEnabled": true,
